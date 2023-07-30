@@ -9,6 +9,16 @@ from hw2d.arakawa.numpy_arakawa import periodic_arakawa_vec
 periodic_arakawa = periodic_arakawa_vec
 from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
 from hw2d.poisson_solvers.numpy_fourier_poisson import fourier_poisson_double
+try:
+    # Numba
+    from hw2d.arakawa.numba_arakawa import periodic_arakawa_stencil
+    from hw2d.gradients.numba_gradients import periodic_laplace_N#, periodic_gradient
+    from hw2d.poisson_solvers.numba_fourier_poisson import fourier_poisson_double
+    periodic_arakawa = periodic_arakawa_stencil
+except:
+    pass
+# Other
+#from hw2d.poisson_solvers.pyfftw_fourier_poisson import fourier_poisson_pyfftw
 
 
 class HW:
