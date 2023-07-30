@@ -1,0 +1,35 @@
+from setuptools import setup, find_packages
+
+setup(
+    name='hw2d',
+    version=1.0,
+    #download_url='https://github.com/the-rccg/hw2d/archive/%s.tar.gz' % version,
+    packages=find_packages(),
+    cmdclass={},
+    description='Reference HW2D Implementation in Python',
+    long_description='Reference Implementation for the Hasegawa-Wakatani model in 2 dimensions in Python',
+    long_description_content_type='text/markdown',
+    keywords=['Plasm Physics', 'Simulation'],
+    license='MIT',
+    author='Robin Greif',
+    author_email='rccgreif@gmail.com',
+    url='https://github.com/the-rccg/hw2d',
+    include_package_data=True,
+    install_requires=['numpy', 'scipy', 'fire', 'h5py', 'tqdm', 'matplotlib', 'mpl_toolkits', 'pytest'],
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'Topic :: Software Development :: Build Tools',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+    ],
+    extras_require={
+        'accelerators': ['numba'],
+    },
+)
