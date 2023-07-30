@@ -51,7 +51,8 @@ def get_fft_noise(
     if min_frequency:
         weight_mask += 1 / (1 + np.exp((min_frequency - k) * 1e3)) - 1
     if max_frequency:
-        weight_mask -= 1 / (1 + np.exp((max_frequency - k) * 1e3))
+        with np.errstate(divide='ignore', invalid='ignore'):
+            weight_mask -= 1 / (1 + np.exp((max_frequency - k) * 1e3))
     # Check weight mask
     assert np.all(weight_mask <= 1) and np.all(weight_mask >= 0), "Weight mask values out of bounds."
     
