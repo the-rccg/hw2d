@@ -1,0 +1,93 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["matplotlib", "setuptools"]
+
+[project]
+authors = [
+    {email = "rccgreif@gmail.com", name = "Robin Greif"}
+]
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'Topic :: Software Development :: Build Tools',
+    'License :: OSI Approved :: MIT License',
+    'Programming Language :: Python :: 3',   
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+    "numpy",
+    "scipy",
+    "fire",
+    "h5py",
+    "tqdm",
+    "matplotlib",
+]
+description = "Reference HW2D Implementation in Python"
+dynamic = ["version"]
+keywords = [
+    "Plasma Physics",
+    "Simulation",
+    "Turbulence",
+]
+license = {text = "MIT"}
+name = "hw2d"
+readme = "README.md"
+requires-python = ">=3.7.1"
+
+[project.optional-dependencies]
+tests = [
+    "coverage",
+    "pytest",
+    "pytest-cov",
+    "pytest-mock"
+]
+accelerators = [
+    "numba",
+]
+
+[project.urls]
+Changelog = "https://github.com/the-rccg/hw2d/blob/main/CHANGES.md"
+Homepage = "https://github.com/the-rccg/hw2d"
+Issues = "https://github.com/the-rccg/hw2d/issues"
+
+[tool.black]
+line_length = 88
+
+[tool.coverage.report]
+exclude_lines = ["if TYPE_CHECKING:"]
+
+[tool.coverage.run]
+source = ["src"]
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report=html --cov-report=term"
+testpaths = [
+    "tests"
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "hw2d._version.__version__"}
+
+# [tool.setuptools.package-data]
+# hw2d = ["py.typed"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.tomlsort]
+all = true
+in_place = true
+spaces_before_inline_comment = 2
+spaces_indent_inline_array = 4
+
+[tool.tomlsort.overrides]
+"project.classifiers".inline_arrays = false
