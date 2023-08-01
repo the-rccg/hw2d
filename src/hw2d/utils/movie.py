@@ -1,5 +1,6 @@
 from typing import Iterable, Dict, Tuple, Any, Callable
 import h5py
+import fire
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -202,7 +203,7 @@ def create_movie(
     # Define Progress
     total = int((t1_idx - t0_idx) // frame_steps)
     frame_range = range(t0_idx, t1_idx + 1, frame_steps)
-    pbar = tqdm(total=total, smoothing=0.3, mininterval=5)
+    pbar = tqdm(total=total, smoothing=0.3)
     # Setup Figure & Animation
     fig, axarr = setup_figure(title)
     ims, cxs, cbs, txs = setup_visualization(
@@ -251,3 +252,29 @@ def generate_title(params: Dict[str, float]) -> str:
             f"nu={params['nu']:.2g}",
         ]
     )
+
+
+def main(
+    input_path: str,
+    output_path: str,
+    t0: int = 0,
+    t1: int or None = None,
+    plot_order: Iterable = ("density", "omega", "phi"),
+    dpi: int = 75,
+    min_fps: int = 10,
+    speed: int = 10,
+) -> None:
+    create_movie(
+        input_filename=input_path,
+        output_filename=output_path,
+        t0=0,
+        t1=None,
+        plot_order=plot_order,
+        min_fps=min_fps,
+        dpi=dpi,
+        speed=speed,
+    )
+
+
+if __name__ == "__main__":
+    fire.Fire(main)
