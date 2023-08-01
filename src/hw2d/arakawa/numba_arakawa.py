@@ -31,12 +31,12 @@ def jxp_nb(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
 
 
 @jit(nopython=True, parallel=True, nogil=True)
-def arakawa_nb(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
-    return (jpp(zeta, psi, d) + jpx(zeta, psi, d) + jxp(zeta, psi, d)) / 3
+def arakawa_nb(zeta: np.ndarray, psi: np.ndarray, dx: float) -> np.ndarray:
+    return (jpp(zeta, psi, dx) + jpx(zeta, psi, dx) + jxp(zeta, psi, dx)) / 3
 
 
-def periodic_arakawa_nb(zeta, psi, d):
-    return arakawa(np.pad(zeta, 1, mode="wrap"), np.pad(psi, 1, mode="wrap"), d)[
+def periodic_arakawa_nb(zeta, psi, dx):
+    return arakawa(np.pad(zeta, 1, mode="wrap"), np.pad(psi, 1, mode="wrap"), dx)[
         1:-1, 1:-1
     ]
 
@@ -57,13 +57,15 @@ def arakawa_stencil(zeta: np.ndarray, psi: np.ndarray) -> np.ndarray:
 
 
 @jit(nopython=True)
-def arakawa_stencil_full(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
-    return (arakawa_stencil(zeta, psi))[1:-1, 1:-1] / (12 * d**2)
+def arakawa_stencil_full(zeta: np.ndarray, psi: np.ndarray, dx: float) -> np.ndarray:
+    return (arakawa_stencil(zeta, psi))[1:-1, 1:-1] / (12 * dx**2)
 
 
-def periodic_arakawa_stencil(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
+def periodic_arakawa_stencil(
+    zeta: np.ndarray, psi: np.ndarray, dx: float
+) -> np.ndarray:
     return arakawa_stencil_full(
-        np.pad(zeta, 1, mode="wrap"), np.pad(psi, 1, mode="wrap"), d
+        np.pad(zeta, 1, mode="wrap"), np.pad(psi, 1, mode="wrap"), dx
     )
 
 
@@ -71,7 +73,7 @@ def periodic_arakawa_stencil(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.
 
 
 @jit(nopython=True)
-def arakawa_vec(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
+def arakawa_vec(zeta: np.ndarray, psi: np.ndarray, dx: float) -> np.ndarray:
     """2D periodic first-order Arakawa
     requires 1 cell padded input on each border"""
     return (
@@ -86,8 +88,8 @@ def arakawa_vec(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
         + zeta[2:, 2:] * (psi[1:-1, 2:] - psi[2:, 1:-1])
         - zeta[0:-2, 2:] * (psi[1:-1, 2:] - psi[0:-2, 1:-1])
         - zeta[0:-2, 0:-2] * (psi[0:-2, 1:-1] - psi[1:-1, 0:-2])
-    ) / (12 * d**2)
+    ) / (12 * dx**2)
 
 
-def periodic_arakawa_vec(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
-    return arakawa_vec(np.pad(zeta, 1, mode="wrap"), np.pad(psi, 1, mode="wrap"), d)
+def periodic_arakawa_vec(zeta: np.ndarray, psi: np.ndarray, dx: float) -> np.ndarray:
+    return arakawa_vec(np.pad(zeta, 1, mode="wrap"), np.pad(psi, 1, mode="wrap"), dx)

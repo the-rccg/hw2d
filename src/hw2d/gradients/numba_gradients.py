@@ -23,7 +23,7 @@ def laplace(padded: np.ndarray, dx: float) -> np.ndarray:
     ) / dx**2
 
 
-def periodic_laplace(a: np.ndarray, dx: float) -> np.ndarray:
+def periodic_laplace(arr: np.ndarray, dx: float) -> np.ndarray:
     """
     Compute the gradient of a 2D array using finite differences with periodic boundary conditions and Numba optimization.
 
@@ -34,7 +34,7 @@ def periodic_laplace(a: np.ndarray, dx: float) -> np.ndarray:
     Returns:
         np.ndarray: The gradient of the input array with periodic boundary conditions.
     """
-    return laplace(np.pad(a, 1, "wrap"), dx)
+    return laplace(np.pad(arr, 1, "wrap"), dx)
 
 
 @jit(nopython=True)

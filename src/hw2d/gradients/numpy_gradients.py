@@ -21,7 +21,7 @@ def laplace(padded: np.ndarray, dx: float):
     ) / dx**2
 
 
-def periodic_laplace(a: np.ndarray, dx: float):
+def periodic_laplace(arr: np.ndarray, dx: float):
     """
     Compute the Laplace of a 2D array using finite differences with periodic boundary conditions.
 
@@ -32,10 +32,10 @@ def periodic_laplace(a: np.ndarray, dx: float):
     Returns:
         np.ndarray: The Laplace of the input array with periodic boundary conditions.
     """
-    return laplace(np.pad(a, 1, "wrap"), dx)
+    return laplace(np.pad(arr, 1, "wrap"), dx)
 
 
-def periodic_laplace_N(a: np.ndarray, dx: float, N: int) -> np.ndarray:
+def periodic_laplace_N(arr: np.ndarray, dx: float, N: int) -> np.ndarray:
     """
     Compute the Laplace of a 2D array using finite differences N times successively with periodic boundary conditions.
 
@@ -48,8 +48,8 @@ def periodic_laplace_N(a: np.ndarray, dx: float, N: int) -> np.ndarray:
         np.ndarray: The Laplace of the input array with periodic boundary conditions.
     """
     for _ in range(N):
-        a = periodic_laplace(a, dx)
-    return a
+        arr = periodic_laplace(arr, dx)
+    return arr
 
 
 def fourier_laplace(grid: np.ndarray, dx: float, times: int = 1) -> np.ndarray:

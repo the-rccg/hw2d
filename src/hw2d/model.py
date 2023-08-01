@@ -17,7 +17,8 @@ try:
     # Numba
     from hw2d.arakawa.numba_arakawa import periodic_arakawa_stencil
     from hw2d.gradients.numba_gradients import periodic_laplace_N  # , periodic_gradient
-    from hw2d.poisson_solvers.numba_fourier_poisson import fourier_poisson_double
+
+    # from hw2d.poisson_solvers.numba_fourier_poisson import fourier_poisson_double
 
     periodic_arakawa = periodic_arakawa_stencil
 except:
@@ -75,7 +76,7 @@ class HW:
     def euler_step(self, yn: Namespace, dt: float) -> Namespace:
         d = dt * self.gradient_2d(yn, pn, dt=0)
         y = yn + d
-        phi = self.get_phi(y)
+        phi = self.get_phi(y.omega)
         t1 = time.time()
         return Namespace(
             density=y.density,
@@ -88,19 +89,19 @@ class HW:
         # RK4
         t0 = time.time()
         yn = plasma
-        # pn = self.get_phi(plasma=yn, dx=dx)  # TODO: only execute for t=0
+        # pn = self.get_phi(omega=yn.omega, dx=dx)  # TODO: only execute for t=0
         pn = yn.phi
         k1 = dt * self.gradient_2d(plasma=yn, phi=pn, dt=0, dx=dx)
-        p1 = self.get_phi(plasma=yn + k1 * 0.5, dx=dx)
+        p1 = self.get_phi(omega=(yn + k1 * 0.5).omega, dx=dx)
         k2 = dt * self.gradient_2d(plasma=yn + k1 * 0.5, phi=p1, dt=dt / 2, dx=dx)
-        p2 = self.get_phi(plasma=yn + k2 * 0.5, dx=dx)
+        p2 = self.get_phi(omega=(yn + k2 * 0.5).omega, dx=dx)
         k3 = dt * self.gradient_2d(plasma=yn + k2 * 0.5, phi=p2, dt=dt / 2, dx=dx)
-        p3 = self.get_phi(plasma=yn + k3, dx=dx)
+        p3 = self.get_phi(omega=(yn + k3).omega, dx=dx)
         k4 = dt * self.gradient_2d(plasma=yn + k3, phi=p3, dt=dt, dx=dx)
-        # p4 = self.get_phi(k4)
+        # p4 = self.get_phi(k4.omega)
         # TODO: currently adds two timesteps
         y1 = yn + (k1 + 2 * k2 + 2 * k3 + k4) * (1 / 6)
-        phi = self.get_phi(plasma=y1, dx=dx)
+        phi = self.get_phi(omega=y1.omega, dx=dx)
         t1 = time.time()
         self.log("rk4_step", t1 - t0)
         if self.debug:
@@ -124,18 +125,17 @@ class HW:
             age=plasma.age + dt,
         )
 
-    def get_phi(self, plasma: Namespace, dx: float) -> np.ndarray:
+    def get_phi(self, omega: np.ndarray, dx: float) -> np.ndarray:
         t0 = time.time()
-        omega = plasma.omega
         o_mean = np.mean(omega)
         centered_omega = omega - o_mean
-        phi = self.poisson_solver(centered_omega, dx)
+        phi = self.poisson_solver(tensor=centered_omega, dx=dx)
         self.log("get_phi", time.time() - t0)
         return phi
 
     def diffuse(self, arr: np.ndarray, dx: float, N: int) -> np.ndarray:
         t0 = time.time()
-        arr = self.diffuse_N(arr, dx, N)
+        arr = self.diffuse_N(arr=arr, dx=dx, N=N)
         self.log("diffuse", time.time() - t0)
         return arr
 
@@ -153,7 +153,7 @@ class HW:
         DO = 0
         Dn = 0
         t0 = time.time()
-        dy_p = self.gradient_func(phi, dx=dx)[0]
+        dy_p = self.gradient_func(phi, dx=dx, axis=0)
         self.log("np_gradient", time.time() - t0)
 
         # Calculate Gradients
@@ -163,25 +163,29 @@ class HW:
         o = self.c1 * diff
         if self.arakawa_coeff:
             t0 = time.time()
-            arak_comp_o = -self.arakawa_coeff * self.arakawa(phi, plasma.omega, dx)
+            arak_comp_o = -self.arakawa_coeff * self.arakawa(
+                zeta=phi, psi=plasma.omega, dx=dx
+            )
             self.log("arakawa", time.time() - t0)
             o += arak_comp_o
         if self.nu:
-            DO = self.nu * self.diffuse(plasma.omega, dx, self.N)
+            DO = self.nu * self.diffuse(arr=plasma.omega, dx=dx, N=self.N)
             o += DO
 
         # Step 2.2: New Density.
         n = self.c1 * diff
         if self.arakawa_coeff:
             t0 = time.time()
-            arak_comp_n = -self.arakawa_coeff * self.arakawa(phi, plasma.density, dx)
+            arak_comp_n = -self.arakawa_coeff * self.arakawa(
+                zeta=phi, psi=plasma.density, dx=dx
+            )
             self.log("arakawa", time.time() - t0)
             n += arak_comp_n
         if self.kappa_coeff:
             kap = -self.kappa_coeff * dy_p
             n += kap
         if self.nu:
-            Dn = self.nu * self.diffuse(plasma.density, dx, self.N)
+            Dn = self.nu * self.diffuse(arr=plasma.density, dx=dx, N=self.N)
             n += Dn
 
         if debug:
