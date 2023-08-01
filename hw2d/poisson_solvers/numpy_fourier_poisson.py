@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def fourier_poisson_double(tensor, dx, times=1):
+def fourier_poisson_double(tensor: np.ndarray, dx: float, times: int=1) -> np.ndarray:
     """ Inverse operation to `fourier_laplace`. """
     tensor = np.array(tensor, dtype=np.complex128)
     frequencies = np.fft.fft2(tensor)
@@ -20,7 +20,7 @@ def fourier_poisson_double(tensor, dx, times=1):
     return (result * dx**2).astype(np.float64)
 
 
-def fourier_poisson_single(tensor, dx, times=1):
+def fourier_poisson_single(tensor: np.ndarray, dx: float, times: int=1) -> np.ndarray:
     """ Inverse operation to `fourier_laplace`. """
     tensor = np.array(tensor, dtype=np.complex64)
     frequencies = np.fft.fft2(tensor)
@@ -39,7 +39,7 @@ def fourier_poisson_single(tensor, dx, times=1):
     return (result * dx**2).astype(np.float32)
 
 
-def fourier_poisson_numpy(grid, dx, times=1):
+def fourier_poisson_numpy(grid: np.ndarray, dx: float, times: int=1) -> np.ndarray:
     """
     Inverse operation to `fourier_laplace`.
 

@@ -32,10 +32,10 @@ def periodic_laplace(a: np.ndarray, dx: float):
     Returns:
         np.ndarray: The Laplace of the input array with periodic boundary conditions.
     """
-    return laplace(np.pad(a, 1, 'wrap'), dx)
+    return laplace(np.pad(a, 1, "wrap"), dx)
 
 
-def periodic_laplace_N(a: np.ndarray, dx: float, N: int):
+def periodic_laplace_N(a: np.ndarray, dx: float, N: int) -> np.ndarray:
     """
     Compute the Laplace of a 2D array using finite differences N times successively with periodic boundary conditions.
 
@@ -52,11 +52,7 @@ def periodic_laplace_N(a: np.ndarray, dx: float, N: int):
     return a
 
 
-def fourier_laplace(
-    grid: np.ndarray,
-    dx: float,
-    times: int = 1
-):
+def fourier_laplace(grid: np.ndarray, dx: float, times: int = 1) -> np.ndarray:
     """
     Compute the Laplace of a 2D array using Fourier transform.
 
@@ -69,16 +65,16 @@ def fourier_laplace(
         np.ndarray: The Laplace of the input array using Fourier transform.
     """
     frequencies = np.fft.fft2(grid.astype(np.complex128))
-    k = np.meshgrid(*[np.fft.fftfreq(int(n)) for n in grid.shape], indexing='ij')
+    k = np.meshgrid(*[np.fft.fftfreq(int(n)) for n in grid.shape], indexing="ij")
     k = np.expand_dims(np.stack(k, -1), 0)
     k = k.astype(np.float64)
-    k_squared = np.sum(k ** 2, axis=-1)
-    fft_laplace = -(2 * np.pi) ** 2 * k_squared
-    result = np.real(np.fft.ifft2(frequencies * fft_laplace ** times))
-    return (result / dx ** 2).astype(grid.dtype)[0]
+    k_squared = np.sum(k**2, axis=-1)
+    fft_laplace = -((2 * np.pi) ** 2) * k_squared
+    result = np.real(np.fft.ifft2(frequencies * fft_laplace**times))
+    return (result / dx**2).astype(grid.dtype)[0]
 
 
-def gradient(padded: np.ndarray, dx: float, axis: int=0) -> tuple:
+def gradient(padded: np.ndarray, dx: float, axis: int = 0) -> np.ndarray:
     """
     Compute the gradient of a 2D array using finite differences.
 
@@ -91,12 +87,12 @@ def gradient(padded: np.ndarray, dx: float, axis: int=0) -> tuple:
         np.ndarray: Gradient in axis-direction.
     """
     if axis == 0:
-        return (padded[2:, 1:-1] - padded[0:-2, 1:-1])/(2*dx)
+        return (padded[2:, 1:-1] - padded[0:-2, 1:-1]) / (2 * dx)
     elif axis == 1:
-        return (padded[1:-1, 2:] - padded[1:-1, 0:-2])/(2*dx)
+        return (padded[1:-1, 2:] - padded[1:-1, 0:-2]) / (2 * dx)
 
 
-def periodic_gradient(input_field: np.ndarray, dx: float, axis: int=0):
+def periodic_gradient(input_field: np.ndarray, dx: float, axis: int = 0) -> np.ndarray:
     """
     Compute the gradient of a 2D array using finite differences with periodic boundary conditions.
 
@@ -108,5 +104,5 @@ def periodic_gradient(input_field: np.ndarray, dx: float, axis: int=0):
     Returns:
         tuple: Gradient in y-direction, gradient in x-direction with periodic boundary conditions.
     """
-    padded = np.pad(input_field, 1, mode='wrap')
+    padded = np.pad(input_field, 1, mode="wrap")
     return gradient(padded, dx, axis=axis)

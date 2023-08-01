@@ -34,7 +34,7 @@ def periodic_laplace(a: np.ndarray, dx: float) -> np.ndarray:
     Returns:
         np.ndarray: The gradient of the input array with periodic boundary conditions.
     """
-    return laplace(np.pad(a, 1, 'wrap'), dx)
+    return laplace(np.pad(a, 1, "wrap"), dx)
 
 
 @jit(nopython=True)
@@ -67,11 +67,11 @@ def periodic_laplace_N(arr: np.ndarray, dx: float, N: int) -> np.ndarray:
     Returns:
         np.ndarray: The gradient of the input array after N iterations with periodic boundary conditions.
     """
-    return laplace_N(np.pad(arr, N, 'wrap'), dx, N)
+    return laplace_N(np.pad(arr, N, "wrap"), dx, N)
 
 
 @jit(nopython=True)
-def gradient(padded: np.ndarray, dx: float, axis: int=0) -> tuple:
+def gradient(padded: np.ndarray, dx: float, axis: int = 0) -> np.ndarray:
     """
     Compute the gradient of a 2D array using finite differences with Numba optimization.
 
@@ -84,12 +84,12 @@ def gradient(padded: np.ndarray, dx: float, axis: int=0) -> tuple:
         np.ndarray: Gradient in axis-direction.
     """
     if axis == 0:
-        return (padded[2:, 1:-1] - padded[0:-2, 1:-1])/(2*dx)
+        return (padded[2:, 1:-1] - padded[0:-2, 1:-1]) / (2 * dx)
     elif axis == 1:
-        return (padded[1:-1, 2:] - padded[1:-1, 0:-2])/(2*dx)
+        return (padded[1:-1, 2:] - padded[1:-1, 0:-2]) / (2 * dx)
 
 
-def periodic_gradient(input_field: np.ndarray, dx: float, axis: int=0) -> tuple:
+def periodic_gradient(input_field: np.ndarray, dx: float, axis: int = 0) -> np.ndarray:
     """
     Compute the gradient of a 2D array using finite differences with periodic boundary condition with Numba optimization
 
@@ -101,5 +101,5 @@ def periodic_gradient(input_field: np.ndarray, dx: float, axis: int=0) -> tuple:
     Returns:
         np.ndarray: Gradient in axis-direction with periodic boundary conditions.
     """
-    padded = np.pad(input_field, 1, mode='wrap')
+    padded = np.pad(input_field, 1, mode="wrap")
     return gradient(padded, dx, axis=axis)

@@ -1,10 +1,12 @@
+from typing import Dict, List, Tuple, Any
 import h5py
 import numpy as np
-from typing import Dict, List, Tuple, Any
 from hw2d.utils.namespaces import Namespace
 
 
-def get_save_params(params, dt, snaps, x, y):
+def get_save_params(
+    params: Dict[str, Any], dt: float, snaps: int, x: int, y: int
+) -> Dict[str, Any]:
     params = params.copy()
     params["dt"] = dt
     params["frame_dt"] = dt * snaps
@@ -14,7 +16,13 @@ def get_save_params(params, dt, snaps, x, y):
     return params
 
 
-def create_appendable_h5(filepath, params, dtype=np.float32, chunk_size=100, field_list=["density", "omega", "phi"]):
+def create_appendable_h5(
+    filepath: str,
+    params: Dict[str, Any],
+    dtype: np.dtype = np.float32,
+    chunk_size: int = 100,
+    field_list: List[str] = ["density", "omega", "phi"],
+) -> None:
     y = params["y"]
     x = params["x"]
     with h5py.File(f"{filepath}", "w") as hf:
@@ -31,7 +39,7 @@ def create_appendable_h5(filepath, params, dtype=np.float32, chunk_size=100, fie
             hf.attrs[key] = value
 
 
-def append_h5(output_path, buffer, buffer_index):
+def append_h5(output_path: str, buffer: np.ndarray, buffer_index: int) -> None:
     """append a file, from buffer, with buffer_index size"""
     with h5py.File(output_path, "a") as hf:
         for field_name in buffer.keys():
@@ -39,7 +47,14 @@ def append_h5(output_path, buffer, buffer_index):
             hf[field_name][-buffer_index:] = buffer[field_name][:buffer_index]
 
 
-def save_to_buffered_h5(buffer: Dict[str, Any], buffer_size: int, buffer_index: int, new_val: Dict[str, Any], output_path: str, field_list: List[str] = ["density", "omega", "phi"]) -> int:
+def save_to_buffered_h5(
+    buffer: Dict[str, Any],
+    buffer_size: int,
+    buffer_index: int,
+    new_val: Dict[str, Any],
+    output_path: str,
+    field_list: List[str] = ["density", "omega", "phi"],
+) -> int:
     """
     Save data to a buffer. If the buffer is full, flush the buffer to the HDF5 file.
 
@@ -65,7 +80,9 @@ def save_to_buffered_h5(buffer: Dict[str, Any], buffer_size: int, buffer_index: 
     return buffer_index
 
 
-def load_h5_data(file_name: str, field_list: List[str]) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+def load_h5_data(
+    file_name: str, field_list: List[str]
+) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """
     Load data and attributes from an HDF5 file.
 
@@ -84,7 +101,9 @@ def load_h5_data(file_name: str, field_list: List[str]) -> Tuple[Dict[str, Any],
     return data, params
 
 
-def continue_h5_file(file_name: str, field_list: List[str]) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+def continue_h5_file(
+    file_name: str, field_list: List[str]
+) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """
     Load data and attributes from an HDF5 file.
 
@@ -103,7 +122,10 @@ def continue_h5_file(file_name: str, field_list: List[str]) -> Tuple[Dict[str, A
             lengths.append(len(h5_file[field]))
         params = dict(h5_file.attrs)
     length = min(lengths)
-    age = params["frame_dt"] * (length-1)
+    age = params["frame_dt"] * (length - 1)
     data = Namespace(**data, age=age, dx=params["dx"])
-    params = {k:params[k] for k in ("dx", "N", "c1", "nu", "k0", "arakawa_coeff", "kappa_coeff")}
+    params = {
+        k: params[k]
+        for k in ("dx", "N", "c1", "nu", "k0", "arakawa_coeff", "kappa_coeff")
+    }
     return data, params
