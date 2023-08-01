@@ -15,7 +15,7 @@ setup(
     author_email='rccgreif@gmail.com',
     url='https://github.com/the-rccg/hw2d',
     include_package_data=True,
-    install_requires=['numpy', 'scipy', 'fire', 'h5py', 'tqdm', 'matplotlib', 'mpl_toolkits', 'pytest'],
+    install_requires=['numpy', 'scipy', 'fire', 'h5py', 'tqdm', 'matplotlib', 'pytest'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
