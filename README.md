@@ -14,7 +14,7 @@ The implementation presented here is by no means meant to be the optimal, but an
 This reference implementation uses:
 - Gradients: Central finite difference schemes (2nd order accurate)
 - Poisson Bracket: Arakawa Scheme (2nd order accurate, higher order preserving)
-- Poisson Solver: Fourier based solfer
+- Poisson Solver: Fourier based solver
 - Time Integration: Explicit Runge Kutte (4th order accurate)
 The framework presented here can be easily extended to use alternative implementations. 
 
