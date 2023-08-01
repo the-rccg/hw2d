@@ -75,7 +75,7 @@ testpaths = [
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "hw2d._version.__version__"}
+version = {attr = "hw2d.__version__.__version__"}
 
 # [tool.setuptools.package-data]
 # hw2d = ["py.typed"]
