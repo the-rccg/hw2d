@@ -5,8 +5,7 @@ The purpose is to provide a playground for education and scientific purposes: be
 
 Stable, verified parameters will be published with this repository.
 
-Install a pure NumPy version via 
+Install a pure NumPy version via
 ```pip install hw2d```
 and to include accelerators like numba, use the following:
 ````pip install hw2d[accelerators]``
-

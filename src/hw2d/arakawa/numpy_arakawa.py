@@ -43,20 +43,27 @@ def periodic_arakawa(zeta, psi, d):
         1:-1, 1:-1
     ]
 
+
 ## Vectorized
+
 
 def arakawa_vec(zeta, psi, d):
     """2D periodic first-order Arakawa
     requires 1 cell padded input on each border"""
-    return   (zeta[2:, 1:-1] * (psi[1:-1, 2:] - psi[1:-1, 0:-2] + psi[2:, 2:] - psi[2:, 0:-2])
-            - zeta[0:-2, 1:-1] * (psi[1:-1, 2:] - psi[1:-1, 0:-2] + psi[0:-2, 2:] - psi[0:-2, 0:-2])
-            - zeta[1:-1, 2:] * (psi[2:, 1:-1] - psi[0:-2, 1:-1] + psi[2:, 2:] - psi[0:-2, 2:])
-            + zeta[1:-1, 0:-2] * (psi[2:, 1:-1] - psi[0:-2, 1:-1] + psi[2:, 0:-2] - psi[0:-2, 0:-2])
-            + zeta[2:, 0:-2] * (psi[2:, 1:-1] - psi[1:-1, 0:-2])
-            + zeta[2:, 2:] * (psi[1:-1, 2:] - psi[2:, 1:-1])
-            - zeta[0:-2, 2:] * (psi[1:-1, 2:] - psi[0:-2, 1:-1])
-            - zeta[0:-2, 0:-2] * (psi[0:-2, 1:-1] - psi[1:-1, 0:-2])) / (12 * d**2)
+    return (
+        zeta[2:, 1:-1] * (psi[1:-1, 2:] - psi[1:-1, 0:-2] + psi[2:, 2:] - psi[2:, 0:-2])
+        - zeta[0:-2, 1:-1]
+        * (psi[1:-1, 2:] - psi[1:-1, 0:-2] + psi[0:-2, 2:] - psi[0:-2, 0:-2])
+        - zeta[1:-1, 2:]
+        * (psi[2:, 1:-1] - psi[0:-2, 1:-1] + psi[2:, 2:] - psi[0:-2, 2:])
+        + zeta[1:-1, 0:-2]
+        * (psi[2:, 1:-1] - psi[0:-2, 1:-1] + psi[2:, 0:-2] - psi[0:-2, 0:-2])
+        + zeta[2:, 0:-2] * (psi[2:, 1:-1] - psi[1:-1, 0:-2])
+        + zeta[2:, 2:] * (psi[1:-1, 2:] - psi[2:, 1:-1])
+        - zeta[0:-2, 2:] * (psi[1:-1, 2:] - psi[0:-2, 1:-1])
+        - zeta[0:-2, 0:-2] * (psi[0:-2, 1:-1] - psi[1:-1, 0:-2])
+    ) / (12 * d**2)
+
 
 def periodic_arakawa_vec(zeta, psi, d):
-    return arakawa_vec(np.pad(zeta, 1, mode='wrap'), np.pad(psi, 1, mode='wrap'), d)
-
+    return arakawa_vec(np.pad(zeta, 1, mode="wrap"), np.pad(psi, 1, mode="wrap"), d)

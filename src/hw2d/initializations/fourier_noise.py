@@ -10,7 +10,7 @@ def get_fft_noise(
     max_frequency: float = 0,
     min_wavelength: float = 0,
     max_wavelength: float = 0,
-    factor: int = 2
+    factor: int = 2,
 ) -> np.ndarray:
     """
     Generate a 2D noise pattern using the FFT.
@@ -45,23 +45,24 @@ def get_fft_noise(
         min_frequency = 1 / max_wavelength
     if min_wavelength:
         max_frequency = 1 / min_wavelength
-    
+
     # Create frequency mask
     weight_mask = np.ones(shape)
     if min_frequency:
         weight_mask += 1 / (1 + np.exp((min_frequency - k) * 1e3)) - 1
     if max_frequency:
-        with np.errstate(divide='ignore', invalid='ignore'):
+        with np.errstate(divide="ignore", invalid="ignore"):
             weight_mask -= 1 / (1 + np.exp((max_frequency - k) * 1e3))
     # Check weight mask
-    assert np.all(weight_mask <= 1) and np.all(weight_mask >= 0), "Weight mask values out of bounds."
-    
-    
+    assert np.all(weight_mask <= 1) and np.all(
+        weight_mask >= 0
+    ), "Weight mask values out of bounds."
+
     # Handle division by zero for k
     k[(0,) * len(k.shape)] = np.inf
     inv_k = 1 / k
     inv_k[(0,) * len(k.shape)] = 0
-    
+
     # Compute result
     smoothness = 1
     fft = rndj * inv_k**smoothness * weight_mask

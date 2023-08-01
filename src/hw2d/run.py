@@ -8,7 +8,13 @@ import os
 from hw2d.model import HW  # (grid_size, L)
 from hw2d.initializations.fourier_noise import get_fft_noise
 from hw2d.initializations.sine import get_2d_sine
-from hw2d.utils.io import get_save_params, create_appendable_h5, save_to_buffered_h5, append_h5, continue_h5_file
+from hw2d.utils.io import (
+    get_save_params,
+    create_appendable_h5,
+    save_to_buffered_h5,
+    append_h5,
+    continue_h5_file,
+)
 from hw2d.utils.namespaces import Namespace
 from hw2d.utils.movie import create_movie
 
@@ -21,11 +27,11 @@ noise = {
         scale=1,
         min_wavelength=dx * 12,
         max_wavelength=dx * grid_pts * 100,
-        factor=2
+        factor=2,
     ),
     "sine": lambda y, x: get_2d_sine((y, x), L),
     "random": lambda y, x: np.random.rand(y, x).astype(np.float64),
-    "normal": lambda y, x: np.random.normal(size=(y, x)).astype(np.float64)
+    "normal": lambda y, x: np.random.normal(size=(y, x)).astype(np.float64),
 }
 
 
@@ -41,7 +47,7 @@ def run(
     arakawa_coeff=1.0,
     seed=None,
     init_type="normal",
-    init_scale=1/100,
+    init_scale=1 / 100,
     snaps=1,
     buffer_size=100,
     output_path="",
@@ -99,8 +105,8 @@ def run(
         nu=nu,
         k0=k0,
         arakawa_coeff=arakawa_coeff,
-        kappa_coeff=kappa_coeff
-    )    
+        kappa_coeff=kappa_coeff,
+    )
     # Initialize Plasma
     plasma = Namespace(
         density=noise[init_type](y, x) * init_scale,
@@ -112,34 +118,49 @@ def run(
 
     # File Handling
     if output_path:
-        buffer = {field: np.zeros((buffer_size, y, x), dtype=np.float32) for field in field_list}
-        output_params = {"buffer": buffer, "buffer_index": 0, "output_path": output_path}
+        buffer = {
+            field: np.zeros((buffer_size, y, x), dtype=np.float32)
+            for field in field_list
+        }
+        output_params = {
+            "buffer": buffer,
+            "buffer_index": 0,
+            "output_path": output_path,
+        }
         # Load Data
         if os.path.isfile(output_path):
             if continue_file:
                 plasma, physics_params = continue_h5_file(output_path, field_list)
-                print(f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}")
+                print(
+                    f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}"
+                )
             else:
                 print(f"File already exists.")
                 return
-        # Create 
+        # Create
         else:
             save_params = get_save_params(physics_params, step_size, snaps, x, y)
-            create_appendable_h5(output_path, save_params, dtype=np.float32, chunk_size=100)
-            output_params["buffer_index"] = save_to_buffered_h5(new_val=plasma, buffer_size=buffer_size, **output_params)
-    
+            create_appendable_h5(
+                output_path, save_params, dtype=np.float32, chunk_size=100
+            )
+            output_params["buffer_index"] = save_to_buffered_h5(
+                new_val=plasma, buffer_size=buffer_size, **output_params
+            )
+
     # Setup Simulation
     hw = HW(**physics_params, debug=debug)
-    plasma['phi'] = hw.get_phi(plasma, physics_params['dx'])
+    plasma["phi"] = hw.get_phi(plasma, physics_params["dx"])
 
     # Run Simulation
-    for i in tqdm(range(1, steps+1)):
+    for i in tqdm(range(1, steps + 1)):
         plasma = hw.rk4_step(plasma, dt=step_size, dx=dx)
-    
+
         # Save to records
         if output_path and i % snaps == 0:
-            output_params["buffer_index"] = save_to_buffered_h5(new_val=plasma, buffer_size=buffer_size, **output_params)
-    
+            output_params["buffer_index"] = save_to_buffered_h5(
+                new_val=plasma, buffer_size=buffer_size, **output_params
+            )
+
         # Check for breaking
         if np.isnan(np.sum(plasma.density)):
             print(f"FAILED @ {i:,} steps ({plasma.age:,})")
@@ -162,7 +183,7 @@ def run(
             plot_order=file_list,
             min_fps=min_fps,
             dpi=dpi,
-            speed=speed
+            speed=speed,
         )
 
 
