@@ -1,30 +1,17 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import time
 
-# Local Imports
+import matplotlib.pyplot as plt
+import numpy as np
+
+from hw2d.gradients.gradients import periodic_gradient, periodic_laplace_N
 from hw2d.initializations.fourier_noise import get_fft_noise
+from hw2d.poisson_solvers.numpy_fourier_poisson import fourier_poisson_double
 from hw2d.utils.namespaces import Namespace
 
-# NumPy
-from hw2d.arakawa.numpy_arakawa import periodic_arakawa_vec
-
-periodic_arakawa = periodic_arakawa_vec
-from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
-from hw2d.poisson_solvers.numpy_fourier_poisson import fourier_poisson_double
-
 try:
-    # Numba
-    from hw2d.arakawa.numba_arakawa import periodic_arakawa_stencil
-    from hw2d.gradients.numba_gradients import periodic_laplace_N  # , periodic_gradient
-
-    # from hw2d.poisson_solvers.numba_fourier_poisson import fourier_poisson_double
-
-    periodic_arakawa = periodic_arakawa_stencil
-except:
-    pass
-# Other
-# from hw2d.poisson_solvers.pyfftw_fourier_poisson import fourier_poisson_pyfftw
+    from hw2d.arakawa.numba_arakawa import periodic_arakawa_stencil as periodic_arakawa
+except ImportError:
+    from hw2d.arakawa.numpy_arakawa import periodic_arakawa_vec as periodic_arakawa
 
 
 class HW:

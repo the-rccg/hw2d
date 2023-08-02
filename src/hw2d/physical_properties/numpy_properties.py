@@ -1,10 +1,11 @@
 # Define Frame Properties
 # Assume (..., y, x) as shape
-import numpy as np
 from typing import Dict, Tuple
-from hw2d.utils.namespaces import Namespace
-from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
 
+import numpy as np
+
+from hw2d.gradients.gradients import periodic_gradient, periodic_laplace_N
+from hw2d.utils.namespaces import Namespace
 
 # Gammas
 
