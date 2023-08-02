@@ -153,10 +153,11 @@ def run(
 
     # Setup Simulation
     hw = HW(**physics_params, debug=debug)
-    plasma["phi"] = hw.get_phi(plasma, physics_params["dx"])
+    plasma["phi"] = hw.get_phi(plasma.omega, physics_params["dx"])
 
     # Run Simulation
     for i in tqdm(range(1, steps + 1)):
+        plasma = hw.euler_step(plasma, dt=step_size, dx=dx)
         plasma = hw.rk4_step(plasma, dt=step_size, dx=dx)
         # if i % (40 * 10) == 0:
         #     gamma_n_spectral = get_gamma_n_spectrally(
