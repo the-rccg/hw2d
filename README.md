@@ -5,7 +5,7 @@ The purpose is to provide a playground for education and scientific purposes: be
 
 Stable, verified parameters will be published with this repository.
 
-Install a pure NumPy version via 
+Install a pure NumPy version via
 ```pip install hw2d```
 and to include accelerators like numba, use the following:
 ```pip install hw2d[accelerators]```
@@ -16,13 +16,13 @@ This reference implementation uses:
 - Poisson Bracket: Arakawa Scheme (2nd order accurate, higher order preserving)
 - Poisson Solver: Fourier based solver
 - Time Integration: Explicit Runge Kutte (4th order accurate)
-The framework presented here can be easily extended to use alternative implementations. 
+The framework presented here can be easily extended to use alternative implementations.
 
 Pull requests are strongly encouraged. If you don't know where to start, implementing new numerical methods or alternative accelerators make for good first projects.
 
 ## The Hasegawa-Wakatani Model
 
-The HW model describes drift-wave turbulence using two physical fields: the density $n$ and the potential $\phi$ using various gradients on these. 
+The HW model describes drift-wave turbulence using two physical fields: the density $n$ and the potential $\phi$ using various gradients on these.
 
 $$
 \begin{align}

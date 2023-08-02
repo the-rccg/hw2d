@@ -25,9 +25,9 @@ dependencies = [
     "h5py",
     "matplotlib",
     "numpy",
+    "pandas",
     "scipy",
-    "tqdm",
-    "pandas"
+    "tqdm"
 ]
 description = "Reference HW2D Implementation in Python"
 dynamic = ["version"]

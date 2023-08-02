@@ -9,10 +9,10 @@ class TestFFTNoise(unittest.TestCase):
         size = 1.0
         scale = 2.0
         noise = get_fft_noise(resolution, size, scale)
-        
+
         # Test that output is numpy array
         self.assertIsInstance(noise, np.ndarray)
-        
+
         # Test the output shape matches the given resolution
         self.assertEqual(noise.shape, resolution)
 
@@ -27,5 +27,5 @@ class TestFFTNoise(unittest.TestCase):
         self.assertTrue(np.isclose(np.std(noise), 1.0, atol=1e-5))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
