@@ -73,16 +73,16 @@ class HW:
         df.sort_values("time/call", inplace=True)
         print(df)
 
-    def euler_step(self, yn: Namespace, dt: float) -> Namespace:
-        d = dt * self.gradient_2d(yn, pn, dt=0)
-        y = yn + d
-        phi = self.get_phi(y.omega)
+    def euler_step(self, plasma: Namespace, dt: float, dx: float) -> Namespace:
+        d = dt * self.gradient_2d(plasma=plasma, phi=plasma["phi"], dt=0, dx=dx)
+        y = plasma + d
+        phi = self.get_phi(omega=y.omega, dx=dx)
         t1 = time.time()
         return Namespace(
             density=y.density,
             omega=y.omega,
             phi=phi,
-            age=yn.age + dt,
+            age=plasma.age + dt,
         )
 
     def rk4_step(self, plasma: Namespace, dt: float, dx: float) -> Namespace:
