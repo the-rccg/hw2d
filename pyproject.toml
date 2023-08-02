@@ -75,6 +75,75 @@ testpaths = [
     "tests"
 ]
 
+[tool.ruff]
+fix = true
+fixable = ["I"]
+ignore = ["ANN101"]
+select = [
+    "F",
+    "E",
+    "W",
+    "C90",
+    "I",
+    "N",
+    "UP",
+    "YTT",
+    "ANN",
+    "S",
+    "BLE",
+    "FBT",  # unclear if good or not
+    "B",
+    "A",
+    "C4",
+    "DTZ",
+    "T10",
+    "EM",
+    "EXE",
+    "ISC",
+    "ICN",
+    "G",
+    "INP",
+    "PIE",
+    "T20",
+    "PYI",
+    "PT",
+    "RSE",
+    "RET",
+    "SLF",
+    "SIM",
+    "TID",
+    "TCH",
+    "ARG",
+    "PTH",
+    "ERA",
+    "PGH",
+    "PL",
+    "TRY",
+    "NPY",
+    "RUF"
+]
+target-version = "py38"
+
+[tool.ruff.flake8-annotations]
+suppress-dummy-args = true
+
+[tool.ruff.per-file-ignores]
+"examples/*" = [
+    "ERA001",  # commented-out-code
+    "INP"  # implicit-namespace-package
+]
+"tests/*" = [
+    "ANN",
+    "ARG002",  # unused-method-argument
+    "INP",  # implicit-namespace-package
+    "PLR0913",  # too-many-arguments
+    "S101",  # assert
+    "SLF001"  # private-member-access
+]
+
+[tool.ruff.pylint]
+max-args = 5
+
 [tool.setuptools.dynamic]
 version = {attr = "hw2d.__version__.__version__"}
 
@@ -89,3 +158,4 @@ spaces_indent_inline_array = 4
 
 [tool.tomlsort.overrides]
 "project.classifiers".inline_arrays = false
+"tool.ruff.select".inline_arrays = false
