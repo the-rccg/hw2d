@@ -13,11 +13,11 @@ def laplace(padded: np.ndarray, dx: float):
         np.ndarray: The Laplace of the input array.
     """
     return (
-        padded[0:-2, 1:-1]  # above
-        + padded[1:-1, 0:-2]  # left
-        - 4 * padded[1:-1, 1:-1]  # center
-        + padded[1:-1, 2:]  # right
-        + padded[2:, 1:-1]  # below
+        padded[..., 0:-2, 1:-1]  # above
+        + padded[..., 1:-1, 0:-2]  # left
+        - 4 * padded[..., 1:-1, 1:-1]  # center
+        + padded[..., 1:-1, 2:]  # right
+        + padded[..., 2:, 1:-1]  # below
     ) / dx**2
 
 
@@ -32,7 +32,12 @@ def periodic_laplace(arr: np.ndarray, dx: float):
     Returns:
         np.ndarray: The Laplace of the input array with periodic boundary conditions.
     """
-    return laplace(np.pad(arr, 1, "wrap"), dx)
+    pad_size = 1
+    if len(arr.shape) > 2:
+        pad_size = [(0, 0) for _ in range(len(arr.shape))]
+        pad_size[-1] = (1, 1)
+        pad_size[-2] = (1, 1)
+    return laplace(np.pad(arr, pad_size, "wrap"), dx)
 
 
 def periodic_laplace_N(arr: np.ndarray, dx: float, N: int) -> np.ndarray:
@@ -90,6 +95,10 @@ def gradient(padded: np.ndarray, dx: float, axis: int = 0) -> np.ndarray:
         return (padded[2:, 1:-1] - padded[0:-2, 1:-1]) / (2 * dx)
     elif axis == 1:
         return (padded[1:-1, 2:] - padded[1:-1, 0:-2]) / (2 * dx)
+    elif axis == -2:
+        return (padded[..., 2:, 1:-1] - padded[..., 0:-2, 1:-1]) / (2 * dx)
+    elif axis == -1:
+        return (padded[..., 1:-1, 2:] - padded[..., 1:-1, 0:-2]) / (2 * dx)
 
 
 def periodic_gradient(input_field: np.ndarray, dx: float, axis: int = 0) -> np.ndarray:
@@ -104,5 +113,11 @@ def periodic_gradient(input_field: np.ndarray, dx: float, axis: int = 0) -> np.n
     Returns:
         tuple: Gradient in y-direction, gradient in x-direction with periodic boundary conditions.
     """
-    padded = np.pad(input_field, 1, mode="wrap")
+    if axis < 0:
+        pad_size = [(0, 0) for _ in range(len(input_field.shape))]
+        pad_size[-1] = (1, 1)
+        pad_size[-2] = (1, 1)
+    else:
+        pad_size = 1
+    padded = np.pad(input_field, pad_width=pad_size, mode="wrap")
     return gradient(padded, dx, axis=axis)
