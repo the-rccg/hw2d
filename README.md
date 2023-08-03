@@ -29,11 +29,11 @@ $$
     \partial_t n &= c_1 \left( \phi - n \right)
                      - \left[ \phi, n \right]
                      - \kappa_n \partial_y \phi
-                     - \nu \nabla^{2N} n \,,
+                     - \nu \nabla^{2N} n 
              \\
     \partial_t \Omega &= c_1 \left( \phi - n \right)
                                       - \left[ \phi, \Omega \right]
-                                      - \nu \nabla^{2N} \Omega \,.
+                                      - \nu \nabla^{2N} \Omega 
              \\
              \Omega &= \nabla^2 \phi
 \end{align}
