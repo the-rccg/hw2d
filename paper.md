@@ -28,28 +28,29 @@ in the future. However, the immense complexity of modeling turbulence inside
 potential reactors still remains outside the realm of the biggest supercomputers.
 Hence, the development of new methods for simulating plasma turbulence is 
 a pressing issue. The community pushes to introduce new numerical and machine
-learning methods that are tested versus the Hasegawa-Wakatani model[@Yatomi_2023;@grillix].
-Up to now though, there is no reference implementation to verify or build upon.
+learning methods that are tested versus the Hasegawa-Wakatani model [@hasegawa_wakatani;@Yatomi_2023;@grillix;@anderson2020elucidating;@goumiri2013reduced;@heinonen2020learning].
+Up to now, however, there is no reference implementation to verify or build upon.
 This package is providing an easy to understand, easy to use, and easy to extend 
 reference implementation to test new ideas and methods without having to 
-use excessive resources to find stable parameters.
-As such, it decreases the barrier of entry for fusion- and machine learning reserachers
-to tackle one of the biggest open questions in contemporary science.
+waste resources to find stable parameters.
+As such, it significantly decreases the barrier of entry for fusion- and machine 
+learning reserachers to tackle one of the biggest open questions in contemporary science.
 
 # Statement of need
 
 `HW2D` was designed with easy of understanding front and center. It is the reference 
 implementation that was and is being used for scientific inquiry into data-driven methods
-for plasma turbulence studies, as well as didactic purposes with students.
+for plasma turbulence studies, as well as introducing researchers to plasma turbulence.
 It provides one central reference against which methods can be benchmarked, validated, 
-and trained with a clear set of properties for comparison.
-The similarity to Navier-Stokes, but fundamentally different kind of turbulence [@camargo]
-further allows for faster testing of methods previously established for classical fluids
-on turbulent plasma inside fusion devices.
+and trained with a clear set of reference values for comparison.
+The reference solver furthemore allows intrusive machine learning models to be developed 
+without having to verify a new solver. 
+The similarity of HW to Navier-Stokes, makes it a prime candidate for transfering insights 
+gathered from methods developed for NS fluids towards fusion turbulence theory [@camargo].
 Considering the turbulent, chaotic nature of plasma turbulence, verifying implementations 
-can be resource intensive --- and is now automated due to CI pipelines.
-The simple structure of the project allows expansion by all levels of programming knowledge:
-bachelor students to professional machine learning researchers.
+can be resource intensive --- and is now automated with CI pipelines.
+Keeping a simple structure for the project allows expansion by all levels of programming 
+knowledge:bachelor students to professional machine learning researchers.
 
 
 # Mathematics
@@ -89,7 +90,7 @@ $$
 \end{align}
 $$
 
-Additional spectral properties are planned to be included
+Additionally, spectral properties are planned to be included, among these are:
 
 $$
 \Gamma^n\scriptstyle(k_y)\displaystyle\; = -\!\! \int{\!\mathrm{d} k_y \;\, i k_y \, n\scriptstyle(k_y) \, \displaystyle\phi\scriptstyle(k_y)\displaystyle^* }
@@ -98,7 +99,9 @@ $$
 
 ## Reference Implementaion
 
-The reference impementation set forth 
+The reference impementation set forth is using numerical simulations in physical space.
+The methods are second order accurate in space, and fourth order accurate in time.
+However, the use of the Arakawa Scheme does allow the preservation of higher order metrics.
 
 - Gradients $\partial_x$:  2nd order accurate Central Finite Difference scheme
 - Poisson Bracket $[\cdot,\cdot]$:  Arakawa Scheme [@arakawa_computational_1966]
