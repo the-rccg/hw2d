@@ -84,3 +84,31 @@ def get_enstrophy_phi(n: np.ndarray, phi: np.ndarray, dx: float) -> np.ndarray:
     omega -= np.mean(omega, axis=(-1, -2), keepdims=True)
     integral = np.mean(((n - omega) ** 2), axis=(-1, -2))
     return integral / 2
+
+
+def get_D(arr: np.ndarray, nu: float, N: int, dx: float) -> np.ndarray:
+    return nu * periodic_laplace_N(arr, dx=dx, N=N)
+
+
+# Sinks
+
+
+def get_DE(n: np.ndarray, p: np.ndarray, Dn: np.ndarray, Dp: np.ndarray) -> float:
+    DE = np.mean(n * Dn - p * Dp, axis=(-1, -2))
+    return DE
+
+
+def get_DU(n: np.ndarray, o: np.ndarray, Dn: np.ndarray, Dp: np.ndarray) -> float:
+    DE = -np.mean((n - o) * (Dn - Dp), axis=(-1, -2))
+    return DE
+
+
+# Time Variation
+
+
+def get_dE_dt(gamma_n: np.ndarray, gamma_c: np.ndarray, DE: np.ndarray) -> float:
+    return gamma_n - gamma_c - DE
+
+
+def get_dU_dt(gamma_n: np.ndarray, DU: np.ndarray) -> float:
+    return gamma_n - DU
