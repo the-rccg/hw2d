@@ -30,26 +30,26 @@ def get_gamma_c(n: np.ndarray, p: np.ndarray, c1: float, dx: float) -> float:
 # Spectral Gamma_n
 
 
-def get_gamma_n_kyi(
-    n: np.ndarray, p: np.ndarray, dx: float, ky: np.ndarray, norm: str or None = None
-) -> np.ndarray:
+def get_gamma_n_ky(
+    n: np.ndarray, p: np.ndarray, dx: float
+) -> Tuple[np.ndarray, np.ndarray]:
     """Calculate the spectral components of Gamma_n"""
-    n_y_dft = np.fft.fft(n, axis=-2, norm=norm)
-    p_y_dft = np.fft.fft(p, axis=-2, norm=norm)
-    gamma_n_kyi = n_y_dft * 1j * ky * np.conjugate(p_y_dft)
-    return gamma_n_kyi
+    ky_max = n.shape[-2] // 2
+    n_dft = np.fft.fft2(n, norm="ortho")  # n(ky, kx)
+    p_dft = np.fft.fft2(p, norm="ortho")  # p(ky, kx)
+    k_kx, k_ky = np.meshgrid(
+        *[np.fft.fftfreq(int(i), d=dx) * 2 * np.pi for i in n.shape]
+    )  # k(ky, kx)
+    gamma_n_k = n_dft * 1j * k_ky * np.conjugate(p_dft)  # gamma_n(ky, kx)
+    integrated_gamma_n_k = np.mean(np.real(gamma_n_k), axis=-1)[:ky_max]  # gamma_n(ky)
+    ky = k_ky[:ky_max, 0]
+    return ky, integrated_gamma_n_k
 
 
 def get_gamma_n_spectrally(n: np.ndarray, p: np.ndarray, dx: float) -> float:
-    """Mittlere Teilchen Transport
-    Gamma_n = - \int{d^2 x \tilde{n} \frac{\partial \tilde{\phi}}{\partial y}}"""
-    ky = np.array(np.meshgrid(*[np.fft.fftfreq(int(n)) for n in n.shape]))
-    gamma_n_kyi = get_gamma_n_kyi(n=n, p=p, dx=dx, ky=ky, norm=None) / ky.shape[-2]
-    integrated_gamma_n_kyi = np.mean(gamma_n_kyi, axis=-1)  # Mean over x
-    # Integrate over y, adjust for fft
-    integrated_gamma_n_kyi = np.mean(integrated_gamma_n_kyi, axis=-1)
-    integrated_gamma_n = np.real(integrated_gamma_n_kyi)
-    return np.mean(integrated_gamma_n / (dx**2))
+    ky, integrated_gamma_n_k = get_gamma_n_ky(n=n, p=p, dx=dx)
+    gamma_n = np.mean(integrated_gamma_n_k, axis=-1)  # gamma_n
+    return gamma_n
 
 
 # Energies
