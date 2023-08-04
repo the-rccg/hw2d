@@ -48,12 +48,12 @@ This allows simple comparison, as well es evalutaion of new methods to one refer
 
 $$
 \begin{align}
-    \Gamma^n       &= -     \iint{ \mathrm{d}^2x \;n \partial_y \phi } \\
-    \Gamma^c       &= c_1   \iint{ \mathrm{d}^2x \;\left(n - \phi \right)^2} \\
-    \mathfrak{D}^E &= \quad \iint{ \mathrm{d}^2x \;(n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)} \\ 
-    \mathfrak{D}^U &= -     \iint{ \mathrm{d}^2x \;(n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)} \\
-    with \quad \mathfrak{D}^n \scriptstyle (x,y) \displaystyle &= \nu \nabla^{2N} n \quad and \quad 
-    \mathfrak{D}^\phi \scriptstyle (x,y) \displaystyle = \nu \nabla^{2N} \phi  
+    \Gamma^n       &= -     \iint{ \mathrm{d}^2x n \partial_y \phi } \\
+    \Gamma^c       &= c_1   \iint{ \mathrm{d}^2x \left(n - \phi \right)^2} \\
+    \mathfrak{D}^E &= \quad \iint{ \mathrm{d}^2x (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)} \\ 
+    \mathfrak{D}^U &= -     \iint{ \mathrm{d}^2x (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)} \\
+    with \quad \mathfrak{D}^n \small (x,y) \normalsize &= \nu \nabla^{2N} n \quad and \quad 
+    \mathfrak{D}^\phi \small (x,y) \normalsize = \nu \nabla^{2N} \phi  
 \end{align}
 $$
 
@@ -61,10 +61,10 @@ Additionally, spectral properties are planned to be included, among these are:
 
 $$
 \begin{align}
-  \int{\!\mathrm{d} k_y \Gamma^n \scriptstyle (k_y)} \displaystyle &= - \int{\mathrm{d} k_y \left( i k_y  n \scriptstyle(k_y) \displaystyle \phi \scriptstyle(k_y)\displaystyle^* \right) } \\
-  \delta \scriptstyle(k_y) \displaystyle &= - \mathrm{Im}\left( \mathrm{log} \left( n^* \scriptstyle(k_y) \displaystyle \phi \scriptstyle(k_y) \displaystyle \right) \right) \\
-  E^N \scriptstyle(k_y) \displaystyle &= \small \frac{1}{2}\normalsize \big| n \scriptstyle(k_y) \displaystyle \big|^2 \\
-  E^V \scriptstyle(k_y) \displaystyle &= \small \frac{1}{2}\normalsize \big| k_y\phi \scriptstyle(k_y) \displaystyle \big|^2 
+  \int{\!\mathrm{d} k_y \Gamma^n \small (k_y)} \normalsize &= - \int{\mathrm{d} k_y \left( i k_y  n \small(k_y) \normalsize \phi \small(k_y)\normalsize^* \right) } \\
+  \delta \small(k_y) \normalsize &= - \mathrm{Im}\left( \mathrm{log} \left( n^* \small(k_y) \normalsize \phi \small(k_y) \normalsize \right) \right) \\
+  E^N \small(k_y) \normalsize &= \small \frac{1}{2}\normalsize \big| n \small(k_y) \normalsize \big|^2 \\
+  E^V \small(k_y) \normalsize &= \small \frac{1}{2}\normalsize \big| k_y\phi \small(k_y) \normalsize \big|^2 
 \end{align}
 $$
 
