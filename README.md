@@ -48,10 +48,10 @@ This allows simple comparison, as well es evalutaion of new methods to one refer
 
 $$
 \begin{align}
-    \Gamma^n       &= -     \iint{ \mathrm{d}^2x n \partial_y \phi } \\
-    \Gamma^c       &= c_1   \iint{ \mathrm{d}^2x \left(n - \phi \right)^2} \\
-    \mathfrak{D}^E &= \quad \iint{ \mathrm{d}^2x (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)} \\ 
-    \mathfrak{D}^U &= -     \iint{ \mathrm{d}^2x (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)} \\
+    \Gamma^n       &= -     \iint{ \mathrm{d}^2x \space n \partial_y \phi } \\
+    \Gamma^c       &= c_1   \iint{ \mathrm{d}^2x \space \left(n - \phi \right)^2} \\
+    \mathfrak{D}^E &= \quad \iint{ \mathrm{d}^2x \space (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)} \\ 
+    \mathfrak{D}^U &= -     \iint{ \mathrm{d}^2x \space (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)} \\
     with \quad \mathfrak{D}^n \small (x,y) \normalsize &= \nu \nabla^{2N} n \quad and \quad 
     \mathfrak{D}^\phi \small (x,y) \normalsize = \nu \nabla^{2N} \phi  
 \end{align}
