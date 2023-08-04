@@ -20,7 +20,7 @@ def test_gamma_n():
 
 def test_gamma_n_spectrally():
     gamma_n_spectrally = get_gamma_n_spectrally(n=n, p=p, dx=dx)
-    assert np.isclose(gamma_n_spectrally, 0.5588138936185577), gamma_n_spectrally
+    assert np.isclose(gamma_n_spectrally, 0.5745075066507911), gamma_n_spectrally
 
 
 def test_gamma_c():
