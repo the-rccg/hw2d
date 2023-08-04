@@ -48,7 +48,7 @@ This allows simple comparison, as well es evalutaion of new methods to one refer
 
 $$
 \begin{align}
-    \Gamma^n       &= -     \iint{ \mathrm{d}^2x \space n \partial_y \phi } \\
+    \Gamma^n       &= -     \iint{ \mathrm{d}^2x \space \left( n \space \partial_y \phi \right) } \\
     \Gamma^c       &= c_1   \iint{ \mathrm{d}^2x \space \left(n - \phi \right)^2} \\
     \mathfrak{D}^E &= \quad \iint{ \mathrm{d}^2x \space (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)} \\ 
     \mathfrak{D}^U &= -     \iint{ \mathrm{d}^2x \space (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)} \\
@@ -61,10 +61,10 @@ Additionally, spectral properties are planned to be included, among these are:
 
 $$
 \begin{align}
-  \int{\!\mathrm{d} k_y \Gamma^n \small (k_y)} \normalsize &= - \int{\mathrm{d} k_y \left( i k_y  n \small(k_y) \normalsize \phi \small(k_y)\normalsize^* \right) } \\
-  \delta \small(k_y) \normalsize &= - \mathrm{Im}\left( \mathrm{log} \left( n^* \small(k_y) \normalsize \phi \small(k_y) \normalsize \right) \right) \\
-  E^N \small(k_y) \normalsize &= \small \frac{1}{2}\normalsize \big| n \small(k_y) \normalsize \big|^2 \\
-  E^V \small(k_y) \normalsize &= \small \frac{1}{2}\normalsize \big| k_y\phi \small(k_y) \normalsize \big|^2 
+  \int{\mathrm{d} k_y \space \Gamma^n \small (k_y) \normalsize }  &= - \int{\mathrm{d} k_y \left( i k_y  \space n \small (k_y) \normalsize \space \phi^* \small (k_y) \normalsize \right) } \\
+  \delta \small (k_y) \normalsize &= - \mathrm{Im}\left( \mathrm{log} \left( n^* \small (k_y) \normalsize \space \phi \small (k_y) \normalsize \right) \right) \\
+  E^N \small (k_y) \normalsize &= \small \frac{1}{2}\normalsize \big| n \small (k_y) \normalsize \big|^2 \\
+  E^V \small (k_y) \normalsize &= \small \frac{1}{2}\normalsize \big| k_y\phi \small (k_y) \normalsize \big|^2 
 \end{align}
 $$
 
