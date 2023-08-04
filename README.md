@@ -38,3 +38,30 @@ $$
              \Omega &= \nabla^2 \phi
 \end{align}
 $$
+
+## Physical Properties
+
+The reason why the Hasegawa-Wakatani Model has been the de-facto testing bed for new methods are its statistically stationary properties of the complex turbulent system.
+The moduel includes all code needed to generate these values.
+It goes further, however, and provides reference values with statistical bounds for the first time for a vast range of values.
+This allows simple comparison, as well es evalutaion of new methods to one reference community built resource.
+
+$$
+\begin{align}
+    \Gamma^n       \scriptstyle(x,y)\displaystyle &= -\!\! \iint{\! \mathrm{d}^2\! x \;\, n \,\partial_y \phi } \\
+    \Gamma^c       \scriptstyle(x,y)\displaystyle &= c_1    \int{\! \mathrm{d}^2\! x \;\, \left(n - \phi\right)^2} \\
+    \mathfrak{D}^E \scriptstyle(x,y)\displaystyle &= \quad  \int{\! \mathrm{d}^2\! x \;\, (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)} \\ 
+    \mathfrak{D}^U \scriptstyle(x,y)\displaystyle &= -      \int{\! \mathrm{d}^2\! x \;\, (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)} \\
+    with \quad \mathfrak{D}^n \scriptstyle(x,y)\displaystyle &= \nu \nabla^{2N} n \quad and \quad 
+    \mathfrak{D}^\phi \scriptstyle(x,y)\displaystyle\; = \nu \nabla^{2N} \phi  
+\end{align}
+$$
+
+Additionally, spectral properties are planned to be included, among these are:
+
+$$
+\int{\!\mathrm{d} k_y \;\, \Gamma^n\scriptstyle(k_y)} \, \displaystyle\; = -\!\! \int{\!\mathrm{d} k_y \;\, \left( i k_y \,  n\scriptstyle(k_y) \, \displaystyle\phi\scriptstyle(k_y)\displaystyle^*\right) }
+$$
+
+Note that it is the common practice across all reference texts to calculate $\int\cdot$ as $\langle \cdot \rangle$ in order to get comparable values for all properties.
+
