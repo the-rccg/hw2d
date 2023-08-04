@@ -65,8 +65,8 @@ $$
                      - \nu \nabla^{2N} n \,,
              \\
     \partial_t \Omega &= c_1 \left( \phi - n \right)
-                                      - \left[ \phi, \Omega \right]
-                                      - \nu \nabla^{2N} \Omega \,.
+                                    - \left[ \phi, \Omega \right]
+                                    - \nu \nabla^{2N} \Omega \,.
              \\
              \Omega &= \nabla^2 \phi
 \end{align}
@@ -93,8 +93,10 @@ $$
 Additionally, spectral properties are planned to be included, among these are:
 
 $$
-\Gamma^n\scriptstyle(k_y)\displaystyle\; = -\!\! \int{\!\mathrm{d} k_y \;\, i k_y \, n\scriptstyle(k_y) \, \displaystyle\phi\scriptstyle(k_y)\displaystyle^* }
+\int{\!\mathrm{d} k_y \;\, \Gamma^n\scriptstyle(k_y)} \, \displaystyle\; = -\!\! \int{\!\mathrm{d} k_y \;\, \left( i k_y \,  n\scriptstyle(k_y) \, \displaystyle\phi\scriptstyle(k_y)\displaystyle^*\right) }
 $$
+
+Note that it is the common practice across all reference texts to calculate $\int\cdot$ as $\langle \cdot \rangle$ in order to get comparable values for all properties.
 
 
 ## Reference Implementaion
