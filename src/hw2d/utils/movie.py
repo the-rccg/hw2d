@@ -146,10 +146,11 @@ def setup_animation(
         axarr, plasma_steps, params, plot_order, cmap
     )
 
-    def animate(t: int):
+    def animate(idx: int):
         """Update data for animation."""
         for i, ax in enumerate(axarr):
-            arr = plasma_steps[plot_order[i]][t]
+            field_name = plot_order[i]
+            arr = plasma_steps[field_name][idx]
             if zero_omega and plot_order[i] == "omega":
                 arr -= np.mean(arr)
             vmax = np.max(arr)
@@ -160,7 +161,7 @@ def setup_animation(
             nm = new_cbar_max(nm, pm)
             ims[i].set_data(arr)
             ims[i].set_clim(-nm, nm)
-            txs[i].set_text(f"{plot_order[i]} (t={t*params['dt']:.4f})")
+            txs[i].set_text(f"{field_name} (t={idx*params['frame_dt']:.4f})")
         pbar.update(1)
         # return ims
 
@@ -187,6 +188,9 @@ def create_movie(
     # Setup details
     plasma_steps = h5py.File(input_filename, "r")
     params = dict(plasma_steps.attrs)
+    print("frame_dt", params["frame_dt"])
+    print("age", params["age"])
+    print("length of file", len(plasma_steps["density"]))
     title = generate_title(params)
     if t1 is None:
         t1 = (len(plasma_steps[plot_order[0]]) - 1) * params["frame_dt"]
@@ -214,11 +218,12 @@ def create_movie(
     writer = animation.writers["ffmpeg"](fps=fps, metadata=dict(artist="Robin Greif"))
     # animate = setup_animation(fig, axarr, plasma_steps, params, zero_omega, plot_order, cmap, pbar)
 
-    def animate(t: int):
+    def animate(t_idx: int):
         """Update data for animation."""
         for i, ax in enumerate(axarr):
-            arr = plasma_steps[plot_order[i]][t]
-            if zero_omega and plot_order[i] == "omega":
+            field_name = plot_order[i]
+            arr = plasma_steps[field_name][t_idx]
+            if zero_omega and field_name == "omega":
                 arr -= np.mean(arr)
             vmax = np.max(arr)
             vmin = np.min(arr)
@@ -228,7 +233,7 @@ def create_movie(
             nm = new_cbar_max_smooth(nm, pm)
             ims[i].set_data(arr)
             ims[i].set_clim(-nm, nm)
-            txs[i].set_text(f"{plot_order[i]} (t={t*params['dt']:.4f})")
+            txs[i].set_text(f"{field_name} (t={t_idx*params['frame_dt']:.4f})")
         pbar.update(1)
 
     ani = animation.FuncAnimation(fig, animate, frames=frame_range)
@@ -267,8 +272,8 @@ def main(
     create_movie(
         input_filename=input_path,
         output_filename=output_path,
-        t0=0,
-        t1=None,
+        t0=t0,
+        t1=t1,
         plot_order=plot_order,
         min_fps=min_fps,
         dpi=dpi,
