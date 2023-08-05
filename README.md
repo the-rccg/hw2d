@@ -76,8 +76,8 @@ $$
 \begin{align}
     \Gamma^n       &= -     \iint{ \mathrm{d}^2x \space \left( n \space \partial_y \phi \right) } \\
     \Gamma^c       &= c_1   \iint{ \mathrm{d}^2x \space \left(n - \phi \right)^2} \\
-    E              &= \small \frac{1}{2} \normalsize \iint{\! \mathrm{d}^2\! x \; \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)} \\
-    U              &= \small \frac{1}{2} \normalsize \iint{\! \mathrm{d}^2\! x \;\, \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{\! \mathrm{d}^2\! x \;\, \left(n-\Omega\right)^2}
+    E              &= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)} \\
+    U              &= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\Omega\right)^2}
 \end{align}
 $$
 
