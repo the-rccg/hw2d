@@ -16,17 +16,17 @@ and to include accelerators like numba, use the following:
 
 The implementation presented here is by no means meant to be the optimal, but an easy to understand starting point to build bigger things upon and serve as a reference for other work.
 This reference implementation uses:
-- Gradients: Central finite difference schemes (2nd order accurate)
-- Poisson Bracket: Arakawa Scheme (2nd order accurate, higher order preserving)
-- Poisson Solver: Fourier based solver
-- Time Integration: Explicit Runge Kutte (4th order accurate)
+- Gradients $\left(\partial_x, \partial_y, \nabla \right)$: Central finite difference schemes (2nd order accurate)
+- Poisson Bracket $\left([\cdot, \cdot]\right)$: Arakawa Scheme (2nd order accurate, higher order preserving)
+- Poisson Solver $\left(\nabla^{-2}\cdot\right)$: Fourier based solver
+- Time Integration $\left(\partial_t\right)$: Explicit Runge Kutte (4th order accurate)
 The framework presented here can be easily extended to use alternative implementations.
 
 ### Contributions encouraged
 
 Pull requests are strongly encouraged. 
 
-The simplest way to contribute is running simulations and committing the results to the historical runs archieve. This helps in exploring the hyper-parameter space and improving statistical reference values for all.
+The simplest way to contribute is running simulations and committing the results to the historical runs archive. This helps in exploring the hyper-parameter space and improving statistical reference values for all.
 
 If you don't know where to start in contributing code, implementing new numerical methods or alternative accelerators make for good first projects!
 
@@ -78,7 +78,6 @@ $$
     \Gamma^c       &= c_1   \iint{ \mathrm{d}^2x \space \left(n - \phi \right)^2} \\
     E              &= \small \frac{1}{2} \normalsize \iint{\! \mathrm{d}^2\! x \; \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)} \\
     U              &= \small \frac{1}{2} \normalsize \iint{\! \mathrm{d}^2\! x \;\, \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{\! \mathrm{d}^2\! x \;\, \left(n-\Omega\right)^2}
-
 \end{align}
 $$
 
@@ -140,3 +139,9 @@ The timestep is too big in the turbulent phase. CFL criteria are no longer satis
 The energy accumulates at grid scale. Hyper-diffusion component is not large enough to dissipate the energy.
 - increase: `nu`
 - increase: `N`
+  
+
+### Physical values deviate from references
+
+The HW2D model can create stable simulations that are underresolved, through very large hyper-diffusion terms. A higher resolution is needed for this box size.
+- increase: `grid_pts`
