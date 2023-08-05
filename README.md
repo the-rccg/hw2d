@@ -54,6 +54,16 @@ $$
 \end{align}
 $$
 
+
+## Dynamics of the different phases
+
+The model produces self-organizing turbulent structures in a three distinct stages: initial self-organization, linear drift waves, and a stable turbulent phase.
+
+For the interesting intermediary phase for the adiabatic coefficient, $c_1=1$, the initial perturbation will start organizing to produce linear drift waves through the $\partial_t \phi$ component. 
+The system transitions into this first linear phase at roughly t=15, saturates at around t=45, and breaks down to transition into the turbulent phase at about t=80.
+The turbulent phase is visually saturated at around t=125, but physical parameters overshoot and only fall into the long term stable pahse at aroung t=200. 
+
+
 ## Physical Properties
 
 ### Numerical values for each frame
@@ -108,3 +118,25 @@ $$
 It is the common practice across all reference texts to calculate $\int\cdot$ as $\langle \cdot \rangle$ for a unitless box of size one in order to get comparable values for all properties.
 
 
+## Common Issues in Simulating HW2D
+
+### Crashing/NaN encountered 
+
+#### within < 10 timesteps
+
+The simulation has exploded in one direction. Most commonly this means that the hyper-diffusion components are too large. 
+- reduce the hyper diffusion order: `N`
+- reduce the diffusion coefficient: `nu`
+- reduce the initial perturbation: `scale`
+
+
+#### around t=75-125
+
+The timestep is too big in the turbulent phase. CFL criteria are no longer satisfied and simulation crashes.
+- reduce: `step_size`
+
+### Chessboard pattern emerges
+
+The energy accumulates at grid scale. Hyper-diffusion component is not large enough to dissipate the energy.
+- increase: `nu`
+- increase: `N`
