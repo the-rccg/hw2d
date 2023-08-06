@@ -55,6 +55,9 @@ $$
 $$
 
 
+https://github.com/the-rccg/hw2d/assets/28964733/20e6b6cb-fdab-404c-848e-bfa9fd89b61e
+
+
 ## Dynamics of the different phases
 
 The model produces self-organizing turbulent structures in a three distinct stages: initial self-organization, linear drift waves, and a stable turbulent phase.
