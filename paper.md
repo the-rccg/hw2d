@@ -63,14 +63,14 @@ The HW model describes drift-wave turbulence using two physical fields: the dens
 
 $$
 \begin{align}
-    \partial_t n &= c_1 \left( \phi - n \right)
+    \partial_t n = c_1 \left( \phi - n \right)
                      - \left[ \phi, n \right]
                      - \kappa_n \partial_y \phi
                      - \nu \nabla^{2N} n  \\
-    \partial_t \Omega &= c_1 \left( \phi - n \right)
+    \partial_t \Omega = c_1 \left( \phi - n \right)
                                     - \left[ \phi, \Omega \right]
                                     - \nu \nabla^{2N} \Omega  \\
-             \Omega &= \nabla^2 \phi
+             \Omega = \nabla^2 \phi
 \end{align}
 $$
 
@@ -82,23 +82,19 @@ It goes further, however, and provides reference values with statistical bounds 
 This allows simple comparison, as well es evalutaion of new methods to one reference community built resource.
 
 $$
-\begin{align}
-    \Gamma^n       &= - \iint{ \mathrm{d}^2 x \space \left(n \partial_y \phi\right) } \\
-    \Gamma^c       &= c_1   \iint{ \mathrm{d}^2 x \space \left(n - \phi\right)^2} \\
-    E              &= \small \frac{1}{2} \normalsize \iint{ \mathrm{d}^2 x \space \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)} \\
-    U              &= \small \frac{1}{2} \normalsize \iint{ \mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{ \mathrm{d}^2 x \space \left(n-\Omega\right)^2}
-\end{align}
+    \Gamma^n       = - \iint{ \mathrm{d}^2 x \space \left(n \partial_y \phi\right) } \\
+    \Gamma^c       = c_1   \iint{ \mathrm{d}^2 x \space \left(n - \phi\right)^2} \\
+    E              = \small \frac{1}{2} \normalsize \iint{ \mathrm{d}^2 x \space \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)} \\
+    U              = \small \frac{1}{2} \normalsize \iint{ \mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{ \mathrm{d}^2 x \space \left(n-\Omega\right)^2}
 $$
 
 Additionally, spectral definitions of various properties are included, among these are:
 
 $$
-\begin{align}
-  \int{\mathrm{d} k_y \space \Gamma^n \small (k_y)}  \normalsize \space &= - \int{\mathrm{d} k_y \space \left( i k_y   n\small (k_y)  \normalsize \phi^* \small (k_y)\normalsize \right) } \\
-  \delta \small (k_y)  \normalsize \space &= - \mathrm{Im}\left( \mathrm{log}\left( n^*\small (k_y)  \normalsize \space \phi\small (k_y)  \normalsize  \right) \right) \\
-  E^N  \small (k_y)  \normalsize \space &= \small \frac{1}{2}\normalsize \big| n \small (k_y) \normalsize  \big|^2 \\
-  E^V  \small (k_y)  \normalsize \space &= \small \frac{1}{2}\normalsize \big| k_y \phi \small (k_y) \normalsize  \big|^2 
-\end{align}
+  \int{\mathrm{d} k_y \space \Gamma^n \small (k_y)}  \normalsize \space = - \int{\mathrm{d} k_y \space \left( i k_y   n\small (k_y)  \normalsize \phi^* \small (k_y)\normalsize \right) } \\
+  \delta \small (k_y)  \normalsize \space = - \mathrm{Im}\left( \mathrm{log}\left( n^*\small (k_y)  \normalsize \space \phi\small (k_y)  \normalsize  \right) \right) \\
+  E^N  \small (k_y)  \normalsize \space = \small \frac{1}{2}\normalsize \big| n \small (k_y) \normalsize  \big|^2 \\
+  E^V  \small (k_y)  \normalsize \space = \small \frac{1}{2}\normalsize \big| k_y \phi \small (k_y) \normalsize  \big|^2 
 $$
 
 Note that it is the common practice across all reference texts to calculate $\int\cdot$ as $\langle \cdot \rangle$ in order to get comparable values for all properties.
@@ -106,12 +102,10 @@ Note that it is the common practice across all reference texts to calculate $\in
 Finally, the System does have other properties for sources and sinks that can be used to describe it, namely:
 
 $$
-\begin{align}
-    \mathfrak{D}^E &= \quad \iint{ \mathrm{d}^2 x \space (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)} \\ 
-    \mathfrak{D}^U &= -     \iint{ \mathrm{d}^2 x \space (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)} \\
-    with \quad \mathfrak{D}^n \small (x,y) \normalsize  &= \nu \nabla^{2N} n \quad and \quad 
+    \mathfrak{D}^E = \quad \iint{ \mathrm{d}^2 x \space (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)} \\ 
+    \mathfrak{D}^U = -     \iint{ \mathrm{d}^2 x \space (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)} \\
+    with \quad \mathfrak{D}^n \small (x,y) \normalsize  = \nu \nabla^{2N} n \quad and \quad 
     \mathfrak{D}^\phi \small (x,y) \normalsize \space = \nu \nabla^{2N} \phi  
-\end{align}
 $$
 
 
