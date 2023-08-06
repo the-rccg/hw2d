@@ -132,42 +132,6 @@ def setup_figure(title: str) -> Tuple[plt.Figure, np.ndarray]:
     return fig, axarr
 
 
-def setup_animation(
-    fig: plt.Figure,
-    axarr: Iterable[plt.Axes],
-    plasma_steps: Iterable[Dict[str, float]],
-    params: Dict[str, float],
-    zero_omega: bool,
-    plot_order: Iterable[str],
-    cmap: Any,  # Assume cmap is a matplotlib colormap
-    pbar: Any,  # Assume pbar is a tqdm progress bar
-) -> Callable[[int], None]:
-    ims, cxs, cbs, txs = setup_visualization(
-        axarr, plasma_steps, params, plot_order, cmap
-    )
-
-    def animate(idx: int):
-        """Update data for animation."""
-        for i, ax in enumerate(axarr):
-            field_name = plot_order[i]
-            arr = plasma_steps[field_name][idx]
-            if zero_omega and plot_order[i] == "omega":
-                arr -= np.mean(arr)
-            vmax = np.max(arr)
-            vmin = np.min(arr)
-            pmin, pmax = ims[i].get_clim()
-            pm = np.max([np.abs(pmin), pmax])
-            nm = np.max([np.abs(vmin), vmax])
-            nm = new_cbar_max(nm, pm)
-            ims[i].set_data(arr)
-            ims[i].set_clim(-nm, nm)
-            txs[i].set_text(f"{field_name} (t={idx*params['frame_dt']:.4f})")
-        pbar.update(1)
-        # return ims
-
-    return animate
-
-
 def time_to_length(time: int, dt: float) -> int:
     """Convert time to length based on the given time step."""
     return int(round(time / dt))
@@ -188,9 +152,6 @@ def create_movie(
     # Setup details
     plasma_steps = h5py.File(input_filename, "r")
     params = dict(plasma_steps.attrs)
-    print("frame_dt", params["frame_dt"])
-    print("age", params["age"])
-    print("length of file", len(plasma_steps["density"]))
     title = generate_title(params)
     if t1 is None:
         t1 = (len(plasma_steps[plot_order[0]]) - 1) * params["frame_dt"]
@@ -214,9 +175,8 @@ def create_movie(
         axarr, plasma_steps, params, plot_order, cmap
     )
     fig.subplots_adjust(top=0.94, bottom=0, right=0.95, left=0.01, hspace=0, wspace=0.2)
-    # Run Animation
+    # Animation
     writer = animation.writers["ffmpeg"](fps=fps, metadata=dict(artist="Robin Greif"))
-    # animate = setup_animation(fig, axarr, plasma_steps, params, zero_omega, plot_order, cmap, pbar)
 
     def animate(t_idx: int):
         """Update data for animation."""
@@ -233,11 +193,11 @@ def create_movie(
             nm = new_cbar_max_smooth(nm, pm)
             ims[i].set_data(arr)
             ims[i].set_clim(-nm, nm)
-            txs[i].set_text(f"{field_name} (t={t_idx*params['frame_dt']:.4f})")
+            txs[i].set_text(f"{field_name} (t={t_idx*params['frame_dt']:.0f})")
         pbar.update(1)
 
     ani = animation.FuncAnimation(fig, animate, frames=frame_range)
-    # Save MOvie
+    # Save Movie
     output_filename = f"{output_filename}_dpi={dpi}_fps={fps:.0f}_speed={speed:.0f}_t0={t0}_t1={t1}.mp4"
     ani.save(output_filename, writer=writer, dpi=dpi)
     plt.close()
