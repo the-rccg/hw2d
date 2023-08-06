@@ -62,7 +62,6 @@ CI pipelines and open-sourced.
 The HW model describes drift-wave turbulence using two physical fields: the density $n$ and the potential $\phi$ using various gradients on these. 
 
 $$
-\begin{align}
     \partial_t n = c_1 \left( \phi - n \right)
                      - \left[ \phi, n \right]
                      - \kappa_n \partial_y \phi
@@ -71,7 +70,6 @@ $$
                                     - \left[ \phi, \Omega \right]
                                     - \nu \nabla^{2N} \Omega  \\
              \Omega = \nabla^2 \phi
-\end{align}
 $$
 
 ## Physical Properties
