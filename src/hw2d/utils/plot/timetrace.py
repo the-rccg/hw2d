@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 import numpy as np
 import matplotlib.pyplot as plt
 import latexplotlib as lpl
@@ -7,6 +7,7 @@ import fire
 import h5py
 
 from hw2d.utils.plot.movie import get_extended_viridis
+from hw2d.utils.latex_format import latex_format
 
 
 def plot_dict(
@@ -160,7 +161,7 @@ def plot_timeline_with_stds(
         ax.set_ylim(ylims)
     # Setup Plotting
     elements = []
-    label = f"{name} "
+    label = f"{latex_format(name)} "
     # Shadow
     if y_std is not None:
         e = ax.fill_between(x, y - y_std, y + y_std, alpha=alpha)
@@ -177,30 +178,39 @@ def plot_timeline_with_stds(
 
 def main(
     file_path: str = "/ptmp/rccg/hw2d/test.h5",  # "/ptmp/rccg/hw2d/512x512_dt=0.025_nu=1.0e-09.h5",
-    property: str = "gamma_n",
+    properties: List = ("gamma_n", "gamma_c"),
     t0: int = 0,
     t0_std: float = 300,
 ):
     with h5py.File(file_path, "r") as hf:
         print(hf)
         parameters = dict(hf.attrs)
-        fig, ax = plt.subplots(1, 1, figsize=(12, 7))
+        fig, ax = plt.subplots(1, 1, figsize=(7, 3))
         t0_std_idx = int(t0_std // parameters["dt"])
-        print(t0_std_idx)
-        prop_std = np.std(hf[property][t0_std_idx:])
-        # plot_timeline(hf[property][:], t0=t0, dt=parameters["dt"], ax=ax)
-        elements, label = plot_timeline_with_stds(
-            hf[property][:],
-            t0=t0,
-            dt=parameters["dt"],
-            ax=ax,
-            name=property,
-            add_label=False,
-        )
-        print(label, type(label))
-        ax.legend(elements, label + f" $\pm${prop_std}")
-        ax.set_ylabel(property)
+        age = hf[list(hf.keys())[0]].shape[0] * parameters["dt"]
+        print(age, t0_std_idx)
+        elements = []
+        labels = []
+        for property in properties:
+            prop_std = np.std(hf[property][t0_std_idx:])
+            prop_mean = np.mean(hf[property][t0_std_idx:])
+            # plot_timeline(hf[property][:], t0=t0, dt=parameters["dt"], ax=ax)
+            element, label = plot_timeline_with_stds(
+                hf[property][:],
+                t0=t0,
+                dt=parameters["dt"],
+                ax=ax,
+                name=property,
+                add_label=False,
+            )
+            label += f" = {prop_mean:.3f}$\pm${prop_std:.3f}"
+            labels.append(label)
+            elements.append(element[0])
+        ax.legend(elements, labels)
+        ax.set_ylabel("value")
         ax.set_xlabel("time (t)")
+        ax.xaxis.set_ticks(range(0, int(age) + 1, 100))
+        fig.tight_layout()
         fig.savefig("test.jpg")
         print("test.jpg")
 
