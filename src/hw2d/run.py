@@ -16,7 +16,7 @@ from hw2d.utils.io import (
     continue_h5_file,
 )
 from hw2d.utils.namespaces import Namespace
-from hw2d.utils.movie import create_movie
+from hw2d.utils.plot.movie import create_movie
 from hw2d.physical_properties.numpy_properties import (
     get_gamma_n_spectrally,
     get_gamma_n,
