@@ -80,6 +80,28 @@ def save_to_buffered_h5(
     return buffer_index
 
 
+def create_fixed_h5(
+    file_path: str,
+    time: int,
+    y: int,
+    x: int,
+    chunk_size: int = 100,
+    compression: str = "gzip",
+    field_list: List = ["density", "omega", "phi"],
+    dtype=np.float32,
+) -> None:
+    with h5py.File(file_path, "w") as hf:
+        for field_name in field_list:
+            hf.create_dataset(
+                field_name,
+                dtype=dtype,
+                shape=(time, y, x),
+                maxshape=(None, y, x),
+                chunks=(chunk_size, y, x),
+                compression=compression,
+            )
+
+
 def load_h5_data(
     file_name: str, field_list: List[str]
 ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
