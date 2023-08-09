@@ -23,25 +23,9 @@ from hw2d.physical_properties.numpy_properties import (
 )
 
 
-# Define Initializations
-noise = {
-    "fourier": lambda y, x: get_fft_noise(
-        resolution=[y, x],
-        size=L,
-        scale=1,
-        min_wavelength=dx * 12,
-        max_wavelength=dx * grid_pts * 100,
-        factor=2,
-    ),
-    "sine": lambda y, x: get_2d_sine((y, x), L),
-    "random": lambda y, x: np.random.rand(y, x).astype(np.float64),
-    "normal": lambda y, x: np.random.normal(size=(y, x)).astype(np.float64),
-}
-
-
 def run(
     step_size: float = 0.025,
-    end_time: float = 100,
+    end_time: float = 1_000,
     grid_pts: int = 512,
     k0: float = 0.15,
     N: int = 3,
@@ -52,7 +36,7 @@ def run(
     seed: int or None = None,
     init_type: str = "normal",
     init_scale: float = 1 / 100,
-    snaps: int = 40,
+    snaps: int = 1,
     buffer_size: int = 100,
     output_path: str = "",
     continue_file: bool = False,
@@ -100,6 +84,21 @@ def run(
     snap_count = steps // snaps + 1  # number of snapshots
     field_list = ("density", "omega", "phi")
     np.random.seed(seed)
+
+    # Define Initializations
+    noise = {
+        "fourier": lambda y, x: get_fft_noise(
+            resolution=[y, x],
+            size=L,
+            scale=1,
+            min_wavelength=dx * 12,
+            max_wavelength=dx * grid_pts * 100,
+            factor=2,
+        ),
+        "sine": lambda y, x: get_2d_sine((y, x), L),
+        "random": lambda y, x: np.random.rand(y, x).astype(np.float64),
+        "normal": lambda y, x: np.random.normal(size=(y, x)).astype(np.float64),
+    }
 
     # Physics
     physics_params = dict(
@@ -157,7 +156,7 @@ def run(
 
     # Run Simulation
     for i in tqdm(range(1, steps + 1)):
-        plasma = hw.euler_step(plasma, dt=step_size, dx=dx)
+        # plasma = hw.euler_step(plasma, dt=step_size, dx=dx)
         plasma = hw.rk4_step(plasma, dt=step_size, dx=dx)
         # if i % (40 * 10) == 0:
         #     gamma_n_spectral = get_gamma_n_spectrally(
