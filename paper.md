@@ -23,47 +23,55 @@ bibliography: paper.bib
 
 # Summary
 
-Nuclear fusion provides the promise of clean, endless energy for humanity
-in the future. One of the biggest open questions standing in the way of 
-commercially viable fusion devices is containing the energy within plasma that 
-is transported out through drift wave turbulence. However, the immense complexity 
-of modeling turbulence inside potential reactors still remains outside the realm 
-of the biggest supercomputers. Hence, the development of new methods for simulating 
-plasma turbulence is a pressing issue. The community pushes for the introduction 
-of new numerical- and machine learning methods - most commonly tested for 
-viability with the Hasegawa-Wakatani model [@hasegawa_wakatani;@Yatomi_2023;@grillix;@anderson2020elucidating;@goumiri2013reduced;@heinonen2020learning].
-Up to now, however, there is no open-source reference implementation to verify 
-against or build upon.
+`HW2D` is an open source reference implementation against which methods are benchmarked, 
+validated, and trained on. It implements the Hasegawa-Wakatani (HW) model to simulate
+drift-wave turbulence in fusion devices. Besides providing consistent numerical
+simulations, it implements the physical property calculations with the normalizations 
+common in reference texts that are often not clearly understandable outside of the 
+community. Along with it, an iteratively expanding list of parameters are published 
+of stable parameters for simulations and associated physical properties.
 
 
 # Statement of need
 
-`HW2D` provides an easy to understand, easy to use, and easy to extend 
-open-source implementation to help accelerate the testing of new ideas and methods.
-As such, it significantly decreases the barrier of entry for fusion- and machine 
-learning reserchers to tackle one of the biggest open questions in contemporary science.
-In contrast to closed-source Fortran and C++ codes, `HW2D` is an open-source Python 
-reference solver opens the field beyond a select number of research institutions.
-This implementation was and is being used for scientific inquiry into data-driven methods
-for plasma turbulence studies and as an introduction to plasma turbulence for 
-new researchers. 
+Nuclear fusion provides the promise of clean, endless energy for humanity
+in the future. One of the biggest open questions standing in the way of 
+commercially viable fusion devices is confining the energy within the plasma that 
+is transported out through drift wave turbulence. However, the immense complexity 
+of modeling turbulence inside potential reactors still remains outside the realm 
+of the biggest supercomputers. Hence, the development of new methods for simulating 
+plasma turbulence is a pressing issue. 
 
-`HW2D` serves as one central reference against which methods can be benchmarked, 
-validated, and trained with a clear set of reference implementations for comparison. 
-The similarity of HW to Navier-Stokes (NS) [@camargo], makes it a prime candidate for 
-transfering insights gathered from methods developed for NS fluids towards fusion 
-turbulence theory. Considering the turbulent and chaotic nature of plasma turbulence, 
-verifying implementations can be resource intensive --- this is now automated with 
-CI pipelines and open-sourced. 
+The Hasegawa-Wakatani (HW) model has become the de-facto standard for testing methods
+developed for Navier-Stokes (NS) fluids for fusion turbulence due to its similarity 
+to it [@camargo]. Although first published 40 years ago [@hasegawa_wakatani], 
+it is still missing an open-source reference implementation. With its rising popularity 
+in other fields, especially machine learning to test limits of physics-based learning 
+methods, a simple implementation is needed. A unified reference allows comparing methods 
+[@Yatomi_2023;@grillix;@anderson2020elucidating;@goumiri2013reduced;@heinonen2020learning]
+and reduces the overhead involved in verifying turbulent system implementations.
+This verification is now automated with CI pipelines and open-sourced for the broader 
+community to use.
+
+In summary, `HW2D` provides an easy to understand, easy to use, and easy to extend 
+reference implementation to help accelerate the testing of new ideas and methods.
+In contrast to closed-source Fortran and C++ codes available at a select few research 
+institutes, `HW2D` is an open-source Python reference solver that opens up the research 
+field beyond these confines. As such, it significantly decreases the barrier of entry 
+for fusion- and machine learning reserchers to tackle one of the biggest open questions 
+in contemporary science. This implementation was and is being used for scientific papers 
+on data-driven methods for plasma turbulence studies and as an introduction to plasma 
+turbulence for new researchers. 
 
 
 # Mathematics
 
-The HW model describes drift-wave turbulence using two physical fields: the density $n$ and the potential $\phi$ using various gradients on these. 
+The HW model describes drift-wave turbulence using two physical perturbation fields: 
+the density $n$ and the potential $\phi$ using various gradients on these. 
 
 $$
-    \partial_t n = c_1 \left( \phi - n \right)
-                     - \left[ \phi, n \right]
+    \partial_t n = c_1 \left(\phi - n \right)
+                     - \left[\phi, n \right]
                      - \kappa_n \partial_y \phi
                      - \nu \nabla^{2N} n  \\
     \partial_t \Omega = c_1 \left( \phi - n \right)
@@ -74,8 +82,8 @@ $$
 
 ## Physical Properties
 
-The reason why the Hasegawa-Wakatani Model has been the de-facto testing bed for new methods are its statistically stationary properties of the complex turbulent system.
-The moduel includes all code needed to generate these values.
+The reason why the Hasegawa-Wakatani Model has been the de-facto testing bed for new methods are its statistically stationary properties for the complex turbulent system.
+The model code includes all code needed to generate these values.
 It goes further, however, and provides reference values with statistical bounds for the first time for a vast range of values.
 This allows simple comparison, as well es evalutaion of new methods to one reference community built resource.
 
@@ -119,13 +127,3 @@ However, the use of the Arakawa Scheme does allow the preservation of higher ord
 - Poisson Equation $\nabla^{-2}\cdot$:  Fourier-based Poisson Solver
 - Time Integration $\partial_t$:  4th order explicit Runge-Kutta scheme
 
-
-# Figures
-
-
-
-# Acknowledgements
-
-...
-
-# References
