@@ -9,12 +9,6 @@ from matplotlib import animation
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
-# Initialize
-plt.rcParams[
-    "animation.ffmpeg_path"
-] = "C:/ffmpeg/bin/ffmpeg.exe"  # Set the path to FFmpeg
-
-
 def get_extended_viridis(vals: int = 600) -> ListedColormap:
     """
     Generate an extended viridis colormap.
