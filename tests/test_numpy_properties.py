@@ -5,7 +5,9 @@ import os
 from hw2d.physical_properties.numpy_properties import *
 
 
-reference = h5py.File(f"{os.path.dirname(os.path.realpath(__file__))}/reference.h5")
+reference = h5py.File(
+    f"{os.path.dirname(os.path.realpath(__file__))}/reference.h5", "r"
+)
 n = reference["density"][0]
 p = reference["phi"][0]
 o = reference["omega"][0]
@@ -30,7 +32,7 @@ def test_gamma_c():
 
 def test_energy():
     energy = get_energy(n=n, phi=p, dx=dx)
-    assert np.isclose(energy, 7.638421), energy
+    assert np.isclose(energy, 3.749580), energy
 
 
 def test_enstrophy():

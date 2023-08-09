@@ -59,7 +59,9 @@ def get_energy(n: np.ndarray, phi: np.ndarray, dx: float) -> np.ndarray:
     """Energy of the HW2D system
     $$ E = \frac{1}{2} \int{d^2 x (\tilde{n}^2 + |\nabla_\bot\tilde{\phi}|^2)} $$
     """
-    grad_phi = periodic_laplace_N(phi, dx=dx, N=1)
+    grad_phi = periodic_gradient(phi, dx=dx, axis=-1) + periodic_gradient(
+        phi, dx=dx, axis=-2
+    )
     # Norm
     norm_grad_phi = np.abs(grad_phi)
     # Integrate, then divide by 2
