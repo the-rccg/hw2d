@@ -133,8 +133,8 @@ def plot_timeline(values, t0: float, dt: float, ax, **kwargs):
 
 
 def plot_timeline_with_stds(
-    y,
-    ax,
+    y: np.ndarray,
+    ax: plt.Axes,
     t0: float,
     dt: float,
     y_std=None,
@@ -151,14 +151,6 @@ def plot_timeline_with_stds(
     x = x[: len(y)]
     # Axes
     add_axes(x, y, ax)
-    # Limits
-    ax.set_xlim(t0, t0 + time)
-    if (np.min(y) == 0) or (
-        (np.min(y) > 0) and (np.min(y) - 0.01 * (np.max(y) - np.min(y)) < 0)
-    ):
-        ylims = ax.get_ylim()
-        ylims = (0, ylims[1])
-        ax.set_ylim(ylims)
     # Setup Plotting
     elements = []
     label = f"{latex_format(name)} "
@@ -173,12 +165,23 @@ def plot_timeline_with_stds(
         x, y, linestyle="-", linewidth=linewidth
     )  # , label=f"{name}: mean of means")
     elements.append(e[0])
+    # Limits
+    ax.set_xlim(t0, t0 + time)
+    if (np.min(y) == 0) or (
+        (np.min(y) > 0) and (np.min(y) - 0.01 * (np.max(y) - np.min(y)) < 0)
+    ):
+        ylims = ax.get_ylim()
+        ylims = (0, ylims[1])
+        print(ylims)
+        ax.set_ylim(ylims)
     return tuple(elements), label
 
 
 def main(
-    file_path: str = "/ptmp/rccg/hw2d/test.h5",  # "/ptmp/rccg/hw2d/512x512_dt=0.025_nu=1.0e-09.h5",
+    file_path: str,
+    out_path: str or None = None,
     properties: List = ("gamma_n", "gamma_c"),
+    # properties: List = ("enstrophy", "energy"),
     t0: int = 0,
     t0_std: float = 300,
 ):
@@ -203,7 +206,7 @@ def main(
                 name=property,
                 add_label=False,
             )
-            label += f" = {prop_mean:.3f}$\pm${prop_std:.3f}"
+            label += f" = {prop_mean:.2f}$\pm${prop_std:.2f}"
             labels.append(label)
             elements.append(element[0])
         ax.legend(elements, labels)
@@ -211,8 +214,10 @@ def main(
         ax.set_xlabel("time (t)")
         ax.xaxis.set_ticks(range(0, int(age) + 1, 100))
         fig.tight_layout()
-        fig.savefig("test.jpg")
-        print("test.jpg")
+        if out_path is None:
+            out_path = file_path.split(".h5")[0] + f"_{'-'.join(properties)}" + ".jpg"
+        fig.savefig(out_path)
+        print(out_path)
 
 
 if __name__ == "__main__":
