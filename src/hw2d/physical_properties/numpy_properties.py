@@ -52,35 +52,44 @@ def get_gamma_n_spectrally(n: np.ndarray, p: np.ndarray, dx: float) -> float:
     return gamma_n
 
 
-# Energies
+# Energy
 
 
 def get_energy(n: np.ndarray, phi: np.ndarray, dx: float) -> np.ndarray:
-    """Energy of the HW2D system
-    $$ E = \frac{1}{2} \int{d^2 x (\tilde{n}^2 + |\nabla_\bot\tilde{\phi}|^2)} $$
+    """Energy of the HW2D system, sum of thermal and kinetic energy
+    $$ E = \frac{1}{2} \int{d^2 x (n^2 + |\nabla \phi|^2)} $$
     """
     grad_phi = periodic_gradient(phi, dx=dx, axis=-1) + periodic_gradient(
         phi, dx=dx, axis=-2
     )
     # Norm
-    norm_grad_phi = np.abs(grad_phi)
+    norm_grad_phi = grad_phi  # np.abs(grad_phi)
     # Integrate, then divide by 2
     integral = np.mean((n**2) + (norm_grad_phi**2), axis=(-1, -2))
     return integral / 2
 
 
+# Enstrophy
+
+
 def get_enstrophy(n: np.ndarray, omega: np.ndarray, dx: float) -> np.ndarray:
     """Enstrophy of the HW2D system
-    $$ U = \frac{1}{2} \int{d^2 x (\tilde{n}^2 - \nabla^2_\bot \tilde{\phi})^2} = \frac{1}{2} \int{d^2 x (\tilde{n}-\tilde{\Omega})^2} $$
+    $$
+        U = \frac{1}{2} \int{d^2 x (n^2 - \nabla^2 \phi)^2}
+          = \frac{1}{2} \int{d^2 x (n-\Omega)^2}
+    $$
     """
-    omega = omega - np.mean(omega, axis=(-1, -2), keepdims=True)
+    # omega = omega - np.mean(omega, axis=(-1, -2), keepdims=True)
     integral = np.mean(((n - omega) ** 2), axis=(-1, -2))
     return integral / 2
 
 
 def get_enstrophy_phi(n: np.ndarray, phi: np.ndarray, dx: float) -> np.ndarray:
     """Enstrophy of the HW2D system from phi
-    $$ U = \frac{1}{2} \int{d^2 x (\tilde{n}^2 - \nabla^2_\bot \tilde{\phi})^2} = \frac{1}{2} \int{d^2 x (\tilde{n}-\tilde{\Omega})^2} $$
+    $$
+        U = \frac{1}{2} \int{d^2 x (n^2 - \nabla^2 \phi)^2}
+          = \frac{1}{2} \int{d^2 x (n-\Omega)^2}
+    $$
     """
     omega = periodic_laplace_N(phi, dx, N=1)
     omega -= np.mean(omega, axis=(-1, -2), keepdims=True)
@@ -114,3 +123,43 @@ def get_dE_dt(gamma_n: np.ndarray, gamma_c: np.ndarray, DE: np.ndarray) -> float
 
 def get_dU_dt(gamma_n: np.ndarray, DU: np.ndarray) -> float:
     return gamma_n - DU
+
+
+# Spectral Energies
+
+
+def get_energy_N_ky(n: np.ndarray) -> np.ndarray:
+    """thermal energy
+    $$ E^N(k) = \frac{1}{2} |n(k)|^2 $$
+    """
+    n_dft = np.fft.fft2(n, norm="ortho")
+    # n_dft = np.mean(n_dft, axis=-1)
+    E_N_ky = np.abs(n_dft) ** 2 / 2
+    E_N_ky = np.mean(E_N_ky, axis=-1)
+    return E_N_ky
+
+
+def get_energy_N_spectrally(n: np.ndarray) -> np.ndarray:
+    E_N_ky = get_energy_N_ky(n)
+    E_N = np.mean(E_N_ky, axis=-1)
+    return E_N
+
+
+def get_energy_V_ky(p: np.ndarray, dx: float) -> np.ndarray:
+    """kinetic energy
+    $$ E^V(k) = \frac{1}{2} |k \phi(k) |^2 $$
+    """
+    k_kx, k_ky = np.meshgrid(
+        *[np.fft.fftfreq(int(i), d=dx) * 2 * np.pi for i in p.shape]
+    )  # k(ky, kx)
+    p_dft = np.fft.fft2(p, norm="ortho")
+    k = k_ky + k_kx
+    E_V_ky = np.abs(k * p_dft) ** 2 / 2
+    E_V_ky = np.mean(E_V_ky, axis=-1)
+    return E_V_ky
+
+
+def get_energy_V_spectrally(p: np.ndarray, dx: float) -> np.ndarray:
+    E_V_ky = get_energy_V_ky(p, dx=dx)
+    E_V = np.mean(E_V_ky, axis=-1)
+    return E_V
