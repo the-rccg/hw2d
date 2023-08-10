@@ -35,6 +35,16 @@ def test_energy():
     assert np.isclose(energy, 3.749580), energy
 
 
+def test_energy_N():
+    energy_N = get_energy_N_spectrally(n=n)
+    assert np.isclose(energy_N, 2.096125), energy_N
+
+
+def test_energy_V():
+    energy_V = get_energy_V_spectrally(p=p, dx=dx)
+    assert np.isclose(energy_V, 1.662893), energy_V
+
+
 def test_enstrophy():
     enstrophy = get_enstrophy(n=n, omega=o, dx=dx)
     assert np.isclose(enstrophy, 11.743794), enstrophy
