@@ -172,7 +172,7 @@ def plot_timeline_with_stds(
     return tuple(elements), label
 
 
-def main(
+def plot_timetraces(
     file_path: str,
     out_path: str or None = None,
     # properties: List = ("gamma_n", "gamma_c"),
@@ -214,4 +214,4 @@ def main(
 
 
 if __name__ == "__main__":
-    fire.Fire(main)
+    fire.Fire(plot_timetraces)

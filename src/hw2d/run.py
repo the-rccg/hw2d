@@ -3,9 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import os
+from typing import Iterable
 
 # Local imports
-from hw2d.model import HW  # (grid_size, L)
+from hw2d.model import HW
 from hw2d.initializations.fourier_noise import get_fft_noise
 from hw2d.initializations.sine import get_2d_sine
 from hw2d.utils.io import (
@@ -17,10 +18,8 @@ from hw2d.utils.io import (
 )
 from hw2d.utils.namespaces import Namespace
 from hw2d.utils.plot.movie import create_movie
-from hw2d.physical_properties.numpy_properties import (
-    get_gamma_n_spectrally,
-    get_gamma_n,
-)
+from hw2d.utils.run_properties import calculate_properties
+from hw2d.utils.plot.timetrace import plot_timetraces
 
 
 def run(
@@ -40,11 +39,27 @@ def run(
     buffer_size: int = 100,
     output_path: str = "",
     continue_file: bool = False,
-    movie: bool = False,
+    movie: bool = True,
     min_fps: int = 10,
     dpi: int = 75,
-    speed: float = 5,
+    speed: int = 5,
     debug: bool = False,
+    properties: Iterable[str] = [
+        "gamma_n",
+        "gamma_n_spectral",
+        "gamma_c",
+        "energy",
+        "thermal_energy",
+        "kinetic_energy",
+        "enstrophy",
+        "enstrophy_phi",
+    ],
+    plot_properties: Iterable[str] = (
+        "enstrophy",
+        "energy",
+        "kinetic_energy",
+        "thermal_energy",
+    ),  # ("gamma_n", "gamma_c")
 ):
     """
     Run the simulation with the given parameters.
@@ -68,12 +83,12 @@ def run(
     - movie (bool): If True, generate a movie out of simulation. Default is False.
     - min_fps, dpi, speed (int): Parameters for movie generation. Default values are 5, 75, 5 respectively.
     - debug (bool): Enable or disable debug mode. Default is False.
+    - properties (iterable): List of properties to calculate for the saved file.
+    - plot_properties (iterable): List of properties to plot a timetrace for.
 
     Returns:
     None. The function saves simulation data or generates a movie as specified.
     """
-
-    global noise
 
     # Unpacking
     y = grid_pts
@@ -155,18 +170,10 @@ def run(
     plasma["phi"] = hw.get_phi(plasma.omega, physics_params["dx"])
 
     # Run Simulation
+    print("Running simulation...")
     for i in tqdm(range(1, steps + 1)):
-        # plasma = hw.euler_step(plasma, dt=step_size, dx=dx)
+        # Progress one step, alternatively: hw.euler_step()
         plasma = hw.rk4_step(plasma, dt=step_size, dx=dx)
-        # if i % (40 * 10) == 0:
-        #     gamma_n_spectral = get_gamma_n_spectrally(
-        #         plasma["density"], plasma["phi"], dx=dx
-        #     )
-        #     gamma_n = get_gamma_n(plasma["density"], plasma["phi"], dx=dx)
-        #     print(f"{plasma.age:>8.3f}  {gamma_n:>8.2e} {gamma_n_spectral:>8.2e}")
-        # elif i % (40 * 2) == 0:
-        #     gamma_n = get_gamma_n(plasma["density"], plasma["phi"], dx=dx)
-        #     print(f"{plasma.age:>8.3f}  {gamma_n:>8.2e}")
 
         # Save to records
         if output_path and i % snaps == 0:
@@ -186,8 +193,9 @@ def run(
     # Get Performance stats
     hw.print_log()
 
-    # Generate Movie
+    # Generate Movie from saved file
     if movie and output_path:
+        print(f"Generating movie...")
         create_movie(
             input_filename=output_path,
             output_filename=output_path,
@@ -197,6 +205,26 @@ def run(
             min_fps=min_fps,
             dpi=dpi,
             speed=speed,
+        )
+
+    if properties and output_path:
+        print(f"Calculating properties...")
+        calculate_properties(
+            file_path=output_path,
+            batch_size=buffer_size,
+            property_list=properties,
+            force_recompute=True,
+            is_debug=False,
+        )
+
+    if plot_properties and output_path:
+        print(f"Plotting properties...")
+        plot_timetraces(
+            file_path=output_path,
+            out_path=None,
+            properties=plot_properties,
+            t0=0,
+            t0_std=300,
         )
 
 

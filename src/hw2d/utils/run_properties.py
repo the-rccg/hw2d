@@ -17,7 +17,7 @@ def add_data(hf, i, batch_size, name, data, debug, selection):
             print(f"{name}: {np.mean(data):.2e}", end="  |  ")
 
 
-def main(
+def calculate_properties(
     file_path: str = "",
     batch_size: int = 100,
     property_list: List = [
@@ -96,4 +96,4 @@ def main(
 
 
 if __name__ == "__main__":
-    fire.Fire(main)
+    fire.Fire(calculate_properties)
