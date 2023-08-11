@@ -17,10 +17,6 @@ names = {
     "density": "density ($n$)",
     "phi": "potential ($\phi$)",
     "omega": "vorticity ($\Omega$)",
-    "lowerscale=16": "512x512 Downsampled (32x32)",
-    "raw": "Numerical Integrator (512x512)",
-    "model": "Our Model (32x32)",
-    "lowres": "Numerical Integrator (32x32)",
     "dE_dt": "$\partial_t E$",
     "dU_dt": "$\partial_t U$",
     "DE_v": "$DE_v$",
@@ -39,6 +35,10 @@ names = {
     "mean_int_gamma_n": "$\mu_t \left( \int \Gamma_n \left(k_y\\right) \\right)$",
     "std_gamma_n": "$\sigma \left( \int \Gamma_n \left(k_y\\right) \\right)$",
     "c1": "$c_1$",
+    "kinetic_energy": "$E_K$",
+    "thermal_energy": "$E_T$",
+    "energy": "Energy $(E)$",
+    "enstrophy": "Enstrophy $(U)$",
 }
 
 
