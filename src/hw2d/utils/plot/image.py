@@ -1,17 +1,70 @@
 import fire
 import numpy as np
 import h5py
-
-from hw2d.utils.plot import plot_dict
-from hw2d.utils.movie import get_extended_viridis
-
-# from hw2d.utils.latex_format import latex_format
-
+from tqdm import tqdm
+from typing import Dict, Union, List, Tuple
+from matplotlib.colors import Colormap
 import matplotlib.pyplot as plt
-import latexplotlib as lpl
 
-# plt.style.use("latex9pt-minimal")
-print(plt.style.available)
+from hw2d.utils.plot.movie import get_extended_viridis
+from hw2d.utils.latex_format import latex_format
+
+
+def plot_dict(
+    plot_dic: Dict,
+    cmap: Union[str, Colormap, List[str]],
+    couple_cbars: bool = False,
+    figsize: Tuple or None = None,
+    sharex: bool = False,
+    sharey: bool = False,
+    vertical: bool = False,
+    equal: bool = True,
+    cbar_label_spacing: float or None = None,
+):
+    n = len(plot_dic.values())
+    labels = list(plot_dic.keys())
+    if figsize is None:
+        figsize = (n * 4, 4)
+    if vertical:
+        fig, axarr = plt.subplots(n, 1, figsize=figsize, sharex=sharex)
+    else:
+        fig, axarr = plt.subplots(
+            1, n, figsize=figsize, sharey=sharey, constrained_layout=True
+        )
+    vmin = 0
+    vmax = 0
+    imgs = []
+    cbars = []
+    for i in tqdm(range(n)):
+        # Local Names
+        label = labels[i]
+        data = plot_dic[label]
+        ax = axarr[i]
+        if len(data.shape) == 1:
+            ax.axhline(0, color="k", alpha=0.7, linewidth=1)
+            ax.plot(data)
+        elif len(data.shape) == 2:
+            imgs.append(ax.imshow(data, cmap=cmap))
+            cbars.append(plt.colorbar(imgs[-1], pad=0, fraction=0.05))
+            cax = cbars[-1].ax
+            if cbar_label_spacing is not None:
+                cax.yaxis.set_tick_params(pad=cbar_label_spacing)
+            cax.xaxis.set_tick_params(pad=0)
+        else:
+            raise BaseException(
+                f"Shape not recognized.  {label} has shape {data.shape}"
+            )
+        # Properties
+        ax.set_title(label, pad=4)
+        vmin = min(np.min(data), vmin)
+        vmax = max(np.max(data), vmax)
+        if equal:
+            ax.set_aspect("equal")
+    # fix colorbars together
+    if couple_cbars:
+        for img in imgs:
+            img.set_clim(vmin, vmax)
+    return fig
 
 
 def main(
@@ -49,7 +102,6 @@ def main(
     ve = get_extended_viridis(vals=600)
 
     # Plot
-    # with lpl.size.context(246.0968, 6000):
     fig = plot_dict(
         plot_dic,
         cmap=ve,
