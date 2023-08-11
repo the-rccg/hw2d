@@ -175,8 +175,8 @@ def plot_timeline_with_stds(
 def plot_timetraces(
     file_path: str,
     out_path: str or None = None,
-    # properties: List = ("gamma_n", "gamma_c"),
-    properties: List = ("enstrophy", "energy", "kinetic_energy", "thermal_energy"),
+    properties: List = ("gamma_n", "gamma_c"),
+    # properties: List = ("enstrophy", "energy", "kinetic_energy", "thermal_energy"),
     t0: int = 0,
     t0_std: float = 300,
 ):
@@ -208,7 +208,9 @@ def plot_timetraces(
         ax.xaxis.set_ticks(range(0, int(age) + 1, 100))
         fig.tight_layout()
         if out_path is None:
-            out_path = file_path.split(".h5")[0] + f"_{'-'.join(properties)}" + ".jpg"
+            out_path = (
+                str(file_path).split(".h5")[0] + f"_{'-'.join(properties)}" + ".jpg"
+            )
         fig.savefig(out_path)
         print(out_path)
 
