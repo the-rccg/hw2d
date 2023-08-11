@@ -1,7 +1,7 @@
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple, List, Union
 import numpy as np
 import matplotlib.pyplot as plt
-import latexplotlib as lpl
+from matplotlib.colors import Colormap
 from tqdm import tqdm
 import fire
 import h5py
@@ -11,25 +11,25 @@ from hw2d.utils.latex_format import latex_format
 
 
 def plot_dict(
-    plot_dic,
-    cmap,
-    couple_cbars=False,
-    figsize=None,
-    sharex=False,
-    sharey=False,
-    vertical=False,
-    equal=True,
-    cbar_label_spacing=None,
+    plot_dic: Dict,
+    cmap: Union[str, Colormap, List[str]],
+    couple_cbars: bool = False,
+    figsize: Tuple or None = None,
+    sharex: bool = False,
+    sharey: bool = False,
+    vertical: bool = False,
+    equal: bool = True,
+    cbar_label_spacing: float or None = None,
 ):
     n = len(plot_dic.values())
     labels = list(plot_dic.keys())
     if figsize is None:
         figsize = (n * 4, 4)
     if vertical:
-        fig, axarr = lpl.subplots(n, 1, figsize=figsize, sharex=sharex)
+        fig, axarr = plt.subplots(n, 1, figsize=figsize, sharex=sharex)
     else:
-        fig, axarr = lpl.subplots(
-            1, n, figsize=figsize, ratio=1, constrained_layout=True
+        fig, axarr = plt.subplots(
+            1, n, figsize=figsize, sharey=sharey, ratio=1, constrained_layout=True
         )
     vmin = 0
     vmax = 0
@@ -44,13 +44,12 @@ def plot_dict(
             ax.axhline(0, color="k", alpha=0.7, linewidth=1)
             ax.plot(data)
         elif len(data.shape) == 2:
-            imgs.append(ax.imshow(data, cmap=cmap))  # , interpolation='nearest'))
-            cbars.append(plt.colorbar(imgs[-1], pad=0, fraction=0.05))  # , cax=cax
+            imgs.append(ax.imshow(data, cmap=cmap))
+            cbars.append(plt.colorbar(imgs[-1], pad=0, fraction=0.05))
             cax = cbars[-1].ax
             if cbar_label_spacing is not None:
                 cax.yaxis.set_tick_params(pad=cbar_label_spacing)
             cax.xaxis.set_tick_params(pad=0)
-            # cbars.append(plt.colorbar(imgs[-1], cax=cax))
         else:
             raise BaseException(
                 f"Shape not recognized.  {label} has shape {data.shape}"
@@ -68,7 +67,7 @@ def plot_dict(
     return fig
 
 
-def is_zero_included(vals, frac: float = 0.025) -> None:
+def is_zero_included(vals: np.ndarray, frac: float = 0.025) -> None:
     min_vals = np.min(vals)
     max_vals = np.max(vals)
     range_vals = max_vals - min_vals
@@ -79,9 +78,9 @@ def is_zero_included(vals, frac: float = 0.025) -> None:
 
 
 def add_axes(
-    x_vals,
-    y_vals,
-    ax,
+    x_vals: np.ndarray,
+    y_vals: np.ndarray,
+    ax: plt.Axes,
     linewidth: float = 1,
     linestyle: str = "solid",
     alpha: float = 1,
@@ -97,7 +96,7 @@ def add_axes(
         )
 
 
-def plot_timeline(values, t0: float, dt: float, ax, **kwargs):
+def plot_timeline(values: np.ndarray, t0: float, dt: float, ax: plt.Axes, **kwargs):
     """plot values over time with proper axis adjustments
 
     :param values: y-values
@@ -137,12 +136,11 @@ def plot_timeline_with_stds(
     ax: plt.Axes,
     t0: float,
     dt: float,
-    y_std=None,
+    y_std: np.ndarray or None = None,
     name: str = "",
     add_label: bool = False,
     linewidth: float = 1,
     alpha: float = 0.2,
-    **kwargs,
 ) -> Tuple[Tuple, str]:
     # Values
     length = len(y)
@@ -161,9 +159,7 @@ def plot_timeline_with_stds(
         if add_label:
             label += " $\mu \pm \sigma_\mu$"
     # Timeline
-    e = ax.plot(
-        x, y, linestyle="-", linewidth=linewidth
-    )  # , label=f"{name}: mean of means")
+    e = ax.plot(x, y, linestyle="-", linewidth=linewidth)
     elements.append(e[0])
     # Limits
     ax.set_xlim(t0, t0 + time)
@@ -172,7 +168,6 @@ def plot_timeline_with_stds(
     ):
         ylims = ax.get_ylim()
         ylims = (0, ylims[1])
-        print(ylims)
         ax.set_ylim(ylims)
     return tuple(elements), label
 
@@ -180,26 +175,24 @@ def plot_timeline_with_stds(
 def main(
     file_path: str,
     out_path: str or None = None,
-    properties: List = ("gamma_n", "gamma_c"),
-    # properties: List = ("enstrophy", "energy"),
+    # properties: List = ("gamma_n", "gamma_c"),
+    properties: List = ("enstrophy", "energy", "kinetic_energy", "thermal_energy"),
     t0: int = 0,
     t0_std: float = 300,
 ):
     with h5py.File(file_path, "r") as hf:
-        print(hf)
         parameters = dict(hf.attrs)
         fig, ax = plt.subplots(1, 1, figsize=(7, 3))
+        t0_idx = int(t0 // parameters["dt"])
         t0_std_idx = int(t0_std // parameters["dt"])
         age = hf[list(hf.keys())[0]].shape[0] * parameters["dt"]
-        print(age, t0_std_idx)
         elements = []
         labels = []
         for property in properties:
             prop_std = np.std(hf[property][t0_std_idx:])
             prop_mean = np.mean(hf[property][t0_std_idx:])
-            # plot_timeline(hf[property][:], t0=t0, dt=parameters["dt"], ax=ax)
             element, label = plot_timeline_with_stds(
-                hf[property][:],
+                hf[property][t0_idx:],
                 t0=t0,
                 dt=parameters["dt"],
                 ax=ax,
