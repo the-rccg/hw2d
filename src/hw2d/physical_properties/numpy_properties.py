@@ -35,13 +35,13 @@ def get_gamma_n_ky(
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Calculate the spectral components of Gamma_n"""
     ky_max = n.shape[-2] // 2
-    n_dft = np.fft.fft2(n, norm="ortho")  # n(ky, kx)
-    p_dft = np.fft.fft2(p, norm="ortho")  # p(ky, kx)
+    n_dft = np.fft.fft2(n, norm="ortho", axes=(-2, -1))  # n(ky, kx)
+    p_dft = np.fft.fft2(p, norm="ortho", axes=(-2, -1))  # p(ky, kx)
     k_kx, k_ky = np.meshgrid(
-        *[np.fft.fftfreq(int(i), d=dx) * 2 * np.pi for i in n.shape]
+        *[np.fft.fftfreq(int(i), d=dx) * 2 * np.pi for i in n.shape[-2:]]
     )  # k(ky, kx)
     gamma_n_k = n_dft * 1j * k_ky * np.conjugate(p_dft)  # gamma_n(ky, kx)
-    integrated_gamma_n_k = np.mean(np.real(gamma_n_k), axis=-1)[:ky_max]  # gamma_n(ky)
+    integrated_gamma_n_k = np.mean(np.real(gamma_n_k), axis=-1)[..., :ky_max]  # gamma_n(ky)
     ky = k_ky[:ky_max, 0]
     return ky, integrated_gamma_n_k
 
@@ -150,7 +150,7 @@ def get_energy_V_ky(p: np.ndarray, dx: float) -> np.ndarray:
     $$ E^V(k) = \frac{1}{2} |k \phi(k) |^2 $$
     """
     k_kx, k_ky = np.meshgrid(
-        *[np.fft.fftfreq(int(i), d=dx) * 2 * np.pi for i in p.shape]
+        *[np.fft.fftfreq(int(i), d=dx) * 2 * np.pi for i in p.shape[-2:]]
     )  # k(ky, kx)
     p_dft = np.fft.fft2(p, norm="ortho")
     k = k_ky + k_kx
