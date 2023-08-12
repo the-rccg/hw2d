@@ -59,35 +59,38 @@ def run(
         "energy",
         "kinetic_energy",
         "thermal_energy",
-    ),  # ("gamma_n", "gamma_c")
+    ),
 ):
     """
     Run the simulation with the given parameters.
 
-    Parameters:
-    - step_size (float): Incremental step for simulation progression. Default is 0.025.
-    - end_time (float): Duration till the simulation should run. Default is 5.
-    - grid_pts (int): Grid points. Suggested: 128 for coarse, 1024 for fine. Default is 512.
-    - k0 (float): Determines k-focus. Suggested: 0.15 for high-k, 0.0375 for low-k. Default is 0.15.
-    - N (int): Dissipation exponent's half value. Default is 3.
-    - nu (float): Viscosity. Suggested: 5e-10 for coarse-large, 1e-4 for fine-small. Default is 1e-08.
-    - c1 (float): Transition scale between hydrodynamic and adiabatic. Suggested values: 0.1, 1, 5. Default is 1.0.
-    - kappa_coeff, arakawa_coeff (float): Coefficients for simulation. Default is 1.0 for both.
-    - seed (int): Seed for random number generation. Default is None.
-    - init_type (str): Initialization method. Choices: 'fourier', 'sine', 'random', 'normal'. Default is 'normal'.
-    - init_scale (float): Scaling factor for initialization. Default is 0.01.
-    - snaps (int): Snapshot intervals for saving. Default is 1.
-    - buffer_size (int): Size of buffer for storage. Default is 100.
-    - output_path (str): Where to save the simulation data. Default is current directory with filename 'test.h5'.
-    - continue_file (bool): If True, continue with existing file. Default is True.
-    - movie (bool): If True, generate a movie out of simulation. Default is False.
-    - min_fps, dpi, speed (int): Parameters for movie generation. Default values are 5, 75, 5 respectively.
-    - debug (bool): Enable or disable debug mode. Default is False.
-    - properties (iterable): List of properties to calculate for the saved file.
-    - plot_properties (iterable): List of properties to plot a timetrace for.
+    Args:
+        step_size (float, optional): Incremental step for simulation progression. Defaults to 0.025.
+        end_time (float, optional): Duration till the simulation should run. Defaults to 1_000.
+        grid_pts (int, optional): Grid points. Suggested: 128 for coarse, 1024 for fine. Defaults to 512.
+        k0 (float, optional): Determines k-focus. Suggested: 0.15 for high-k, 0.0375 for low-k. Defaults to 0.15.
+        N (int, optional): Dissipation exponent's half value. Defaults to 3.
+        nu (float, optional): Viscosity. Suggested: 5e-10 for coarse-large, 1e-4 for fine-small. Defaults to 5.0e-08.
+        c1 (float, optional): Transition scale between hydrodynamic and adiabatic. Suggested values: 0.1, 1, 5. Defaults to 1.0.
+        kappa_coeff (float, optional): Coefficient of d/dy phi. Defaults to 1.0.
+        arakawa_coeff (float, optional): Coefficient of Poisson bracket [A,B] implemented with Arakawa Scheme. Defaults to 1.0.
+        seed (int or None, optional): Seed for random number generation. Defaults to None.
+        init_type (str, optional): Initialization method. Choices: 'fourier', 'sine', 'random', 'normal'. Defaults to 'normal'.
+        init_scale (float, optional): Scaling factor for initialization. Defaults to 0.01.
+        snaps (int, optional): Snapshot intervals for saving. Defaults to 1.
+        buffer_size (int, optional): Size of buffer for storage. Defaults to 100.
+        output_path (str, optional): Where to save the simulation data. Defaults to ''.
+        continue_file (bool, optional): If True, continue with existing file. Defaults to False.
+        movie (bool, optional): If True, generate a movie out of simulation. Defaults to True.
+        min_fps (int, optional): Parameter for movie generation. Defaults to 10.
+        dpi (int, optional): Parameter for movie generation. Defaults to 75.
+        speed (int, optional): Parameter for movie generation. Defaults to 5.
+        debug (bool, optional): Enable or disable debug mode. Defaults to False.
+        properties (Iterable[str], optional): List of properties to calculate for the saved file.
+        plot_properties (Iterable[str], optional): List of properties to plot a timetrace for.
 
     Returns:
-    None. The function saves simulation data or generates a movie as specified.
+        None: The function saves simulation data or generates a movie as specified.
     """
 
     # Unpacking
