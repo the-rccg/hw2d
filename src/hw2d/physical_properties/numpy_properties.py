@@ -1,8 +1,25 @@
+"""
+Numerical Properties using NumPy (`numpy_properties`)
+=====================================================
+
+This module provides a collection of functions to compute various properties and metrics related to a 2D Hasegawa-Wakatani system. 
+It leverages the NumPy library for efficient computations on grid-based data. 
+The provided functionalities help in understanding the physical and spectral properties of the system.
+
+Specifically, the module includes:
+
+- **Sources and Sinks** such as \( \Gamma_n \) and \( \Gamma_c \).
+- **Energies** including total, kinetic, and potential energy.
+- **Enstrophy** to quantify the system's vorticity content.
+- **Dissipation Metrics** to understand the system's energy dissipation rate over time.
+- **Spectral Properties** of various metrics for further analysis and verification.
+
+Refer to each function's docstring for detailed information on their use and mathematical formulation.
+"""
 # Define Frame Properties
 # Assume (..., y, x) as shape
 import numpy as np
-from typing import Dict, Tuple
-from hw2d.utils.namespaces import Namespace
+from typing import Tuple
 from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
 
 
@@ -11,9 +28,20 @@ from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
 
 def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -> float:
     """
-    Average Particle Flux
+    Compute the average particle flux (\( \Gamma_n \)) using the formula:
+    \[
+        \Gamma_n = - \int{d^2 x \tilde{n} \frac{\partial \tilde{\phi}}{\partial y}}
+    \]
 
-    $Gamma_n = - \int{d^2 x \tilde{n} \frac{\partial \tilde{\phi}}{\partial y}}$
+    Args:
+        n (np.ndarray): Density (or similar field).
+        p (np.ndarray): Potential (or similar field).
+        dx (float): Grid spacing.
+        dy_p (np.ndarray, optional): Gradient of potential in the y-direction.
+            Computed from `p` if not provided.
+
+    Returns:
+        float: Computed average particle flux value.
     """
     if dy_p is None:
         dy_p = periodic_gradient(p, dx=dx, axis=-2)
@@ -22,7 +50,22 @@ def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -> float:
 
 
 def get_gamma_c(n: np.ndarray, p: np.ndarray, c1: float, dx: float) -> float:
-    """Gamma_c = c_1 \int{d^2 x (\tilde{n} - \tilde{\phi})^2"""
+    """
+    Compute the sink (\( \Gamma_c \)) using the formula:
+    \[
+        \Gamma_c = c_1 \int{d^2 x (\tilde{n} - \tilde{\phi})^2}
+    \]
+
+    Args:
+        n (np.ndarray): Density (or similar field).
+        p (np.ndarray): Potential (or similar field).
+        c1 (float): Proportionality constant.
+        dx (float): Grid spacing.
+
+    Returns:
+        float: Computed particle flux value.
+    """
+
     gamma_c = c1 * np.mean((n - p) ** 2, axis=(-1, -2))
     return gamma_c
 
@@ -41,7 +84,9 @@ def get_gamma_n_ky(
         *[np.fft.fftfreq(int(i), d=dx) * 2 * np.pi for i in n.shape[-2:]]
     )  # k(ky, kx)
     gamma_n_k = n_dft * 1j * k_ky * np.conjugate(p_dft)  # gamma_n(ky, kx)
-    integrated_gamma_n_k = np.mean(np.real(gamma_n_k), axis=-1)[..., :ky_max]  # gamma_n(ky)
+    integrated_gamma_n_k = np.mean(np.real(gamma_n_k), axis=-1)[
+        ..., :ky_max
+    ]  # gamma_n(ky)
     ky = k_ky[:ky_max, 0]
     return ky, integrated_gamma_n_k
 
