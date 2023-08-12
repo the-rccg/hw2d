@@ -208,3 +208,16 @@ def get_energy_V_spectrally(p: np.ndarray, dx: float) -> np.ndarray:
     E_V_ky = get_energy_V_ky(p, dx=dx)
     E_V = np.mean(E_V_ky, axis=-1)
     return E_V
+
+
+# Phase Angle Spectra
+
+
+def get_delta_ky(n: np.ndarray, p: np.ndarray, real=True) -> np.ndarray:
+    n_dft = np.fft.fft2(n, norm="ortho")
+    p_dft = np.fft.fft2(p, norm="ortho")
+    delta_k = np.imag(np.log(np.conjugate(n_dft) * p_dft))
+    delta_k = np.mean(delta_k, axis=-1)  # mean in x
+    # Get Real component
+    delta_k = delta_k[..., : n.shape[1] // 2]
+    return delta_k
