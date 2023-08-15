@@ -152,9 +152,8 @@ def run(
         if os.path.isfile(output_path):
             if continue_file:
                 plasma, physics_params = continue_h5_file(output_path, field_list)
-                print(
-                    f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}"
-                )
+                print(f"Successfully loaded: {output_path} (age={plasma.age})")
+                print(f"{physics_params}")
             else:
                 print(f"File already exists.")
                 return

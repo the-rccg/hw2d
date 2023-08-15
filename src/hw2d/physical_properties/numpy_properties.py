@@ -8,7 +8,7 @@ The provided functionalities help in understanding the physical and spectral pro
 
 Specifically, the module includes:
 
-- **Sources and Sinks** such as \( \Gamma_n \) and \( \Gamma_c \).
+- **Sources and Sinks** such as \\( \\Gamma_n \\) and \\( \\Gamma_c \\).
 - **Energies** including total, kinetic, and potential energy.
 - **Enstrophy** to quantify the system's vorticity content.
 - **Dissipation Metrics** to understand the system's energy dissipation rate over time.
@@ -28,10 +28,10 @@ from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
 
 def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -> float:
     """
-    Compute the average particle flux (\( \Gamma_n \)) using the formula:
-    \[
-        \Gamma_n = - \int{d^2 x \tilde{n} \frac{\partial \tilde{\phi}}{\partial y}}
-    \]
+    Compute the average particle flux (\\( \\Gamma_n \\)) using the formula:
+    \\[
+        \\Gamma_n = - \\int{d^2 x \\tilde{n} \\frac{\\partial \\tilde{\\phi}}{\\partial y}}
+    \\]
 
     Args:
         n (np.ndarray): Density (or similar field).
@@ -51,10 +51,10 @@ def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -> float:
 
 def get_gamma_c(n: np.ndarray, p: np.ndarray, c1: float, dx: float) -> float:
     """
-    Compute the sink (\( \Gamma_c \)) using the formula:
-    \[
-        \Gamma_c = c_1 \int{d^2 x (\tilde{n} - \tilde{\phi})^2}
-    \]
+    Compute the sink (\\( \\Gamma_c \\)) using the formula:
+    \\[
+        \\Gamma_c = c_1 \\int{d^2 x (\\tilde{n} - \\tilde{\\phi})^2}
+    \\]
 
     Args:
         n (np.ndarray): Density (or similar field).
@@ -102,7 +102,7 @@ def get_gamma_n_spectrally(n: np.ndarray, p: np.ndarray, dx: float) -> float:
 
 def get_energy(n: np.ndarray, phi: np.ndarray, dx: float) -> np.ndarray:
     """Energy of the HW2D system, sum of thermal and kinetic energy
-    $$ E = \frac{1}{2} \int{d^2 x (n^2 + |\nabla \phi|^2)} $$
+    $$ E = \\frac{1}{2} \\int{d^2 x (n^2 + |\\nabla \\phi|^2)} $$
     """
     grad_phi = periodic_gradient(phi, dx=dx, axis=-1) + periodic_gradient(
         phi, dx=dx, axis=-2
@@ -120,8 +120,8 @@ def get_energy(n: np.ndarray, phi: np.ndarray, dx: float) -> np.ndarray:
 def get_enstrophy(n: np.ndarray, omega: np.ndarray, dx: float) -> np.ndarray:
     """Enstrophy of the HW2D system
     $$
-        U = \frac{1}{2} \int{d^2 x (n^2 - \nabla^2 \phi)^2}
-          = \frac{1}{2} \int{d^2 x (n-\Omega)^2}
+        U = \\frac{1}{2} \\int{d^2 x (n^2 - \\nabla^2 \\phi)^2}
+          = \\frac{1}{2} \\int{d^2 x (n-\\Omega)^2}
     $$
     """
     # omega = omega - np.mean(omega, axis=(-1, -2), keepdims=True)
@@ -132,8 +132,8 @@ def get_enstrophy(n: np.ndarray, omega: np.ndarray, dx: float) -> np.ndarray:
 def get_enstrophy_phi(n: np.ndarray, phi: np.ndarray, dx: float) -> np.ndarray:
     """Enstrophy of the HW2D system from phi
     $$
-        U = \frac{1}{2} \int{d^2 x (n^2 - \nabla^2 \phi)^2}
-          = \frac{1}{2} \int{d^2 x (n-\Omega)^2}
+        U = \\frac{1}{2} \\int{d^2 x (n^2 - \\nabla^2 \\phi)^2}
+          = \\frac{1}{2} \\int{d^2 x (n-\\Omega)^2}
     $$
     """
     omega = periodic_laplace_N(phi, dx, N=1)
@@ -175,7 +175,7 @@ def get_dU_dt(gamma_n: np.ndarray, DU: np.ndarray) -> float:
 
 def get_energy_N_ky(n: np.ndarray) -> np.ndarray:
     """thermal energy
-    $$ E^N(k) = \frac{1}{2} |n(k)|^2 $$
+    $$ E^N(k) = \\frac{1}{2} |n(k)|^2 $$
     """
     n_dft = np.fft.fft2(n, norm="ortho")
     # n_dft = np.mean(n_dft, axis=-1)
@@ -192,7 +192,7 @@ def get_energy_N_spectrally(n: np.ndarray) -> np.ndarray:
 
 def get_energy_V_ky(p: np.ndarray, dx: float) -> np.ndarray:
     """kinetic energy
-    $$ E^V(k) = \frac{1}{2} |k \phi(k) |^2 $$
+    $$ E^V(k) = \\frac{1}{2} |k \\phi(k) |^2 $$
     """
     k_kx, k_ky = np.meshgrid(
         *[np.fft.fftfreq(int(i), d=dx) * 2 * np.pi for i in p.shape[-2:]]
