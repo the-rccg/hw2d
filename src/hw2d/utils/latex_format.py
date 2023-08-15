@@ -42,13 +42,13 @@ names = {
 }
 
 
-def metric_format(string):
+def metric_format(string: str) -> str:
     if any([s in string for s in ["mean", "median", "std"]]):
         return string[: string.find("_")] + " " + names[string[string.find("_") + 1 :]]
-    return
+    return ""
 
 
-def latex_format(string):
+def latex_format(string: str) -> str:
     try:
         return names[string]
     except Exception as e:
