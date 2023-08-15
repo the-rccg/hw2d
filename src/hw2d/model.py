@@ -63,6 +63,7 @@ class HW:
         arakawa_coeff: float = 1,
         kappa_coeff: float = 1,
         debug: bool = False,
+        TEST_CONSERVATION: bool = True,
     ):
         """
         Initialize the Hasegawa-Wakatani (HW) simulation.
@@ -76,6 +77,7 @@ class HW:
             arakawa_coeff (float, optional): Coefficient for the Arakawa scheme. Default is 1.
             kappa_coeff (float, optional): Coefficient for d/dy phi. Default is 1.
             debug (bool, optional): Flag to enable debugging mode. Default is False.
+            TEST_CONSERVATION (bool, optional): Flag to test conservation properties. Default is True.
         """
         # Numerical Schemes
         self.poisson_solver = fourier_poisson_double
@@ -91,6 +93,8 @@ class HW:
         self.kappa_coeff = kappa_coeff
         self.dx = dx
         self.L = 2 * np.pi / k0
+        # Physical Properties
+        self.TEST_CONSERVATION = TEST_CONSERVATION
         # Debug Values
         self.debug = debug
         self.counter = 0
@@ -252,6 +256,18 @@ class HW:
             age=plasma.age + dt,
             dx=dx,
         )
+
+        if self.TEST_CONSERVATION:
+            gamma_n, gamma_c = self.get_gammas(plasma.density, phi)
+            Dp = self.nu * self.diffuse(arr=phi, dx=dx, N=self.N)
+            DE = get_DE(n=plasma.density, p=phi, Dn=Dn, Dp=Dp)
+            DU = get_DU(n=plasma.density, o=plasma.omega, Dn=Dn, Dp=Dp)
+            dE_dt = get_dE_dt(gamma_n=gamma_n, gamma_c=gamma_c, DE=DE)
+            dU_dt = get_dU_dt(gamma_n=gamma_n, DU=DU)
+            return_dict["dE"] = dE_dt
+            return_dict["dU"] = dU_dt
+
+        return return_dict
 
     def get_gammas(self, n: np.ndarray, p: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         # Generate Energy Gradients
