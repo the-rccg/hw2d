@@ -9,8 +9,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
+    - name: Checkout main branch
       uses: actions/checkout@v2
+      with:
+        ref: main
+
+    - name: Checkout gh-pages branch to get doc_templates
+      uses: actions/checkout@v2
+      with:
+        ref: gh-pages
+        path: gh-pages
+
+    - name: Copy doc_templates to workspace
+      run: |
+        cp -r gh-pages/doc_templates ./
 
     - name: Set up Python
       uses: actions/setup-python@v2
