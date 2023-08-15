@@ -12,6 +12,10 @@ Install a pure NumPy version via
 and to include accelerators like numba, use the following:
 ```pip install hw2d[accelerators]```
 
+### Usage
+
+running `python -m hw2d` will let you run a hw2d simulation. It exposes the CLI Interface of the code located in run.py with all parameters available there.
+
 ### Reference Methods
 
 The implementation presented here is by no means meant to be the optimal, but an easy to understand starting point to build bigger things upon and serve as a reference for other work.
@@ -70,6 +74,7 @@ The turbulent phase is visually saturated at around t=125, but physical paramete
 ## Physical Properties
 
 ### Numerical values for each frame
+
 The reason why the Hasegawa-Wakatani Model has been the de-facto testing bed for new methods are its statistically stationary properties of the complex turbulent system.
 The moduel includes all code needed to generate these values.
 It goes further, however, and provides reference values with statistical bounds for the first time for a vast range of values.
@@ -77,10 +82,10 @@ This allows simple comparison, as well es evalutaion of new methods to one refer
 
 $$
 \begin{align}
-    \Gamma^n       &= -     \iint{ \mathrm{d}^2x \space \left( n \space \partial_y \phi \right) } \\
-    \Gamma^c       &= c_1   \iint{ \mathrm{d}^2x \space \left(n - \phi \right)^2} \\
-    E              &= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)} \\
-    U              &= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\Omega\right)^2}
+    \Gamma^n &= -     \iint{ \mathrm{d}^2x \space \left( n \space \partial_y \phi \right) } \\
+    \Gamma^c &= c_1   \iint{ \mathrm{d}^2x \space \left(n - \phi \right)^2} \\
+    E        &= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)} \\
+    U        &= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\Omega\right)^2}
 \end{align}
 $$
 
@@ -148,3 +153,27 @@ The energy accumulates at grid scale. Hyper-diffusion component is not large eno
 
 The HW2D model can create stable simulations that are underresolved, through very large hyper-diffusion terms. A higher resolution is needed for this box size.
 - increase: `grid_pts`
+
+
+# References
+
+The region between the adiabatic and hydrodynamic limit is defined at $c_1=1$. For this dynamic and a box size of k0 $=0.15$, a minimum grid size of 512x512 is needed at a dt $=0.025$. To generate a stable simulation with hyperdiffusion (N $=3$) requires a value of nu=$5\times10^{-8}$.
+
+## Reference Step Sizes
+
+Minimum step sizes for the system can be evaluated by setting hyperdiffusion to zero `N=0` and `nu=0` and running to about `age=200` to reach into the turbulent steady-state regime.
+
+| integrator | $c_1$ | Box Size | `grid_pts` | min `dt` |
+| ---------- | ----- | -------- | ---------- | -------- |
+| rk4        | 1.0   | 0.15     | 1024x1024  | 0.025    |
+| rk4        | 1.0   | 0.15     | 512x512    | 0.025    |
+| rk4        | 1.0   | 0.15     | 256x256    | 0.05     |
+| rk4        | 1.0   | 0.15     | 128x128    | 0.05     |
+| rk4        | 1.0   | 0.15     | 64x64      | 0.05     |
+| rk4        | 1.0   | 0.15     | 32x32      | 0.05     |
+
+
+## Reference Timetraces
+
+![$\Gamma_n$ and $\Gamma_c$ over time](imgs/gamma_n%20and%20gamma_c.jpg)
+
