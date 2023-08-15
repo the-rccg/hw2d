@@ -3,7 +3,8 @@ name: Generate and Deploy Documentation
 on:
   push:
     branches:
-      - main  # or your default branch
+      - main  # on default branch
+      - gh-pages  # or github pages branch
 
 jobs:
   deploy:
@@ -17,13 +18,21 @@ jobs:
       with:
         python-version: 3.8
 
-    - name: Install dependencies
+    - name: Install setuptools and wheel
+      run: |
+        pip install setuptools wheel
+
+    - name: Install project dependencies
+      run: |
+        pip install -e .
+
+    - name: Install pdoc3
       run: |
         pip install pdoc3
 
-    - name: Generate documentation
+    - name: Generate documentation with MathJax support
       run: |
-        pdoc --html hw2d --output-dir docs
+      pdoc --html --template-dir doc_templates . --output-dir docs --config latex_math_renderer="'mathjax'"
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
