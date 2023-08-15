@@ -1,0 +1,40 @@
+name: Generate and Deploy Documentation
+
+on:
+  push:
+    branches:
+      - main  # on default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install setuptools and wheel
+      run: |
+        pip install setuptools wheel
+
+    - name: Install project dependencies
+      run: |
+        pip install -e .[accelerators]
+
+    - name: Install pdoc3
+      run: |
+        pip install pdoc3
+
+    - name: Generate documentation with MathJax support
+      run: |
+        pdoc --html --template-dir doc_templates . --output-dir docs --config latex_math_renderer="'mathjax'"
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/hw2d
