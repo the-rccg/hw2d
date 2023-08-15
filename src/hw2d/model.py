@@ -1,17 +1,42 @@
+"""
+hw2d.model: Hasegawa-Wakatani 2D Simulation Module
+
+This module provides the core functionality to simulate the Hasegawa-Wakatani (HW) model in two dimensions. 
+It offers flexibility in terms of numerical schemes and allows for comprehensive profiling and debugging 
+of the simulation process.
+
+Functions:
+    - euler_step: Implements the Euler time-stepping method.
+    - rk4_step: Implements the Runge-Kutta 4th order time-stepping method.
+    - get_phi: Computes the electrostatic potential from vorticity.
+    - diffuse: Applies diffusion to an array.
+    - gradient_2d: Computes the 2D gradient of the system.
+    - get_gammas: Computes energy gradients.
+
+Classes:
+    - HW: Represents the primary simulation entity for the Hasegawa-Wakatani model.
+
+Notes:
+    The module supports both NumPy and Numba for computational operations and provides detailed logging and 
+    profiling capabilities.
+"""
+from typing import Tuple
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+import pandas as pd
 
 # Local Imports
 from hw2d.initializations.fourier_noise import get_fft_noise
 from hw2d.utils.namespaces import Namespace
 
-# NumPy
+# NumPy Version
 from hw2d.arakawa.numpy_arakawa import periodic_arakawa_vec
 
 periodic_arakawa = periodic_arakawa_vec
 from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
 from hw2d.poisson_solvers.numpy_fourier_poisson import fourier_poisson_double
+from hw2d.physical_properties.numpy_properties import *
 
 try:
     # Numba
@@ -39,6 +64,19 @@ class HW:
         kappa_coeff: float = 1,
         debug: bool = False,
     ):
+        """
+        Initialize the Hasegawa-Wakatani (HW) simulation.
+
+        Parameters:
+            dx (float): Grid spacing.
+            N (int): System size.
+            c1 (float): Model-specific parameter.
+            nu (float): Diffusion coefficient.
+            k0 (float): Fundamental wavenumber.
+            arakawa_coeff (float, optional): Coefficient for the Arakawa scheme. Default is 1.
+            kappa_coeff (float, optional): Coefficient for d/dy phi. Default is 1.
+            debug (bool, optional): Flag to enable debugging mode. Default is False.
+        """
         # Numerical Schemes
         self.poisson_solver = fourier_poisson_double
         self.diffuse_N = periodic_laplace_N
@@ -56,17 +94,30 @@ class HW:
         # Debug Values
         self.debug = debug
         self.counter = 0
-        self.watch_fncs = ("rk4_step", "get_phi", "diffuse", "np_gradient", "arakawa")
+        self.watch_fncs = (
+            "rk4_step",
+            "euler_step",
+            "get_phi",
+            "diffuse",
+            "gradient_2d",
+            "arakawa",
+        )
         self.timings = {k: 0 for k in self.watch_fncs}
         self.calls = {k: 0 for k in self.watch_fncs}
 
     def log(self, name: str, time: float):
+        """
+        Log the time taken by a specific function.
+
+        Parameters:
+            name (str): Name of the function.
+            time (float): Time taken by the function.
+        """
         self.timings[name] += time
         self.calls[name] += 1
 
     def print_log(self):
-        import pandas as pd
-
+        """Display the timing information for the functions profiled."""
         df = pd.DataFrame({"time": self.timings, "calls": self.calls})
         df["time/call"] = df["time"] / df["calls"]
         df["%time"] = df["time"] / df["time"]["rk4_step"] * 100
@@ -74,16 +125,13 @@ class HW:
         print(df)
 
     def euler_step(self, plasma: Namespace, dt: float, dx: float) -> Namespace:
+        t0 = time.time()
         d = dt * self.gradient_2d(plasma=plasma, phi=plasma["phi"], dt=0, dx=dx)
         y = plasma + d
-        phi = self.get_phi(omega=y.omega, dx=dx)
-        t1 = time.time()
-        return Namespace(
-            density=y.density,
-            omega=y.omega,
-            phi=phi,
-            age=plasma.age + dt,
-        )
+        y["phi"] = self.get_phi(omega=y.omega, dx=dx)
+        y["age"] = plasma.age + dt
+        self.log("euler_step", time.time() - t0)
+        return y
 
     def rk4_step(self, plasma: Namespace, dt: float, dx: float) -> Namespace:
         # RK4
@@ -102,8 +150,7 @@ class HW:
         # TODO: currently adds two timesteps
         y1 = yn + (k1 + 2 * k2 + 2 * k3 + k4) * (1 / 6)
         phi = self.get_phi(omega=y1.omega, dx=dx)
-        t1 = time.time()
-        self.log("rk4_step", t1 - t0)
+        self.log("rk4_step", time.time() - t0)
         if self.debug:
             print(
                 " | ".join(
@@ -114,16 +161,14 @@ class HW:
                         f"{np.max(np.abs(k2.density.data)):>7.02g}",
                         f"{np.max(np.abs(k3.density.data)):>7.02g}",
                         f"{np.max(np.abs(k4.density.data)):>7.02g}",
-                        f"{t1-t0:>6.02f}s",
+                        f"{time.time()-t0:>6.02f}s",
                     ]
                 )
             )
-        return Namespace(
-            density=y1.density,
-            omega=y1.omega,
-            phi=phi,
-            age=plasma.age + dt,
-        )
+        # Set properties not valid through y1
+        y1["phi"] = phi
+        y1["age"] = plasma.age + dt
+        return y1
 
     def get_phi(self, omega: np.ndarray, dx: float) -> np.ndarray:
         t0 = time.time()
@@ -154,7 +199,7 @@ class HW:
         Dn = 0
         t0 = time.time()
         dy_p = self.gradient_func(phi, dx=dx, axis=0)
-        self.log("np_gradient", time.time() - t0)
+        self.log("gradient_2d", time.time() - t0)
 
         # Calculate Gradients
         diff = phi - plasma.density
@@ -169,8 +214,8 @@ class HW:
             self.log("arakawa", time.time() - t0)
             o += arak_comp_o
         if self.nu:
-            DO = self.nu * self.diffuse(arr=plasma.omega, dx=dx, N=self.N)
-            o += DO
+            Do = self.nu * self.diffuse(arr=plasma.omega, dx=dx, N=self.N)
+            o += Do
 
         # Step 2.2: New Density.
         n = self.c1 * diff
@@ -200,10 +245,16 @@ class HW:
                 )
             )
 
-        return Namespace(
+        return_dict = Namespace(
             density=n,
             omega=o,
             phi=phi,  # NOTE: NOT A GRADIENT
             age=plasma.age + dt,
             dx=dx,
         )
+
+    def get_gammas(self, n: np.ndarray, p: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        # Generate Energy Gradients
+        gamma_n = get_gamma_n(n=n, p=p, dx=self.dx)
+        gamma_c = get_gamma_c(n=n, p=p, c1=self.c1, dx=self.dx)
+        return gamma_n, gamma_c
