@@ -43,10 +43,17 @@ jobs:
 
     - name: Generate documentation with MathJax support
       run: |
-        pdoc --html --template-dir doc_templates . --output-dir docs --config latex_math_renderer="'mathjax'"
+          pdoc --html --template-dir doc_templates . --output-dir temp_docs --config latex_math_renderer="'mathjax'"
+
+    - name: Prepare docs directory for gh-pages
+      run: |
+        mkdir -p docs/docs
+        cp -r temp_docs/hw2d* docs/docs/
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/hw2d
+        github_token: ${{ secrets.GH_PAT }}
+        publish_dir: ./docs
+        publish_branch: gh-pages 
+        keep_files: true
