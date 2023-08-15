@@ -49,6 +49,14 @@ class Namespace(dict):
         return self["density"]
 
     @property
+    def dE(self):
+        return self["dE"]
+
+    @property
+    def dU(self):
+        return self["dU"]
+
+    @property
     def age(self):
         return self["age"]
 
