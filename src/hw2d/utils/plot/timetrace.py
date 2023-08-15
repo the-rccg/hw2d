@@ -99,7 +99,7 @@ def plot_timeline_with_stds(
         e = ax.fill_between(x, y - y_std, y + y_std, alpha=alpha)
         elements.append(e)
         if add_label:
-            label += " $\mu \pm \sigma_\mu$"
+            label += " $\\mu \\pm \\sigma_\\mu$"
     # Timeline
     e = ax.plot(x, y, linestyle="-", linewidth=linewidth)
     elements.append(e[0])
@@ -141,7 +141,7 @@ def plot_timetraces(
                 name=property,
                 add_label=False,
             )
-            label += f" = {prop_mean:.2f}$\pm${prop_std:.2f}"
+            label += f" = {prop_mean:.2f}$\\pm${prop_std:.2f}"
             labels.append(label)
             elements.append(element[0])
         ax.legend(elements, labels)
