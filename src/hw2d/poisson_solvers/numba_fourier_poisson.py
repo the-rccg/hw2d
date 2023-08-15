@@ -31,15 +31,14 @@ def core_computation(
     return result * dx**2
 
 
-# Your existing fftfreq_sq function
 @numba.jit(nopython=True)
 def fftfreq_sq(resolution: np.ndarray) -> np.ndarray:
     dim_x, dim_y = resolution
     freq_x = custom_fftfreq(dim_x)
     freq_y = custom_fftfreq(dim_y)
 
+    # Equivalent to:  k_sq = freq_x**2 + freq_y**2
     k_sq = np.empty((dim_x, dim_y), dtype=precision)
-
     for i in numba.prange(dim_x):
         for j in numba.prange(dim_y):
             k_sq[i, j] = freq_x[i] ** 2 + freq_y[j] ** 2

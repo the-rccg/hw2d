@@ -1,3 +1,18 @@
+"""
+Fourier-based Poisson Solvers with NumPy
+========================================
+
+This module provides a set of functions to solve the Poisson equation using the Fourier transform approach and the NumPy library. The Fourier method is especially beneficial for periodic domains and spectral methods, as it can retrieve the original field from its gradient or Laplace efficiently in the spectral space.
+
+Main functionalities include:
+
+- `fourier_poisson_double`: Solves the Poisson equation using double precision (complex128).
+- `fourier_poisson_single`: Solves the Poisson equation using single precision (complex64).
+- `fourier_poisson_numpy`: A more general Poisson solver that auto-detects the input type.
+
+These functions are designed for both prototyping and production-level simulations, offering a balance between accuracy and performance. They are particularly well-suited for large-scale simulations in periodic domains.
+"""
+
 import numpy as np
 
 
