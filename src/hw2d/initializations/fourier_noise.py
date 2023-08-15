@@ -1,3 +1,11 @@
+"""
+`fourier_noise.py`: A module to generate 2D noise patterns using the Fast Fourier Transform (FFT).
+
+This module provides functionality to generate 2D noise patterns based on Fourier space manipulation.
+The generated noise can be controlled by specifying the desired resolution, size, scale, frequency range, 
+and wavelength range. The resulting noise can be useful for various applications in simulations, testing,
+and visualization.
+"""
 import numpy as np
 from typing import Tuple
 
@@ -14,6 +22,9 @@ def get_fft_noise(
 ) -> np.ndarray:
     """
     Generate a 2D noise pattern using the FFT.
+
+    This function creates a 2D noise pattern based on standard normal distributions in Fourier space.
+    It allows for control over the frequency and wavelength components of the noise through the provided parameters.
 
     Args:
         resolution (Tuple[int, int]): The dimensions of the generated noise.
