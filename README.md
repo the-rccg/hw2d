@@ -185,7 +185,7 @@ Minimum step sizes for the system can be evaluated by setting hyperdiffusion to 
 
 ## Reference Values
 
-Reference values are averaged over 25 runs with the standard deviation across given. 
+Reference values are averaged over 25 runs starting from well within the turbulent steady-state `t=300` with the standard deviation across the simulations denoted by $\pm$. 
 Each run to `t=1,000` at `512x512` and `dt=0.025` requires roughly 500GB (3 million floats/frame for 3 fields over 40,000 frames per simulation), meaning the summary contains information for 10TB of data. This does not include the hypterparameter stabilization tests. 
 As a result, it is practically unfeasible to supply this data. 
 
