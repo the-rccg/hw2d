@@ -71,7 +71,7 @@ https://github.com/the-rccg/hw2d/assets/28964733/30d40e53-72a9-49b5-9bc5-87dc3f1
 
 The model produces self-organizing turbulent structures in a three distinct stages: initial self-organization, linear drift waves, and a stable turbulent phase.
 
-For the interesting intermediary phase for the adiabatic coefficient, $c_1=1$, the initial perturbation will start organizing to produce linear drift waves through the $\partial_t \phi$ component. 
+For the interesting intermediary phase for the adiabatic coefficient, `c1=1`, the initial perturbation will start organizing to produce linear drift waves through the $\partial_t \phi$ component. 
 The system transitions into this first linear phase at roughly t=15, saturates at around t=45, and breaks down to transition into the turbulent phase at about t=80.
 The turbulent phase is visually saturated at around t=125, but physical parameters overshoot and only fall into the long term stable pahse at aroung t=200. 
 
@@ -159,28 +159,33 @@ The energy accumulates at grid scale. Hyper-diffusion component is not large eno
 The HW2D model can create stable simulations that are underresolved, through very large hyper-diffusion terms. A higher resolution is needed for this box size.
 - increase: `grid_pts`
 
+If the potential goes way above, however, it can mean that the hyper-diffusion is too small.
+- increase: `nu`
 
 # References
 
-The region between the adiabatic and hydrodynamic limit is defined at $c_1=1$. For this dynamic and a box size of k0 $=0.15$, a minimum grid size of 512x512 is needed at a dt $=0.025$. To generate a stable simulation with hyperdiffusion (N $=3$) requires a value of nu=$5\times10^{-8}$.
+The region between the adiabatic and hydrodynamic limit is defined at `c_1=1`. For this dynamic and a box size of `k0=0.15`, a minimum grid size of `512x512` is needed at a `dt=0.025`. To generate a stable simulation with hyperdiffusion (`N=3`) requires a value of `nu=5e-08`.
 
 ## Reference Step Sizes
 
 Minimum step sizes for the system can be evaluated by setting hyperdiffusion to zero `N=0` and `nu=0` and running to about `age=200` to reach into the turbulent steady-state regime.
 
-| integrator | $c_1$ | Box Size | `grid_pts` | min `dt` |
-| ---------- | ----- | -------- | ---------- | -------- |
-| rk4        | 1.0   | 0.15     | 1024x1024  | 0.025    |
-| rk4        | 1.0   | 0.15     | 512x512    | 0.025    |
-| rk4        | 1.0   | 0.15     | 256x256    | 0.05     |
-| rk4        | 1.0   | 0.15     | 128x128    | 0.05     |
-| rk4        | 1.0   | 0.15     | 64x64      | 0.05     |
-| rk4        | 1.0   | 0.15     | 32x32      | 0.05     |
+| integrator | `c1` | Box Size | `grid_pts` | min `dt` |
+| ---------- | ---- | -------- | ---------- | -------- |
+| rk4        | 1.0  | 0.15     | 1024x1024  | 0.025    |
+| rk4        | 1.0  | 0.15     | 512x512    | 0.025    |
+| rk4        | 1.0  | 0.15     | 256x256    | 0.05     |
+| rk4        | 1.0  | 0.15     | 128x128    | 0.05     |
+| rk4        | 1.0  | 0.15     | 64x64      | 0.05     |
+| rk4        | 1.0  | 0.15     | 32x32      | 0.05     |
 
 
 ## Reference Timetraces
 
+Sample traces are given for `512x512`, `dt=0.05`, `c1=1`, `N=3`, and `nu=5e-08`. Note that the statistical nature does mean single simulations can deviate for quite some time from the statistical mean.
+
 ![$\Gamma_n$ and $\Gamma_c$ over time](imgs/gamma_n-and-gamma_c.jpg)
+![$U$, $E$, $E_K$, and $E_V$ over time](imgs/enstrophy-energy-kinetic_energy-thermal_energy.jpg)
 
 
 ## Reference Values
