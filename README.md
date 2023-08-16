@@ -59,7 +59,10 @@ $$
 $$
 
 
-https://github.com/the-rccg/hw2d/assets/28964733/20e6b6cb-fdab-404c-848e-bfa9fd89b61e
+
+https://github.com/the-rccg/hw2d/assets/28964733/30d40e53-72a9-49b5-9bc5-87dc3f10a076
+
+
 
 
 ## Dynamics of the different phases
