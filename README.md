@@ -16,6 +16,8 @@ and to include accelerators like numba, use the following:
 
 running `python -m hw2d` will let you run a hw2d simulation. It exposes the CLI Interface of the code located in run.py with all parameters available there.
 
+Full documentation is available at: https://the-rccg.github.io/hw2d/
+
 ### Reference Methods
 
 The implementation presented here is by no means meant to be the optimal, but an easy to understand starting point to build bigger things upon and serve as a reference for other work.
