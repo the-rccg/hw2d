@@ -8,7 +8,7 @@ The provided functionalities help in understanding the physical and spectral pro
 
 Specifically, the module includes:
 
-- **Sources and Sinks** such as \( \Gamma_n \) and \( \Gamma_c \).
+- **Sources and Sinks** such as $\Gamma_n$ and $Gamma_c$.
 - **Energies** including total, kinetic, and potential energy.
 - **Enstrophy** to quantify the system's vorticity content.
 - **Dissipation Metrics** to understand the system's energy dissipation rate over time.
@@ -28,10 +28,10 @@ from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
 
 def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -> float:
     """
-    Compute the average particle flux (\( \Gamma_n \)) using the formula:
-    \[
+    Compute the average particle flux ($\Gamma_n$) using the formula:
+    $$
         \Gamma_n = - \int{d^2 x \tilde{n} \frac{\partial \tilde{\phi}}{\partial y}}
-    \]
+    $$
 
     Args:
         n (np.ndarray): Density (or similar field).
@@ -51,10 +51,10 @@ def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -> float:
 
 def get_gamma_c(n: np.ndarray, p: np.ndarray, c1: float, dx: float) -> float:
     """
-    Compute the sink (\( \Gamma_c \)) using the formula:
-    \[
+    Compute the sink $\Gamma_c$ using the formula:
+    $$
         \Gamma_c = c_1 \int{d^2 x (\tilde{n} - \tilde{\phi})^2}
-    \]
+    $$
 
     Args:
         n (np.ndarray): Density (or similar field).
@@ -102,7 +102,7 @@ def get_gamma_n_spectrally(n: np.ndarray, p: np.ndarray, dx: float) -> float:
 
 def get_energy(n: np.ndarray, phi: np.ndarray, dx: float) -> np.ndarray:
     """Energy of the HW2D system, sum of thermal and kinetic energy
-    $$ E = \frac{1}{2} \int{d^2 x (n^2 + |\nabla \phi|^2)} $$
+    $$ E = \\frac{1}{2} \int{d^2 x \left(n^2 + | \nabla \phi|^2 \right)} $$
     """
     grad_phi = periodic_gradient(phi, dx=dx, axis=-1) + periodic_gradient(
         phi, dx=dx, axis=-2
