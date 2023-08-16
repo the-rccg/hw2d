@@ -184,8 +184,8 @@ Minimum step sizes for the system can be evaluated by setting hyperdiffusion to 
 
 Sample traces are given for `512x512`, `dt=0.05`, `c1=1`, `N=3`, and `nu=5e-08`. Note that the statistical nature does mean single simulations can deviate for quite some time from the statistical mean.
 
-![$\Gamma_n$ and $\Gamma_c$ over time](imgs/gamma_n-and-gamma_c.jpg)
-![$U$, $E$, $E_K$, and $E_V$ over time](imgs/enstrophy-energy-kinetic_energy-thermal_energy.jpg)
+![Plot1](https://github.com/the-rccg/hw2d/blob/main/imgs/gamma_n-and-gamma_c.jpg)
+![Plot2](/imgs/enstrophy-energy-kinetic_energy-thermal_energy.jpg)
 
 
 ## Reference Values
