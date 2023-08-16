@@ -182,3 +182,22 @@ Minimum step sizes for the system can be evaluated by setting hyperdiffusion to 
 
 ![$\Gamma_n$ and $\Gamma_c$ over time](imgs/gamma_n%20and%20gamma_c.jpg)
 
+
+## Reference Values
+
+Reference values are averaged over 25 runs with the standard deviation across given. 
+Each run to `t=1,000` at `512x512` and `dt=0.025` requires roughly 500GB (3 million floats/frame for 3 fields over 40,000 frames per simulation), meaning the summary contains information for 10TB of data. This does not include the hypterparameter stabilization tests. 
+As a result, it is practically unfeasible to supply this data. 
+
+| **Metric**           | **Our Data**    | **Stegmeir** | **Camargo** | **HW**     | **Zeiler** |
+| -------------------- | --------------- | ------------ | ----------- | ---------- | ---------- |
+| ****                 | 512x512         | [@grillix]   | [@camargo]  | [@grillix] | [@zeiler]  |
+| **$\Gamma_n$**       | $0.60 \pm 0.01$ | $0.64$       | $0.73$      | $0.61$     | $0.8$      |
+| **$\delta\Gamma_n$** | $0.05 \pm 0.01$ | $n/a$        | $n/a$       | $n/a$      | $n/a$      |
+| **$\Gamma_c$**       | $0.60 \pm 0.01$ | $n/a$        | $0.72$      | $n/a$      | $n/a$      |
+| **$\delta\Gamma_n$** | $0.03 \pm 0.01$ | $n/a$        | $n/a$       | $n/a$      | $n/a$      |
+| **$E$**              | $3.78 \pm 0.07$ | $3.97$       | $4.4$       | $3.82$     | $6.1$      |
+| **$\delta E$**       | $0.29 \pm 0.03$ | $0.26$       | $0.16$      | $0.26$     | $0.51$     |
+| **$U$**              | $13.2 \pm 0.91$ | $n/a$        | $12.8$      | $n/a$      | $n/a$      |
+| **$\delta U$**       | $0.68 \pm 0.08$ | $n/a$        | $1.66$      | $n/a$      | $n/a$      |
+
