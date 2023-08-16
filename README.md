@@ -180,7 +180,7 @@ Minimum step sizes for the system can be evaluated by setting hyperdiffusion to 
 
 ## Reference Timetraces
 
-![$\Gamma_n$ and $\Gamma_c$ over time](imgs/gamma_n%20and%20gamma_c.jpg)
+![$\Gamma_n$ and $\Gamma_c$ over time](imgs/gamma_n-and-gamma_c.jpg)
 
 
 ## Reference Values
