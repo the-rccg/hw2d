@@ -32,7 +32,7 @@ It leverages the NumPy library for efficient computations on grid-based data.
 The provided functionalities help in understanding the physical and spectral properties of the system.</p>
 <p>Specifically, the module includes:</p>
 <ul>
-<li><strong>Sources and Sinks</strong> such as ( \Gamma_n ) and ( \Gamma_c ).</li>
+<li><strong>Sources and Sinks</strong> such as $\Gamma_n$ and $Gamma_c$.</li>
 <li><strong>Energies</strong> including total, kinetic, and potential energy.</li>
 <li><strong>Enstrophy</strong> to quantify the system's vorticity content.</li>
 <li><strong>Dissipation Metrics</strong> to understand the system's energy dissipation rate over time.</li>
@@ -53,7 +53,7 @@ The provided functionalities help in understanding the physical and spectral pro
 
 Specifically, the module includes:
 
-- **Sources and Sinks** such as \( \Gamma_n \) and \( \Gamma_c \).
+- **Sources and Sinks** such as $\Gamma_n$ and $Gamma_c$.
 - **Energies** including total, kinetic, and potential energy.
 - **Enstrophy** to quantify the system&#39;s vorticity content.
 - **Dissipation Metrics** to understand the system&#39;s energy dissipation rate over time.
@@ -73,10 +73,10 @@ from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
 
 def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -&gt; float:
     &#34;&#34;&#34;
-    Compute the average particle flux (\( \Gamma_n \)) using the formula:
-    \[
+    Compute the average particle flux ($\Gamma_n$) using the formula:
+    $$
         \Gamma_n = - \int{d^2 x \tilde{n} \frac{\partial \tilde{\phi}}{\partial y}}
-    \]
+    $$
 
     Args:
         n (np.ndarray): Density (or similar field).
@@ -96,10 +96,10 @@ def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -&gt; float:
 
 def get_gamma_c(n: np.ndarray, p: np.ndarray, c1: float, dx: float) -&gt; float:
     &#34;&#34;&#34;
-    Compute the sink (\( \Gamma_c \)) using the formula:
-    \[
+    Compute the sink $\Gamma_c$ using the formula:
+    $$
         \Gamma_c = c_1 \int{d^2 x (\tilde{n} - \tilde{\phi})^2}
-    \]
+    $$
 
     Args:
         n (np.ndarray): Density (or similar field).
@@ -147,7 +147,7 @@ def get_gamma_n_spectrally(n: np.ndarray, p: np.ndarray, dx: float) -&gt; float:
 
 def get_energy(n: np.ndarray, phi: np.ndarray, dx: float) -&gt; np.ndarray:
     &#34;&#34;&#34;Energy of the HW2D system, sum of thermal and kinetic energy
-    $$ E = \frac{1}{2} \int{d^2 x (n^2 + |\nabla \phi|^2)} $$
+    $$ E = \\frac{1}{2} \int{d^2 x \left(n^2 + | \nabla \phi|^2 \right)} $$
     &#34;&#34;&#34;
     grad_phi = periodic_gradient(phi, dx=dx, axis=-1) + periodic_gradient(
         phi, dx=dx, axis=-2
@@ -366,16 +366,16 @@ def get_delta_ky(n: np.ndarray, p: np.ndarray, real=True) -&gt; np.ndarray:
 </code></dt>
 <dd>
 <div class="desc"><p>Energy of the HW2D system, sum of thermal and kinetic energy
-$$ E =
-rac{1}{2} \int{d^2 x (n^2 + |
-abla \phi|^2)} $$</p></div>
+$$ E = \frac{1}{2} \int{d^2 x \left(n^2 + |
+abla \phi|^2
+ight)} $$</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_energy(n: np.ndarray, phi: np.ndarray, dx: float) -&gt; np.ndarray:
     &#34;&#34;&#34;Energy of the HW2D system, sum of thermal and kinetic energy
-    $$ E = \frac{1}{2} \int{d^2 x (n^2 + |\nabla \phi|^2)} $$
+    $$ E = \\frac{1}{2} \int{d^2 x \left(n^2 + | \nabla \phi|^2 \right)} $$
     &#34;&#34;&#34;
     grad_phi = periodic_gradient(phi, dx=dx, axis=-1) + periodic_gradient(
         phi, dx=dx, axis=-2
@@ -525,12 +525,12 @@ $$</p></div>
 <span>def <span class="ident">get_gamma_c</span></span>(<span>n: numpy.ndarray, p: numpy.ndarray, c1: float, dx: float) ‑> float</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Compute the sink (( \Gamma_c )) using the formula:
-[
+<div class="desc"><p>Compute the sink $\Gamma_c$ using the formula:
+$$
 \Gamma_c = c_1 \int{d^2 x (
 ilde{n} -
 ilde{\phi})^2}
-]</p>
+$$</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>n</code></strong> :&ensp;<code>np.ndarray</code></dt>
@@ -553,10 +553,10 @@ ilde{\phi})^2}
 </summary>
 <pre><code class="python">def get_gamma_c(n: np.ndarray, p: np.ndarray, c1: float, dx: float) -&gt; float:
     &#34;&#34;&#34;
-    Compute the sink (\( \Gamma_c \)) using the formula:
-    \[
+    Compute the sink $\Gamma_c$ using the formula:
+    $$
         \Gamma_c = c_1 \int{d^2 x (\tilde{n} - \tilde{\phi})^2}
-    \]
+    $$
 
     Args:
         n (np.ndarray): Density (or similar field).
@@ -576,13 +576,13 @@ ilde{\phi})^2}
 <span>def <span class="ident">get_gamma_n</span></span>(<span>n: numpy.ndarray, p: numpy.ndarray, dx: float, dy_p=None) ‑> float</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Compute the average particle flux (( \Gamma_n )) using the formula:
-[
+<div class="desc"><p>Compute the average particle flux ($\Gamma_n$) using the formula:
+$$
 \Gamma_n = - \int{d^2 x
 ilde{n}
 rac{\partial
 ilde{\phi}}{\partial y}}
-]</p>
+$$</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>n</code></strong> :&ensp;<code>np.ndarray</code></dt>
@@ -606,10 +606,10 @@ Computed from <code>p</code> if not provided.</dd>
 </summary>
 <pre><code class="python">def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -&gt; float:
     &#34;&#34;&#34;
-    Compute the average particle flux (\( \Gamma_n \)) using the formula:
-    \[
+    Compute the average particle flux ($\Gamma_n$) using the formula:
+    $$
         \Gamma_n = - \int{d^2 x \tilde{n} \frac{\partial \tilde{\phi}}{\partial y}}
-    \]
+    $$
 
     Args:
         n (np.ndarray): Density (or similar field).
