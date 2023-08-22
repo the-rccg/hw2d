@@ -159,7 +159,7 @@ The energy accumulates at grid scale. Hyper-diffusion component is not large eno
 The HW2D model can create stable simulations that are underresolved, through very large hyper-diffusion terms. A higher resolution is needed for this box size.
 - increase: `grid_pts`
 
-If the potential goes way above, however, it can mean that the hyper-diffusion is too small.
+If the esntrophy goes way above reference values, however, it can mean that the hyper-diffusion is too small.
 - increase: `nu`
 
 # References
@@ -191,7 +191,7 @@ Sample traces are given for `512x512`, `dt=0.05`, `c1=1`, `N=3`, and `nu=5e-08`.
 ## Reference Values
 
 Reference values are averaged over 25 runs starting from well within the turbulent steady-state `t=300` with the standard deviation across the simulations denoted by $\pm$. 
-Each run to `t=1,000` at `512x512` and `dt=0.025` requires roughly 500GB (3 million floats/frame for 3 fields over 40,000 frames per simulation), meaning the summary contains information for 10TB of data. This does not include the hypterparameter stabilization tests. 
+Each run to `t=1,000` at `512x512` and `dt=0.025` requires roughly 125GB (3 million floats/frame for 3 fields over 40,000 frames per simulation), meaning the summary contains information for 10TB of data. This does not include the hypterparameter stabilization tests. 
 As a result, it is practically unfeasible to supply this data. 
 
 | **Metric**           | **Our Data**    | **Stegmeir** | **Camargo** | **HW**     | **Zeiler** |
