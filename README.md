@@ -1,3 +1,5 @@
+<img align="left" width="90" height="90" src="/imgs/logo_large_text.jpg">
+
 # The Hasegawa-Wakatani model of plasma turbulence
 
 This repository contains a reference implementations for the Hasegawa-Wakatani model in two dimensions using Python.
@@ -184,7 +186,7 @@ Minimum step sizes for the system can be evaluated by setting hyperdiffusion to 
 
 Sample traces are given for `512x512`, `dt=0.05`, `c1=1`, `N=3`, and `nu=5e-08`. Note that the statistical nature does mean single simulations can deviate for quite some time from the statistical mean.
 
-![Plot1](https://github.com/the-rccg/hw2d/blob/main/imgs/gamma_n-and-gamma_c.jpg)
+![Plot1](/imgs/gamma_n-and-gamma_c.jpg)
 ![Plot2](/imgs/enstrophy-energy-kinetic_energy-thermal_energy.jpg)
 
 
