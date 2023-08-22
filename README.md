@@ -1,4 +1,4 @@
-<img align="left" width="90" height="90" src="/imgs/logo_large_text.jpg">
+<img align="right" width="170" height="170" src="/imgs/logo_large_text.jpg">
 
 # The Hasegawa-Wakatani model of plasma turbulence
 
