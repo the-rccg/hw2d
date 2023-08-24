@@ -21,7 +21,7 @@ and to include accelerators like numba, use the following:
 
 ### Usage
 
-Running `python -m hw2d` will let you run a hw2d simulation. It exposes the CLI Interface of the code located in src/hw2d/run.py with all parameters available there. Simply run `python -m hw2d --help` to get a full rundown of all available parameters along with explanations.
+Running `python -m hw2d` will let you run a hw2d simulation. It exposes the CLI Interface of the code located in src/hw2d/run.py with all parameters available there. Simply run `python -m hw2d --help` to get a full rundown of all available parameters along with their explanations.
 
 Full documentation is available at: https://the-rccg.github.io/hw2d/
 
@@ -80,7 +80,7 @@ The model produces self-organizing turbulent structures in a three distinct stag
 
 For the interesting intermediary phase for the adiabatic coefficient, `c1=1`, the initial perturbation will start organizing to produce linear drift waves through the $\partial_t \phi$ component. 
 The system transitions into this first linear phase at roughly t=15, saturates at around t=45, and breaks down to transition into the turbulent phase at about t=80.
-The turbulent phase is visually saturated at around t=125, but physical parameters overshoot and only fall into the long term stable pahse at aroung t=200. 
+The turbulent phase is visually saturated at around t=125, but physical parameters overshoot and only fall into the long term stable phase at aroung t=200. 
 
 
 ## Physical Properties
@@ -89,7 +89,7 @@ The turbulent phase is visually saturated at around t=125, but physical paramete
 
 The reason why the Hasegawa-Wakatani Model has been the de-facto testing bed for new methods are its statistically stationary properties of the complex turbulent system.
 The moduel includes all code needed to generate these values.
-It goes further, however, and provides reference values with statistical bounds for the first time for a vast range of values.
+It goes further, however, and provides reference values along with statistical bounds for the first time for a vast range of values.
 This allows simple comparison, as well es evalutaion of new methods to one reference community built resource.
 
 $$
@@ -104,11 +104,11 @@ $$
 
 ### Spectral values for each frame
 
-Additionally, spectral properties are planned to be included, among these are:
+Additionally, some spectral properties are included for more detailed analysis beyond the scalar factors, among these are:
 
 $$
 \begin{align}
-  \int{\mathrm{d} k_y \space \Gamma^n \small (k_y) \normalsize }  &= - \int{\mathrm{d} k_y \left( i k_y  \space n \small (k_y) \normalsize \space \phi^* \small (k_y) \normalsize \right) } \\
+  \Gamma^n \small (k_y) \normalsize  &= - i k_y  \space n \small (k_y) \normalsize \space \phi^* \small (k_y) \normalsize \\
   \delta \small (k_y) \normalsize &= - \mathrm{Im}\left( \mathrm{log} \left( n^* \small (k_y) \normalsize \space \phi \small (k_y) \normalsize \right) \right) \\
   E^N \small (k_y) \normalsize &= \small \frac{1}{2}\normalsize \big| n \small (k_y) \normalsize \big|^2 \\
   E^V \small (k_y) \normalsize &= \small \frac{1}{2}\normalsize \big| k_y \space \phi \small (k_y) \normalsize \big|^2 
@@ -118,8 +118,9 @@ $$
 
 ### Predictable in- and outflows over time
 
-Finally, due to the definition of the fields as perturbation fields with background desnity gradients, the system gains and loses energy and enstrophy in a predictable manner.
+Finally, due to the definition of the fields as perturbation fields with background desnity gradients, the system gains and loses energy and enstrophy in a predictable manner over time.
 The conservation of these are also tested within the continuous integration pipeline.
+The definitions are given by:
 
 $$
 \begin{align}
