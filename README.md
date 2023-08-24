@@ -8,9 +8,9 @@
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/hw2d.svg)](https://pypi.org/project/hw2d/)
 
 This repository contains a reference implementations for the Hasegawa-Wakatani model in two dimensions using Python.
-The purpose is to provide a playground for education and scientific purposes: be it testing numerical or machine learning methods, or building related models quicker.
+The purpose is to provide a playground for education and scientific purposes: be it testing numerical or machine learning methods, or building related models quicker, while improving the comparability of results.
 
-Stable, verified parameters will be published with this repository.
+Stable, verified parameters and values are published along with this repository.
 
 ### Installation 
 
@@ -21,7 +21,7 @@ and to include accelerators like numba, use the following:
 
 ### Usage
 
-running `python -m hw2d` will let you run a hw2d simulation. It exposes the CLI Interface of the code located in run.py with all parameters available there.
+Running `python -m hw2d` will let you run a hw2d simulation. It exposes the CLI Interface of the code located in src/hw2d/run.py with all parameters available there. Simply run `python -m hw2d --help` to get a full rundown of all available parameters along with explanations.
 
 Full documentation is available at: https://the-rccg.github.io/hw2d/
 
