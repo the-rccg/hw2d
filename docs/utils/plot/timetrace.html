@@ -157,15 +157,32 @@ def plot_timetraces(
         parameters = dict(hf.attrs)
         fig, ax = plt.subplots(1, 1, figsize=(7, 3))
         t0_idx = int(t0 // parameters[&#34;dt&#34;])
+        max_len = 0
+        for prop in properties:
+            max_len = max(max_len, len(hf[prop]))
+            if t0_idx &gt;= len(hf[prop]):
+                print(
+                    f&#34;{prop}: Not sufficient data. Range selected starts at t0={t0} to plot, data ends at t={len(hf[prop])*parameters[&#39;dt&#39;]:.2f}&#34;
+                )
+                return
         t0_std_idx = int(t0_std // parameters[&#34;dt&#34;])
+        if t0_std_idx &gt; max_len:
+            print(&#34;WARNING start of statistics index is bigger than file length!&#34;)
+            print(f&#34;Calculating stats now from t0: {t0_std} -&gt; {t0}&#34;)
+            t0_std = t0
+            t0_std_idx = t0_idx
         age = hf[list(hf.keys())[0]].shape[0] * parameters[&#34;dt&#34;]
         elements = []
         labels = []
         for property in properties:
             prop_std = np.std(hf[property][t0_std_idx:])
             prop_mean = np.mean(hf[property][t0_std_idx:])
+            prop_data = hf[property][t0_idx:]
+            if not len(prop_data):
+                print(f&#34;WARNING no data in: {property}&#34;)
+                continue
             element, label = plot_timeline_with_stds(
-                hf[property][t0_idx:],
+                prop_data,
                 t0=t0,
                 dt=parameters[&#34;dt&#34;],
                 ax=ax,
@@ -371,15 +388,32 @@ if __name__ == &#34;__main__&#34;:
         parameters = dict(hf.attrs)
         fig, ax = plt.subplots(1, 1, figsize=(7, 3))
         t0_idx = int(t0 // parameters[&#34;dt&#34;])
+        max_len = 0
+        for prop in properties:
+            max_len = max(max_len, len(hf[prop]))
+            if t0_idx &gt;= len(hf[prop]):
+                print(
+                    f&#34;{prop}: Not sufficient data. Range selected starts at t0={t0} to plot, data ends at t={len(hf[prop])*parameters[&#39;dt&#39;]:.2f}&#34;
+                )
+                return
         t0_std_idx = int(t0_std // parameters[&#34;dt&#34;])
+        if t0_std_idx &gt; max_len:
+            print(&#34;WARNING start of statistics index is bigger than file length!&#34;)
+            print(f&#34;Calculating stats now from t0: {t0_std} -&gt; {t0}&#34;)
+            t0_std = t0
+            t0_std_idx = t0_idx
         age = hf[list(hf.keys())[0]].shape[0] * parameters[&#34;dt&#34;]
         elements = []
         labels = []
         for property in properties:
             prop_std = np.std(hf[property][t0_std_idx:])
             prop_mean = np.mean(hf[property][t0_std_idx:])
+            prop_data = hf[property][t0_idx:]
+            if not len(prop_data):
+                print(f&#34;WARNING no data in: {property}&#34;)
+                continue
             element, label = plot_timeline_with_stds(
-                hf[property][t0_idx:],
+                prop_data,
                 t0=t0,
                 dt=parameters[&#34;dt&#34;],
                 ax=ax,

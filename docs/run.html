@@ -232,7 +232,7 @@ def run(
         print(f&#34;Generating movie...&#34;)
         create_movie(
             input_filename=output_path,
-            output_filename=output_path,
+            output_filename=output_path.replace(&#34;.h5&#34;, &#34;&#34;),
             t0=0,
             t1=None,
             plot_order=field_list,
@@ -515,7 +515,7 @@ if __name__ == &#34;__main__&#34;:
         print(f&#34;Generating movie...&#34;)
         create_movie(
             input_filename=output_path,
-            output_filename=output_path,
+            output_filename=output_path.replace(&#34;.h5&#34;, &#34;&#34;),
             t0=0,
             t1=None,
             plot_order=field_list,
