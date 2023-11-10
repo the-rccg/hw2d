@@ -16,12 +16,22 @@ Stable, verified parameters and values are published along with this repository.
 
 Install a pure NumPy version via
 ```pip install hw2d```
-and to include accelerators like numba, use the following:
+and to include accelerators (currently supporting: numba), use the following:
 ```pip install hw2d[accelerators]```
 
 ### Usage
 
 Running `python -m hw2d` will let you run a hw2d simulation. It exposes the CLI Interface of the code located in src/hw2d/run.py with all parameters available there. Simply run `python -m hw2d --help` to get a full rundown of all available parameters along with their explanations.
+
+If accelerators like numba are installed, these will be used automatically. To manually decide which function should be run with which accelerator, simply change the imports in srd/hw2d/model.py to select the appropriate function. Default uses Numba for periodic gradients and the arakawa scheme, and to be extended in the future.
+
+### Example Usage 
+
+Example of running a fully converged turbulent simulation:
+```python
+python -m hw2d --step_size=0.025 --end_time=1000 --grid_pts=512 --c1=1.0 --k0=0.15 --N=3 --nu=5.0e-08 --snaps=1 --buffer_size=100 --output_path="test.h5" --movie=1 --min_fps=10 --speed=5 --debug=0
+```
+The code will run a grid of `512x512` in steps of `0.025` from 0 to `1000` for an adiabatic coefficient of `1.0` and hyperdiffusion of order `3` with a coefficient of `5.0e-08`. The resulting data will be saved after every `1` frame and written in batches of `100` into file `test.h5`. This file will then be turned into a movie with at least `10` frames per second, running at `5`t per second. The entire process will use no debugging. 
 
 Full documentation is available at: https://the-rccg.github.io/hw2d/
 
