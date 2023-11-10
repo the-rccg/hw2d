@@ -126,15 +126,32 @@ def plot_timetraces(
         parameters = dict(hf.attrs)
         fig, ax = plt.subplots(1, 1, figsize=(7, 3))
         t0_idx = int(t0 // parameters["dt"])
+        max_len = 0
+        for prop in properties:
+            max_len = max(max_len, len(hf[prop]))
+            if t0_idx >= len(hf[prop]):
+                print(
+                    f"{prop}: Not sufficient data. Range selected starts at t0={t0} to plot, data ends at t={len(hf[prop])*parameters['dt']:.2f}"
+                )
+                return
         t0_std_idx = int(t0_std // parameters["dt"])
+        if t0_std_idx > max_len:
+            print("WARNING start of statistics index is bigger than file length!")
+            print(f"Calculating stats now from t0: {t0_std} -> {t0}")
+            t0_std = t0
+            t0_std_idx = t0_idx
         age = hf[list(hf.keys())[0]].shape[0] * parameters["dt"]
         elements = []
         labels = []
         for property in properties:
             prop_std = np.std(hf[property][t0_std_idx:])
             prop_mean = np.mean(hf[property][t0_std_idx:])
+            prop_data = hf[property][t0_idx:]
+            if not len(prop_data):
+                print(f"WARNING no data in: {property}")
+                continue
             element, label = plot_timeline_with_stds(
-                hf[property][t0_idx:],
+                prop_data,
                 t0=t0,
                 dt=parameters["dt"],
                 ax=ax,

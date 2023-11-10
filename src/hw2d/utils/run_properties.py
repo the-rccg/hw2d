@@ -1,12 +1,20 @@
-import numpy
+import numpy as np
 import h5py
 import fire
 from tqdm import tqdm
 from typing import List
 from functools import partial
 
-from hw2d.physical_properties.numpy_properties import *
-from hw2d.utils.io import *
+from hw2d.physical_properties.numpy_properties import (
+    get_gamma_n,
+    get_gamma_n_spectrally,
+    get_gamma_c,
+    get_energy,
+    get_energy_N_spectrally,
+    get_energy_V_spectrally,
+    get_enstrophy,
+    get_enstrophy_phi,
+)
 
 
 def add_data(hf, i, batch_size, name, data, debug, selection):

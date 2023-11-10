@@ -201,7 +201,7 @@ def run(
         print(f"Generating movie...")
         create_movie(
             input_filename=output_path,
-            output_filename=output_path,
+            output_filename=output_path.replace(".h5", ""),
             t0=0,
             t1=None,
             plot_order=field_list,
