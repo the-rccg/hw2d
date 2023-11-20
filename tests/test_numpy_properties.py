@@ -32,7 +32,7 @@ def test_gamma_c():
 
 def test_energy():
     energy = get_energy(n=n, phi=p, dx=dx)
-    assert np.isclose(energy, 3.749580), energy
+    assert np.isclose(energy, 3.7285664081573486), energy
 
 
 def test_energy_N():
@@ -42,7 +42,7 @@ def test_energy_N():
 
 def test_energy_V():
     energy_V = get_energy_V_spectrally(p=p, dx=dx)
-    assert np.isclose(energy_V, 1.662893), energy_V
+    assert np.isclose(energy_V, 1.6418878080857098), energy_V
 
 
 def test_enstrophy():

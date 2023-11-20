@@ -104,13 +104,12 @@ def get_energy(n: np.ndarray, phi: np.ndarray, dx: float) -> np.ndarray:
     """Energy of the HW2D system, sum of thermal and kinetic energy
     $$ E = \\frac{1}{2} \int{d^2 x \left(n^2 + | \nabla \phi|^2 \right)} $$
     """
-    grad_phi = periodic_gradient(phi, dx=dx, axis=-1) + periodic_gradient(
+    #Squared L2-Norm
+    squared_norm_grad_phi = periodic_gradient(phi, dx=dx, axis=-1)**2 + periodic_gradient(
         phi, dx=dx, axis=-2
-    )
-    # Norm
-    norm_grad_phi = grad_phi  # np.abs(grad_phi)
+    )**2
     # Integrate, then divide by 2
-    integral = np.mean((n**2) + (norm_grad_phi**2), axis=(-1, -2))
+    integral = np.mean((n**2) + squared_norm_grad_phi, axis=(-1, -2))
     return integral / 2
 
 
@@ -198,8 +197,8 @@ def get_energy_V_ky(p: np.ndarray, dx: float) -> np.ndarray:
         *[np.fft.fftfreq(int(i), d=dx) * 2 * np.pi for i in p.shape[-2:]]
     )  # k(ky, kx)
     p_dft = np.fft.fft2(p, norm="ortho")
-    k = k_ky + k_kx
-    E_V_ky = np.abs(k * p_dft) ** 2 / 2
+    squared_norm_k = k_ky**2 + k_kx**2
+    E_V_ky = np.abs(squared_norm_k * p_dft * np.conjugate(p_dft)) / 2
     E_V_ky = np.mean(E_V_ky, axis=-1)
     return E_V_ky
 
