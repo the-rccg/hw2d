@@ -34,7 +34,10 @@ class Namespace(dict):
     __radd__ = __add__
 
     def __sub__(self, other):
-        return Namespace({key: other - val for key, val in self.items()})
+        if isinstance(other, Namespace):
+            return Namespace({key: other[key] - val for key, val in self.items()})
+        else:
+            return Namespace({key: other - val for key, val in self.items()})
 
     @property
     def omega(self):
