@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>hw2d API documentation</title>
-<meta name="description" content="&lt;img align=&#34;right&#34; width=&#34;170&#34; height=&#34;170&#34; src=&#34;/imgs/logo_large_text.jpg&#34;&gt; …" />
+<meta name="description" content="&lt;img align=&#34;right&#34; width=&#34;170&#34; height=&#34;170&#34; src=&#34;https://github.com/the-rccg/hw2d/blob/main//imgs/logo_large_text.jpg&#34;&gt; …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -25,7 +25,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-
 </script>
 </header>
 <section id="section-intro">
-<p><img align="right" width="170" height="170" src="/imgs/logo_large_text.jpg"></p>
+<p><img align="right" width="170" height="170" src="https://github.com/the-rccg/hw2d/blob/main//imgs/logo_large_text.jpg"></p>
 <h1 id="the-hasegawa-wakatani-model-of-plasma-turbulence">The Hasegawa-Wakatani model of plasma turbulence</h1>
 <p><img alt="hw2d-status" src="https://github.com/the-rccg/hw2d/actions/workflows/main.yml/badge.svg">
 <img alt="hw2d-documentation" src="https://github.com/the-rccg/hw2d/actions/workflows/pdoc.yml/badge.svg">
@@ -50,12 +50,14 @@ and to include accelerators (currently supporting: numba), use the following:
 <p>Full documentation is available at: <a href="https://the-rccg.github.io/hw2d/">https://the-rccg.github.io/hw2d/</a></p>
 <h3 id="reference-methods">Reference Methods</h3>
 <p>The implementation presented here is by no means meant to be the optimal, but an easy to understand starting point to build bigger things upon and serve as a reference for other work.
-This reference implementation uses:
-- Gradients $\left(\partial_x, \partial_y, \nabla \right)$: Central finite difference schemes (2nd order accurate)
-- Poisson Bracket $\left([\cdot, \cdot]\right)$: Arakawa Scheme (2nd order accurate, higher order preserving)
-- Poisson Solver $\left(\nabla^{-2}\cdot\right)$: Fourier based solver
-- Time Integration $\left(\partial_t\right)$: Explicit Runge Kutte (4th order accurate)
-The framework presented here can be easily extended to use alternative implementations.</p>
+This reference implementation uses:</p>
+<ul>
+<li>Gradients $\left(\partial_x, \partial_y, \nabla \right)$: Central finite difference schemes (2nd order accurate)</li>
+<li>Poisson Bracket $\left([\cdot, \cdot]\right)$: Arakawa Scheme (2nd order accurate, higher order preserving)</li>
+<li>Poisson Solver $\left(\nabla^{-2}\cdot\right)$: Fourier based solver</li>
+<li>Time Integration $\left(\partial_t\right)$: Explicit Runge Kutte (4th order accurate)</li>
+</ul>
+<p>The framework presented here can be easily extended to use alternative implementations.</p>
 <h3 id="contributions-encouraged">Contributions encouraged</h3>
 <p>Pull requests are strongly encouraged. </p>
 <p>The simplest way to contribute is running simulations and committing the results to the historical runs archive. This helps in exploring the hyper-parameter space and improving statistical reference values for all.</p>
@@ -216,8 +218,8 @@ $$</p>
 </table>
 <h2 id="reference-timetraces">Reference Timetraces</h2>
 <p>Sample traces are given for <code>512x512</code>, <code>dt=0.05</code>, <code>c1=1</code>, <code>N=3</code>, and <code>nu=5e-08</code>. Note that the statistical nature does mean single simulations can deviate for quite some time from the statistical mean.</p>
-<p><img alt="Plot1" src="/imgs/gamma_n-and-gamma_c.jpg">
-<img alt="Plot2" src="/imgs/enstrophy-energy-kinetic_energy-thermal_energy.jpg"></p>
+<p><img alt="Plot1" src="https://github.com/the-rccg/hw2d/blob/main//imgs/gamma_n-and-gamma_c.jpg">
+<img alt="Plot2" src="https://github.com/the-rccg/hw2d/blob/main//imgs/enstrophy-energy-kinetic_energy-thermal_energy.jpg"></p>
 <h2 id="reference-values">Reference Values</h2>
 <p>Reference values are averaged over 25 runs starting from well within the turbulent steady-state <code>t=300</code> with the standard deviation across the simulations denoted by $\pm$.
 Each run to <code>t=1,000</code> at <code>512x512</code> and <code>dt=0.025</code> requires roughly 125GB (3 million floats/frame for 3 fields over 40,000 frames per simulation), meaning the summary contains information for 10TB of data. This does not include the hypterparameter stabilization tests.
