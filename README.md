@@ -1,4 +1,4 @@
-<img align="right" width="170" height="170" src="/imgs/logo_large_text.jpg">
+<img align="right" width="170" height="170" src="https://github.com/the-rccg/hw2d/blob/main//imgs/logo_large_text.jpg">
 
 # The Hasegawa-Wakatani model of plasma turbulence
 
@@ -39,10 +39,12 @@ Full documentation is available at: https://the-rccg.github.io/hw2d/
 
 The implementation presented here is by no means meant to be the optimal, but an easy to understand starting point to build bigger things upon and serve as a reference for other work.
 This reference implementation uses:
+
 - Gradients $\left(\partial_x, \partial_y, \nabla \right)$: Central finite difference schemes (2nd order accurate)
 - Poisson Bracket $\left([\cdot, \cdot]\right)$: Arakawa Scheme (2nd order accurate, higher order preserving)
 - Poisson Solver $\left(\nabla^{-2}\cdot\right)$: Fourier based solver
 - Time Integration $\left(\partial_t\right)$: Explicit Runge Kutte (4th order accurate)
+
 The framework presented here can be easily extended to use alternative implementations.
 
 ### Contributions encouraged
@@ -202,8 +204,8 @@ Minimum step sizes for the system can be evaluated by setting hyperdiffusion to 
 
 Sample traces are given for `512x512`, `dt=0.05`, `c1=1`, `N=3`, and `nu=5e-08`. Note that the statistical nature does mean single simulations can deviate for quite some time from the statistical mean.
 
-![Plot1](/imgs/gamma_n-and-gamma_c.jpg)
-![Plot2](/imgs/enstrophy-energy-kinetic_energy-thermal_energy.jpg)
+![Plot1](https://github.com/the-rccg/hw2d/blob/main//imgs/gamma_n-and-gamma_c.jpg)
+![Plot2](https://github.com/the-rccg/hw2d/blob/main//imgs/enstrophy-energy-kinetic_energy-thermal_energy.jpg)
 
 
 ## Reference Values
