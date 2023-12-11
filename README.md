@@ -70,12 +70,12 @@ $$
                      - \left[ \phi, n \right]
                      - \kappa_n \partial_y \phi
                      - \nu \nabla^{2N} n 
-             \\
+    \\
     \partial_t \Omega &= c_1 \left( \phi - n \right)
                                       - \left[ \phi, \Omega \right]
                                       - \nu \nabla^{2N} \Omega 
-             \\
-             \Omega &= \nabla^2 \phi
+    \\
+    \Omega &= \nabla^2 \phi
 \end{align}
 $$
 
@@ -105,13 +105,12 @@ It goes further, however, and provides reference values along with statistical b
 This allows simple comparison, as well es evalutaion of new methods to one reference community built resource.
 
 $$
-    \Gamma^n = -     \iint{ \mathrm{d}^2x \space \left( n \space \partial_y \phi \right) } 
-    \\
-    \Gamma^c = c_1   \iint{ \mathrm{d}^2x \space \left(n - \phi \right)^2} 
-    \\
-    E        = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)} 
-    \\
-    U        = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\Omega\right)^2}
+\begin{align}
+    \Gamma^n &= -     \iint{ \mathrm{d}^2x \space \left( n \space \partial_y \phi \right) }  \\
+    \Gamma^c &= c_1   \iint{ \mathrm{d}^2x \space \left(n - \phi \right)^2}  \\
+    E        &= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)}  \\
+    U        &= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\Omega\right)^2}    
+\end{align}
 $$
 
 
@@ -120,10 +119,12 @@ $$
 Additionally, some spectral properties are included for more detailed analysis beyond the scalar factors, among these are:
 
 $$
-  \Gamma^n \small (k_y) \normalsize  = - i k_y  \space n \small (k_y) \normalsize \space \phi^* \small (k_y) \normalsize
-  \delta \small (k_y) \normalsize    = - \mathrm{Im}\left( \mathrm{log} \left( n^* \small (k_y) \normalsize \space \phi \small (k_y) \normalsize \right) \right)  \\
-  E^N \small (k_y) \normalsize       = \small \frac{1}{2}\normalsize \big| n \small (k_y) \normalsize \big|^2  \\
-  E^V \small (k_y) \normalsize       = \small \frac{1}{2}\normalsize \big| k_y \space \phi \small (k_y) \normalsize \big|^2 
+\begin{align}
+  \Gamma^n \small (k_y) \normalsize  &= - i k_y  \space n \small (k_y) \normalsize \space \phi^* \small (k_y) \normalsize  \\
+  \delta \small (k_y) \normalsize    &= - \mathrm{Im}\left( \mathrm{log} \left( n^* \small (k_y) \normalsize \space \phi \small (k_y) \normalsize \right) \right)   \\
+  E^N \small (k_y) \normalsize       &= \small \frac{1}{2}\normalsize \big| n \small (k_y) \normalsize \big|^2   \\
+  E^V \small (k_y) \normalsize       &= \small \frac{1}{2}\normalsize \big| k_y \space \phi \small (k_y) \normalsize \big|^2     
+\end{align}
 $$
 
 
@@ -134,12 +135,14 @@ The conservation of these are also tested within the continuous integration pipe
 The definitions are given by:
 
 $$
-    \partial_t E   = \Gamma^N - \Gamma ^c - \mathfrak{D}^E  \\
-    \partial_t U   = \Gamma^N - \mathfrak{D}^U  \\ 
-    \mathfrak{D}^E = \quad \iint{ \mathrm{d}^2x \space (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)} \\ 
-    \mathfrak{D}^U = -     \iint{ \mathrm{d}^2x \space (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)} \\
-    with \quad \mathfrak{D}^n \small (x,y) \normalsize = \nu \nabla^{2N} n \quad and \quad 
+\begin{align}
+    \partial_t E   &= \Gamma^N - \Gamma ^c - \mathfrak{D}^E  \\
+    \partial_t U   &= \Gamma^N - \mathfrak{D}^U   \\
+    \mathfrak{D}^E &= \quad \iint{ \mathrm{d}^2x \space (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)}  \\
+    \mathfrak{D}^U &= -     \iint{ \mathrm{d}^2x \space (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)}  \\
+    with \quad \mathfrak{D}^n \small (x,y) \normalsize &= \nu \nabla^{2N} n \quad and \quad 
     \mathfrak{D}^\phi \small (x,y) \normalsize = \nu \nabla^{2N} \phi  
+\end{align}
 $$
 
 ### General notes
