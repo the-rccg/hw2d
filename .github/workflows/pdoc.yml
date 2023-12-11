@@ -47,6 +47,7 @@ jobs:
 
     - name: Prepare docs directory for gh-pages
       run: |
+        rm -rf docs/docs
         mkdir -p docs/docs
         cp -r temp_docs/hw2d/* docs/docs/
         mkdir docs/imgs
