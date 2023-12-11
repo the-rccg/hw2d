@@ -138,7 +138,20 @@ def run(
     )
 
     # File Handling
+    if continue_file:
+        # Continue from previous run
+        plasma, physics_params = continue_h5_file(continue_file, field_list)
+        current_time = plasma.age
+        # Check if broken
+        for field in plasma.keys():
+            if np.isnan(np.sum(plasma[field])):
+                print(f"FAILED @ {iteration_count:,} steps ({plasma.age:,})")
+                raise BaseException(f"Input File is broken: FAILED @ {iteration_count:,} steps ({plasma.age:,})")
+        print(
+            f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}"
+        )
     if output_path:
+        # Output data from this run
         buffer = {
             field: np.zeros((buffer_size, y, x), dtype=np.float32)
             for field in field_list
@@ -150,12 +163,7 @@ def run(
         }
         # Load Data
         if os.path.isfile(output_path):
-            if continue_file:
-                plasma, physics_params = continue_h5_file(output_path, field_list)
-                print(
-                    f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}"
-                )
-            else:
+            if not continue_file:
                 print(f"File already exists.")
                 return
         # Create
