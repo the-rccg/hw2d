@@ -31,7 +31,7 @@ from hw2d.initializations.fourier_noise import get_fft_noise
 from hw2d.utils.namespaces import Namespace
 
 # NumPy Version
-from hw2d.arakawa.numpy_arakawa import periodic_arakawa_vec
+from hw2d.poisson_bracket.numpy_arakawa import periodic_arakawa_vec
 
 periodic_arakawa = periodic_arakawa_vec
 from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
@@ -40,7 +40,7 @@ from hw2d.physical_properties.numpy_properties import *
 
 try:
     # Numba
-    from hw2d.arakawa.numba_arakawa import periodic_arakawa_stencil
+    from hw2d.poisson_bracket.numba_arakawa import periodic_arakawa_stencil
     from hw2d.gradients.numba_gradients import periodic_laplace_N  # , periodic_gradient
 
     # from hw2d.poisson_solvers.numba_fourier_poisson import fourier_poisson_double
@@ -60,7 +60,7 @@ class HW:
         c1: float,
         nu: float,
         k0: float,
-        arakawa_coeff: float = 1,
+        poisson_bracket_coeff: float = 1,
         kappa_coeff: float = 1,
         debug: bool = False,
         TEST_CONSERVATION: bool = True,
@@ -74,7 +74,7 @@ class HW:
             c1 (float): Model-specific parameter.
             nu (float): Diffusion coefficient.
             k0 (float): Fundamental wavenumber.
-            arakawa_coeff (float, optional): Coefficient for the Arakawa scheme. Default is 1.
+            poisson_bracket_coeff (float, optional): Coefficient for the Arakawa scheme. Default is 1.
             kappa_coeff (float, optional): Coefficient for d/dy phi. Default is 1.
             debug (bool, optional): Flag to enable debugging mode. Default is False.
             TEST_CONSERVATION (bool, optional): Flag to test conservation properties. Default is True.
@@ -82,14 +82,14 @@ class HW:
         # Numerical Schemes
         self.poisson_solver = fourier_poisson_double
         self.diffuse_N = periodic_laplace_N
-        self.arakawa = periodic_arakawa
+        self.poisson_bracket = periodic_arakawa
         self.gradient_func = periodic_gradient
         # Physical Values
         self.N = int(N)
         self.c1 = c1
         self.nu = (-1) ** (self.N + 1) * nu
         self.k0 = k0
-        self.arakawa_coeff = arakawa_coeff
+        self.poisson_bracket_coeff = poisson_bracket_coeff
         self.kappa_coeff = kappa_coeff
         self.dx = dx
         self.L = 2 * np.pi / k0
@@ -99,12 +99,11 @@ class HW:
         self.debug = debug
         self.counter = 0
         self.watch_fncs = (
-            "rk4_step",
-            "euler_step",
+            "full_step",
             "get_phi",
             "diffuse",
             "gradient_2d",
-            "arakawa",
+            "poisson_bracket",
         )
         self.timings = {k: 0 for k in self.watch_fncs}
         self.calls = {k: 0 for k in self.watch_fncs}
@@ -124,7 +123,7 @@ class HW:
         """Display the timing information for the functions profiled."""
         df = pd.DataFrame({"time": self.timings, "calls": self.calls})
         df["time/call"] = df["time"] / df["calls"]
-        df["%time"] = df["time"] / df["time"]["rk4_step"] * 100
+        df["%time"] = df["time"] / df["time"]["full_step"] * 100
         df.sort_values("time/call", inplace=True)
         print(df)
 
@@ -134,7 +133,7 @@ class HW:
         y = plasma + d
         y["phi"] = self.get_phi(omega=y.omega, dx=dx)
         y["age"] = plasma.age + dt
-        self.log("euler_step", time.time() - t0)
+        self.log("full_step", time.time() - t0)
         return y
 
     def rk4_step(self, plasma: Namespace, dt: float, dx: float) -> Namespace:
@@ -154,7 +153,7 @@ class HW:
         # TODO: currently adds two timesteps
         y1 = yn + (k1 + 2 * k2 + 2 * k3 + k4) * (1 / 6)
         phi = self.get_phi(omega=y1.omega, dx=dx)
-        self.log("rk4_step", time.time() - t0)
+        self.log("full_step", time.time() - t0)
         if self.debug:
             print(
                 " | ".join(
@@ -210,12 +209,12 @@ class HW:
 
         # Step 2.1: New Omega.
         o = self.c1 * diff
-        if self.arakawa_coeff:
+        if self.poisson_bracket_coeff:
             t0 = time.time()
-            arak_comp_o = -self.arakawa_coeff * self.arakawa(
+            arak_comp_o = -self.poisson_bracket_coeff * self.poisson_bracket(
                 zeta=phi, psi=plasma.omega, dx=dx
             )
-            self.log("arakawa", time.time() - t0)
+            self.log("poisson_bracket", time.time() - t0)
             o += arak_comp_o
         if self.nu:
             Do = self.nu * self.diffuse(arr=plasma.omega, dx=dx, N=self.N)
@@ -223,12 +222,12 @@ class HW:
 
         # Step 2.2: New Density.
         n = self.c1 * diff
-        if self.arakawa_coeff:
+        if self.poisson_bracket_coeff:
             t0 = time.time()
-            arak_comp_n = -self.arakawa_coeff * self.arakawa(
+            arak_comp_n = -self.poisson_bracket_coeff * self.poisson_bracket(
                 zeta=phi, psi=plasma.density, dx=dx
             )
-            self.log("arakawa", time.time() - t0)
+            self.log("poisson_bracket", time.time() - t0)
             n += arak_comp_n
         if self.kappa_coeff:
             kap = -self.kappa_coeff * dy_p

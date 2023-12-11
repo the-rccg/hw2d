@@ -148,6 +148,6 @@ def continue_h5_file(
     data = Namespace(**data, age=age, dx=params["dx"])
     params = {
         k: params[k]
-        for k in ("dx", "N", "c1", "nu", "k0", "arakawa_coeff", "kappa_coeff")
+        for k in ("dx", "N", "c1", "nu", "k0", "poisson_bracket_coeff", "kappa_coeff")
     }
     return data, params

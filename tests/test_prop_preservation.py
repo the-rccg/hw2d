@@ -36,7 +36,7 @@ def test_energy_conservation_euler(
         nu=nu,
         c1=props["c1"],
         k0=props["k0"],
-        arakawa_coeff=props["arakawa_coeff"],
+        poisson_bracket_coeff=props["poisson_bracket_coeff"],
         kappa_coeff=props["kappa_coeff"],
         TEST_CONSERVATION=True,
     )
@@ -121,7 +121,7 @@ def test_energy_conservation_rk4(
         nu=nu,
         c1=props["c1"],
         k0=props["k0"],
-        arakawa_coeff=props["arakawa_coeff"],
+        poisson_bracket_coeff=props["poisson_bracket_coeff"],
         kappa_coeff=props["kappa_coeff"],
         TEST_CONSERVATION=True,
     )

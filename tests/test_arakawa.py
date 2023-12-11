@@ -1,9 +1,9 @@
 from unittest import TestCase
 
 import numpy as np
-from hw2d.arakawa.numba_arakawa import periodic_arakawa_stencil as periodic_arakawa_nb
-from hw2d.arakawa.numpy_arakawa import periodic_arakawa as periodic_arakawa
-from hw2d.arakawa.numpy_arakawa import periodic_arakawa_vec as periodic_arakawa_np
+from hw2d.poisson_bracket.numba_arakawa import periodic_arakawa_stencil as periodic_arakawa_nb
+from hw2d.poisson_bracket.numpy_arakawa import periodic_arakawa as periodic_arakawa
+from hw2d.poisson_bracket.numpy_arakawa import periodic_arakawa_vec as periodic_arakawa_np
 from hw2d.initializations.sine import get_2d_sine
 
 

@@ -1,5 +1,5 @@
 """
-The `hw2d.arakawa` Module
+The `hw2d.poisson_bracket` Module
 =========================
 
 This module provides implementations of the Arakawa scheme to compute the Poisson bracket. 
@@ -12,8 +12,8 @@ The module offers implementations based on different computational frameworks:
 
 To see specific functions and their documentation, navigate to the respective sub-modules:
 
-- `hw2d.arakawa.numpy_arakawa`: Arakawa scheme functions implemented using NumPy.
-- `hw2d.arakawa.numba_arakawa`: Arakawa scheme functions accelerated with Numba.
+- `hw2d.poisson_bracket.numpy_arakawa`: Arakawa scheme functions implemented using NumPy.
+- `hw2d.poisson_bracket.numba_arakawa`: Arakawa scheme functions accelerated with Numba.
 """
 
 # # arakawa_scheme/__init__.py

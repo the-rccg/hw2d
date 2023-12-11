@@ -31,7 +31,7 @@ def run(
     nu: float = 5.0e-08,
     c1: float = 1.0,
     kappa_coeff: float = 1.0,
-    arakawa_coeff: float = 1.0,
+    poisson_bracket_coeff: float = 1.0,
     seed: int or None = None,
     init_type: str = "normal",
     init_scale: float = 1 / 100,
@@ -73,7 +73,7 @@ def run(
         nu (float, optional): Viscosity. Suggested: 5e-10 for coarse-large, 1e-4 for fine-small. Defaults to 5.0e-08.
         c1 (float, optional): Transition scale between hydrodynamic and adiabatic. Suggested values: 0.1, 1, 5. Defaults to 1.0.
         kappa_coeff (float, optional): Coefficient of d/dy phi. Defaults to 1.0.
-        arakawa_coeff (float, optional): Coefficient of Poisson bracket [A,B] implemented with Arakawa Scheme. Defaults to 1.0.
+        poisson_bracket_coeff (float, optional): Coefficient of Poisson bracket [A,B] implemented with Arakawa Scheme. Defaults to 1.0.
         seed (int or None, optional): Seed for random number generation. Defaults to None.
         init_type (str, optional): Initialization method. Choices: 'fourier', 'sine', 'random', 'normal'. Defaults to 'normal'.
         init_scale (float, optional): Scaling factor for initialization. Defaults to 0.01.
@@ -125,7 +125,7 @@ def run(
         c1=c1,
         nu=nu,
         k0=k0,
-        arakawa_coeff=arakawa_coeff,
+        poisson_bracket_coeff=poisson_bracket_coeff,
         kappa_coeff=kappa_coeff,
     )
     # Initialize Plasma
