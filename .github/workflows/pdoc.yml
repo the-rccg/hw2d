@@ -37,18 +37,21 @@ jobs:
       run: |
         pip install -e .[accelerators]
 
-    - name: Install pdoc3
+    - name: Install pdoc
       run: |
-        pip install pdoc3
+        pip install pdoc
 
     - name: Generate documentation with MathJax support
       run: |
-          pdoc --html --template-dir doc_templates . --output-dir temp_docs --config latex_math_renderer="'mathjax'"
+          pdoc hw2d -o temp_docs --template-dir doc_templates --math
 
     - name: Prepare docs directory for gh-pages
       run: |
         mkdir -p docs/docs
         cp -r temp_docs/hw2d/* docs/docs/
+        mkdir docs/imgs
+        cp -r imgs/* docs/imgs/
+        ls docs/imgs
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3

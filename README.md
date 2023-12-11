@@ -1,4 +1,4 @@
-<img align="right" width="170" height="170" src="https://github.com/the-rccg/hw2d/blob/main//imgs/logo_large_text.jpg">
+<img align="right" width="170" height="170" src="imgs/logo_large_text.jpg">
 
 # The Hasegawa-Wakatani model of plasma turbulence
 
@@ -105,12 +105,13 @@ It goes further, however, and provides reference values along with statistical b
 This allows simple comparison, as well es evalutaion of new methods to one reference community built resource.
 
 $$
-\begin{align}
-    \Gamma^n &= -     \iint{ \mathrm{d}^2x \space \left( n \space \partial_y \phi \right) } \\
-    \Gamma^c &= c_1   \iint{ \mathrm{d}^2x \space \left(n - \phi \right)^2} \\
-    E        &= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)} \\
-    U        &= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\Omega\right)^2}
-\end{align}
+    \Gamma^n = -     \iint{ \mathrm{d}^2x \space \left( n \space \partial_y \phi \right) } 
+    \\
+    \Gamma^c = c_1   \iint{ \mathrm{d}^2x \space \left(n - \phi \right)^2} 
+    \\
+    E        = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)} 
+    \\
+    U        = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\Omega\right)^2}
 $$
 
 
@@ -119,12 +120,10 @@ $$
 Additionally, some spectral properties are included for more detailed analysis beyond the scalar factors, among these are:
 
 $$
-\begin{align}
-  \Gamma^n \small (k_y) \normalsize  &= - i k_y  \space n \small (k_y) \normalsize \space \phi^* \small (k_y) \normalsize \\
-  \delta \small (k_y) \normalsize &= - \mathrm{Im}\left( \mathrm{log} \left( n^* \small (k_y) \normalsize \space \phi \small (k_y) \normalsize \right) \right) \\
-  E^N \small (k_y) \normalsize &= \small \frac{1}{2}\normalsize \big| n \small (k_y) \normalsize \big|^2 \\
-  E^V \small (k_y) \normalsize &= \small \frac{1}{2}\normalsize \big| k_y \space \phi \small (k_y) \normalsize \big|^2 
-\end{align}
+  \Gamma^n \small (k_y) \normalsize  = - i k_y  \space n \small (k_y) \normalsize \space \phi^* \small (k_y) \normalsize
+  \delta \small (k_y) \normalsize    = - \mathrm{Im}\left( \mathrm{log} \left( n^* \small (k_y) \normalsize \space \phi \small (k_y) \normalsize \right) \right)  \\
+  E^N \small (k_y) \normalsize       = \small \frac{1}{2}\normalsize \big| n \small (k_y) \normalsize \big|^2  \\
+  E^V \small (k_y) \normalsize       = \small \frac{1}{2}\normalsize \big| k_y \space \phi \small (k_y) \normalsize \big|^2 
 $$
 
 
@@ -135,14 +134,12 @@ The conservation of these are also tested within the continuous integration pipe
 The definitions are given by:
 
 $$
-\begin{align}
-    \partial_t E   &= \Gamma^N - \Gamma ^c - \mathfrak{D}^E  \\
-    \partial_t U   &= \Gamma^N - \mathfrak{D}^U  \\ 
-    \mathfrak{D}^E &= \quad \iint{ \mathrm{d}^2x \space (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)} \\ 
-    \mathfrak{D}^U &= -     \iint{ \mathrm{d}^2x \space (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)} \\
-    with \quad \mathfrak{D}^n \small (x,y) \normalsize &= \nu \nabla^{2N} n \quad and \quad 
+    \partial_t E   = \Gamma^N - \Gamma ^c - \mathfrak{D}^E  \\
+    \partial_t U   = \Gamma^N - \mathfrak{D}^U  \\ 
+    \mathfrak{D}^E = \quad \iint{ \mathrm{d}^2x \space (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)} \\ 
+    \mathfrak{D}^U = -     \iint{ \mathrm{d}^2x \space (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)} \\
+    with \quad \mathfrak{D}^n \small (x,y) \normalsize = \nu \nabla^{2N} n \quad and \quad 
     \mathfrak{D}^\phi \small (x,y) \normalsize = \nu \nabla^{2N} \phi  
-\end{align}
 $$
 
 ### General notes
@@ -204,8 +201,8 @@ Minimum step sizes for the system can be evaluated by setting hyperdiffusion to 
 
 Sample traces are given for `512x512`, `dt=0.05`, `c1=1`, `N=3`, and `nu=5e-08`. Note that the statistical nature does mean single simulations can deviate for quite some time from the statistical mean.
 
-![Plot1](https://github.com/the-rccg/hw2d/blob/main//imgs/gamma_n-and-gamma_c.jpg)
-![Plot2](https://github.com/the-rccg/hw2d/blob/main//imgs/enstrophy-energy-kinetic_energy-thermal_energy.jpg)
+![Plot1](imgs/gamma_n-and-gamma_c.jpg)
+![Plot2](imgs/enstrophy-energy-kinetic_energy-thermal_energy.jpg)
 
 
 ## Reference Values
