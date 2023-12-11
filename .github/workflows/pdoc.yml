@@ -43,7 +43,7 @@ jobs:
 
     - name: Generate documentation with MathJax support
       run: |
-          pdoc hw2d -o temp_docs --template-dir doc_templates --math
+          pdoc hw2d -o temp_docs --template-dir doc_temp --math
 
     - name: Prepare docs directory for gh-pages
       run: |
