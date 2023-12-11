@@ -14,16 +14,6 @@ jobs:
       with:
         ref: main
 
-    - name: Checkout gh-pages branch to get doc_templates
-      uses: actions/checkout@v2
-      with:
-        ref: gh-pages
-        path: gh-pages
-
-    - name: Copy doc_templates to workspace
-      run: |
-        cp -r gh-pages/doc_templates ./
-
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -40,19 +30,18 @@ jobs:
     - name: Install pdoc
       run: |
         pip install pdoc
-
+  
     - name: Generate documentation with MathJax support
       run: |
-          pdoc hw2d -o temp_docs --template-dir doc_temp --math
+          pdoc hw2d -o temp_docs --math
 
     - name: Prepare docs directory for gh-pages
       run: |
-        rm -rf docs/docs
         mkdir -p docs/docs
-        cp -r temp_docs/hw2d/* docs/docs/
-        mkdir docs/imgs
-        cp -r imgs/* docs/imgs/
-        ls docs/imgs
+        cp -r temp_docs/* docs/docs/
+        mkdir docs/docs/imgs
+        cp -r imgs/* docs/docs/imgs/
+        ls docs/docs/imgs
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
