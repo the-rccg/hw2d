@@ -1,0 +1,28 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Greif
+  given-names: Robin
+  orcid: "https://orcid.org/0000-0003-4143-780X"
+doi: 10.5281/zenodo.10365012
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Greif
+    given-names: Robin
+    orcid: "https://orcid.org/0000-0003-4143-780X"
+  date-published: 2023-12-12
+  doi: 10.21105/joss.05959
+  issn: 2475-9066
+  issue: 92
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 5959
+  title: "HW2D: A reference implementation of the Hasegawa-Wakatani
+    model for plasma turbulence in fusion reactors"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.05959"
+  volume: 8
+title: "HW2D: A reference implementation of the Hasegawa-Wakatani model
+  for plasma turbulence in fusion reactors"
