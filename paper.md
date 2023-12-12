@@ -104,17 +104,17 @@ However, the use of the Arakawa Scheme for the Poisson brackets does allow the p
 
 The reason why the Hasegawa-Wakatani Model has been the de-facto testing bed for new methods are its verifiable statistically stationary properties for the complex turbulent system, such as the turbulent particle flux $\Gamma^n$, primary sink $\Gamma^c$, energy E, and enstrophy U:
 
-$$ \Gamma^n       = - \iint{ \mathrm{d}^2 x \space \left(n \partial_y \phi\right) } $$
-$$ \Gamma^c       = c_1   \iint{ \mathrm{d}^2 x \space \left(n - \phi\right)^2} $$
-$$  E              = \small \frac{1}{2} \normalsize \iint{ \mathrm{d}^2 x \space \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)} $$
-$$  U              = \small \frac{1}{2} \normalsize \iint{ \mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{ \mathrm{d}^2 x \space \left(n-\Omega\right)^2} \;. $$
+$$ \Gamma^n       = - \iint{ \mathrm{d}^2 x \; \left(n\, \partial_y \phi\right) } $$
+$$ \Gamma^c       = c_1   \iint{ \mathrm{d}^2 x \; \left(n - \phi\right)^2} $$
+$$  E              = \frac{1}{2}  \iint{ \mathrm{d}^2 x \; \left(n^2 - \big|\nabla_\bot \phi \big|^2 \right)} $$
+$$  U              = \frac{1}{2}  \iint{ \mathrm{d}^2 x \; \left(n-\nabla_\bot^2  \phi\right)^2} = \frac{1}{2}  \iint{ \mathrm{d}^2 x \; \left(n-\Omega\right)^2} \;. $$
 
 These can be complemented with spectral definitions of these, or the characteristic phase shift $\delta(k_y)$ between the density $n$ and potential $\phi$:
 
-$$  \int{\mathrm{d} k_y \space \Gamma^n \small (k_y)}  \normalsize \space = - \int{\mathrm{d} k_y \space \left( i k_y   n\small (k_y)  \normalsize \phi^* \small (k_y)\normalsize \right) } $$
-$$  \delta \small (k_y)  \normalsize \space = - \mathrm{Im}\left( \mathrm{log}\left( n^*\small (k_y)  \normalsize \space \phi\small (k_y)  \normalsize  \right) \right) $$
-$$  E^N  \small (k_y)  \normalsize \space = \small \frac{1}{2}\normalsize \big| n \small (k_y) \normalsize  \big|^2 $$
-$$  E^V  \small (k_y)  \normalsize \space = \small \frac{1}{2}\normalsize \big| k_y \phi \small (k_y) \normalsize  \big|^2 \;. $$
+$$  \int{\mathrm{d} k_y \; \Gamma^n (k_y)}   \; = - \int{\mathrm{d} k_y \; \left( i\, k_y\,   n(k_y) \,  \phi^* (k_y) \right) } $$
+$$  \delta (k_y)   \; = - \mathrm{Im} \big( \mathrm{log}\left( n^*(k_y)   \; \phi(k_y)    \right) \big) $$
+$$  E^N  (k_y)   \; = \frac{1}{2} \big| n (k_y)   \big|^2 $$
+$$  E^V  (k_y)   \; = \frac{1}{2} \big| k_y\, \phi (k_y)\,  \big|^2 \;. $$
 
 
 Beside the spectral verification, time-integration can be verified through the expected in- and out-flows in the turbulent phase:
@@ -126,10 +126,10 @@ $$    \partial_t U   = \Gamma^N - \mathfrak{D}^U  \;. $$
 Where $\mathfrak{D}^E$ and $\mathfrak{D}^U$ are sinks derived from the diffusion terms of the HW equations, namely:
 
 
-$$    \mathfrak{D}^E = \quad \iint{ \mathrm{d}^2 x \space (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)} $$
-$$    \mathfrak{D}^U = -     \iint{ \mathrm{d}^2 x \space (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)} $$
-$$    with \quad \mathfrak{D}^n \small (x,y) \normalsize  = \nu \nabla^{2N} n \quad and \quad 
-    \mathfrak{D}^\phi \small (x,y) \normalsize \space = \nu \nabla^{2N} \phi  \;. $$
+$$    \mathfrak{D}^E = \quad \iint{ \mathrm{d}^2 x \; (n\, \mathfrak{D^n} - \phi\, \mathfrak{D}^\phi)} $$
+$$    \mathfrak{D}^U = -     \iint{ \mathrm{d}^2 x \; (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)} $$
+$$    with \quad \mathfrak{D}^n (x,y)   = \nu\, \nabla^{2N} n \quad and \quad 
+    \mathfrak{D}^\phi (x,y)  \; = \nu\, \nabla^{2N} \phi  \;. $$
 
 
 Note that it is the common practice across all reference texts to calculate the integral $\int\cdot$ as the average over a unit square $\langle \cdot \rangle$ in order to get comparable values for all properties.
