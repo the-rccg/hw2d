@@ -8,7 +8,7 @@ tags:
   - simulation
 authors:
   - name: Robin Greif
-    orcid: 0000-0002-3957-2474
+    orcid: 0000-0003-4143-780X
     equal-contrib: true
     affiliation: "1, 2" # (Multiple affiliations must be quoted)
 affiliations:
