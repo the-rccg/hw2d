@@ -17,9 +17,14 @@ Stable, verified parameters and values are published along with this repository.
 ### Installation 
 
 Install a pure NumPy version via
-```pip install hw2d```
+```
+pip install hw2d
+```
+
 and to include accelerators (currently supporting: numba), use the following:
-```pip install hw2d[accelerators]```
+```
+pip install hw2d[accelerators]
+```
 
 ### Usage
 
@@ -216,9 +221,9 @@ Reference values are averaged over 25 runs starting from well within the turbule
 Each run to `t=1,000` at `512x512` and `dt=0.025` requires roughly 125GB (3 million floats/frame for 3 fields over 40,000 frames per simulation), meaning the summary contains information for 10TB of data. This does not include the hypterparameter stabilization tests. 
 As a result, it is practically unfeasible to supply this data. 
 
-| **Metric**           | **Our Data**    | **Stegmeir** | **Camargo** | **HW**     | **Zeiler** |
+| **Metric**           | **HW2D Data**    | **Stegmeir** | **Camargo** | **HW**     | **Zeiler** |
 | -------------------- | --------------- | ------------ | ----------- | ---------- | ---------- |
-| ****                 | 512x512         | [@grillix]   | [@camargo]  | [@grillix] | [@zeiler]  |
+| ****                 | 512x512         | [Stegmeir et al.](https://doi.org/10.17617/2.2085490)   | [Camarco et al.](https://doi.org/10.1063/1.871116)  | [In Stegmeir](https://doi.org/10.1088/1361-6587/aaa373) | [Zeiler et al.](https://doi.org/10.1063/1.871566)  |
 | **$\Gamma_n$**       | $0.60 \pm 0.01$ | $0.64$       | $0.73$      | $0.61$     | $0.8$      |
 | **$\delta\Gamma_n$** | $0.05 \pm 0.01$ | $n/a$        | $n/a$       | $n/a$      | $n/a$      |
 | **$\Gamma_c$**       | $0.60 \pm 0.01$ | $n/a$        | $0.72$      | $n/a$      | $n/a$      |
