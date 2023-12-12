@@ -6,6 +6,7 @@
 ![hw2d-documentation](https://github.com/the-rccg/hw2d/actions/workflows/pdoc.yml/badge.svg)
 ![hw2d-publish](https://github.com/the-rccg/hw2d/actions/workflows/python-publish.yml/badge.svg)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/hw2d.svg)](https://pypi.org/project/hw2d/)
+[![DOI](https://zenodo.org/badge/671837450.svg)](https://zenodo.org/doi/10.5281/zenodo.10365012)
 
 This repository contains a reference implementations for the Hasegawa-Wakatani model in two dimensions using Python.
 The purpose is to provide a playground for education and scientific purposes: be it testing numerical or machine learning methods, or building related models quicker, while improving the comparability of results.
