@@ -3,7 +3,7 @@ from numba import stencil, jit, prange
 
 
 @stencil
-def jpp_nb(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
+def jpp(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
     return (
         (zeta[1, 0] - zeta[-1, 0]) * (psi[0, 1] - psi[0, -1])
         - (zeta[0, 1] - zeta[0, -1]) * (psi[1, 0] - psi[-1, 0])
@@ -11,7 +11,7 @@ def jpp_nb(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
 
 
 @stencil
-def jpx_nb(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
+def jpx(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
     return (
         zeta[1, 0] * (psi[1, 1] - psi[1, -1])
         - zeta[-1, 0] * (psi[-1, 1] - psi[-1, -1])
@@ -21,7 +21,7 @@ def jpx_nb(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
 
 
 @stencil
-def jxp_nb(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
+def jxp(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
     return (
         zeta[1, 1] * (psi[0, 1] - psi[1, 0])
         - zeta[-1, -1] * (psi[-1, 0] - psi[0, -1])
@@ -31,11 +31,11 @@ def jxp_nb(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
 
 
 @jit(nopython=True, parallel=True, nogil=True)
-def arakawa_nb(zeta: np.ndarray, psi: np.ndarray, dx: float) -> np.ndarray:
+def arakawa(zeta: np.ndarray, psi: np.ndarray, dx: float) -> np.ndarray:
     return (jpp(zeta, psi, dx) + jpx(zeta, psi, dx) + jxp(zeta, psi, dx)) / 3
 
 
-def periodic_arakawa_nb(zeta, psi, dx):
+def periodic_arakawa(zeta, psi, dx):
     return arakawa(np.pad(zeta, 1, mode="wrap"), np.pad(psi, 1, mode="wrap"), dx)[
         1:-1, 1:-1
     ]
