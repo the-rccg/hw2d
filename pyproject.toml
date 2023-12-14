@@ -28,7 +28,8 @@ dependencies = [
     "numpy",
     "pandas",
     "scipy",
-    "tqdm"
+    "tqdm",
+    "perfplot"
 ]
 description = "Reference HW2D Implementation in Python"
 dynamic = ["version"]
