@@ -554,33 +554,39 @@
 
             <div class="docstring"><p>Run the simulation with the given parameters.</p>
 
-<p>Args:
-    step_size (float, optional): Incremental step for simulation progression. Defaults to 0.025.
-    end_time (float, optional): Duration till the simulation should run. Defaults to 1_000.
-    grid_pts (int, optional): Grid points. Suggested: 128 for coarse, 1024 for fine. Defaults to 512.
-    k0 (float, optional): Determines k-focus. Suggested: 0.15 for high-k, 0.0375 for low-k. Defaults to 0.15.
-    N (int, optional): Dissipation exponent's half value. Defaults to 3.
-    nu (float, optional): Viscosity. Suggested: 5e-10 for coarse-large, 1e-4 for fine-small. Defaults to 5.0e-08.
-    c1 (float, optional): Transition scale between hydrodynamic and adiabatic. Suggested values: 0.1, 1, 5. Defaults to 1.0.
-    kappa_coeff (float, optional): Coefficient of d/dy phi. Defaults to 1.0.
-    poisson_bracket_coeff (float, optional): Coefficient of Poisson bracket [A,B] implemented with Arakawa Scheme. Defaults to 1.0.
-    seed (int or None, optional): Seed for random number generation. Defaults to None.
-    init_type (str, optional): Initialization method. Choices: 'fourier', 'sine', 'random', 'normal'. Defaults to 'normal'.
-    init_scale (float, optional): Scaling factor for initialization. Defaults to 0.01.
-    snaps (int, optional): Snapshot intervals for saving. Defaults to 1.
-    buffer_size (int, optional): Size of buffer for storage. Defaults to 100.
-    output_path (str, optional): Where to save the simulation data. Defaults to ''.
-    continue_file (bool, optional): If True, continue with existing file. Defaults to False.
-    movie (bool, optional): If True, generate a movie out of simulation. Defaults to True.
-    min_fps (int, optional): Parameter for movie generation. Defaults to 10.
-    dpi (int, optional): Parameter for movie generation. Defaults to 75.
-    speed (int, optional): Parameter for movie generation. Defaults to 5.
-    debug (bool, optional): Enable or disable debug mode. Defaults to False.
-    properties (Iterable[str], optional): List of properties to calculate for the saved file.
-    plot_properties (Iterable[str], optional): List of properties to plot a timetrace for.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    None: The function saves simulation data or generates a movie as specified.</p>
+<ul>
+<li><strong>step_size (float, optional):</strong>  Incremental step for simulation progression. Defaults to 0.025.</li>
+<li><strong>end_time (float, optional):</strong>  Duration till the simulation should run. Defaults to 1_000.</li>
+<li><strong>grid_pts (int, optional):</strong>  Grid points. Suggested: 128 for coarse, 1024 for fine. Defaults to 512.</li>
+<li><strong>k0 (float, optional):</strong>  Determines k-focus. Suggested: 0.15 for high-k, 0.0375 for low-k. Defaults to 0.15.</li>
+<li><strong>N (int, optional):</strong>  Dissipation exponent's half value. Defaults to 3.</li>
+<li><strong>nu (float, optional):</strong>  Viscosity. Suggested: 5e-10 for coarse-large, 1e-4 for fine-small. Defaults to 5.0e-08.</li>
+<li><strong>c1 (float, optional):</strong>  Transition scale between hydrodynamic and adiabatic. Suggested values: 0.1, 1, 5. Defaults to 1.0.</li>
+<li><strong>kappa_coeff (float, optional):</strong>  Coefficient of d/dy phi. Defaults to 1.0.</li>
+<li><strong>poisson_bracket_coeff (float, optional):</strong>  Coefficient of Poisson bracket [A,B] implemented with Arakawa Scheme. Defaults to 1.0.</li>
+<li><strong>seed (int or None, optional):</strong>  Seed for random number generation. Defaults to None.</li>
+<li><strong>init_type (str, optional):</strong>  Initialization method. Choices: 'fourier', 'sine', 'random', 'normal'. Defaults to 'normal'.</li>
+<li><strong>init_scale (float, optional):</strong>  Scaling factor for initialization. Defaults to 0.01.</li>
+<li><strong>snaps (int, optional):</strong>  Snapshot intervals for saving. Defaults to 1.</li>
+<li><strong>buffer_size (int, optional):</strong>  Size of buffer for storage. Defaults to 100.</li>
+<li><strong>output_path (str, optional):</strong>  Where to save the simulation data. Defaults to ''.</li>
+<li><strong>continue_file (bool, optional):</strong>  If True, continue with existing file. Defaults to False.</li>
+<li><strong>movie (bool, optional):</strong>  If True, generate a movie out of simulation. Defaults to True.</li>
+<li><strong>min_fps (int, optional):</strong>  Parameter for movie generation. Defaults to 10.</li>
+<li><strong>dpi (int, optional):</strong>  Parameter for movie generation. Defaults to 75.</li>
+<li><strong>speed (int, optional):</strong>  Parameter for movie generation. Defaults to 5.</li>
+<li><strong>debug (bool, optional):</strong>  Enable or disable debug mode. Defaults to False.</li>
+<li><strong>properties (Iterable[str], optional):</strong>  List of properties to calculate for the saved file.</li>
+<li><strong>plot_properties (Iterable[str], optional):</strong>  List of properties to plot a timetrace for.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>None: The function saves simulation data or generates a movie as specified.</p>
+</blockquote>
 </div>
 
 

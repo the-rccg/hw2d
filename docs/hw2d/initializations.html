@@ -48,11 +48,6 @@
             <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                    pattern=".+" required>
 
-            <h2>Contents</h2>
-            <ul>
-  <li><a href="#generate-a-2d-sine-pattern">Generate a 2D sine pattern</a></li>
-</ul>
-
 
             <h2>Submodules</h2>
             <ul>
@@ -81,24 +76,29 @@ for the HW2D system. The methods encompass both deterministic patterns (like sin
 and stochastic patterns (like Fourier noise). These initializations can be useful for
 starting simulations, testing, and visualization in the context of the HW2D system.</p>
 
-<p>Functions:
-    - <code>get_2d_sine</code>: Generates a 2D sine wave pattern over a specified grid.
-    - <code>get_fft_noise</code>: Creates a 2D noise pattern using the Fast Fourier Transform.</p>
-
-<p>Example Usage:</p>
+<h6 id="functions">Functions:</h6>
 
 <blockquote>
-  <blockquote>
-    <blockquote>
-      <h1 id="generate-a-2d-sine-pattern">Generate a 2D sine pattern</h1>
-      
-      <p>sine_pattern = get_2d_sine((256, 256), 1.0)</p>
+  <ul>
+  <li><code>get_2d_sine</code>: Generates a 2D sine wave pattern over a specified grid.</li>
+  <li><code>get_fft_noise</code>: Creates a 2D noise pattern using the Fast Fourier Transform.</li>
+  </ul>
+</blockquote>
 
-<pre><code>&gt;&gt;&gt; # Generate a 2D noise pattern using FFT
-&gt;&gt;&gt; noise_pattern = get_fft_noise((256, 256), 1.0, 1.0, min_frequency=0.1, max_frequency=2.0)
+<h6 id="example-usage">Example Usage:</h6>
+
+<blockquote>
+  <div class="pdoc-code codehilite">
+<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Generate a 2D sine pattern</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sine_pattern</span> <span class="o">=</span> <span class="n">get_2d_sine</span><span class="p">((</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span>
 </code></pre>
-    </blockquote>
-  </blockquote>
+  </div>
+  
+  <div class="pdoc-code codehilite">
+<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Generate a 2D noise pattern using FFT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">noise_pattern</span> <span class="o">=</span> <span class="n">get_fft_noise</span><span class="p">((</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">min_frequency</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">max_frequency</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+</code></pre>
+  </div>
 </blockquote>
 </div>
 

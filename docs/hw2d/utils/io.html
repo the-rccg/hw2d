@@ -388,17 +388,23 @@
 
             <div class="docstring"><p>Save data to a buffer. If the buffer is full, flush the buffer to the HDF5 file.</p>
 
-<p>Args:
-    buffer (Dict[str, Any]): Data buffer.
-    buffer_size (int): Maximum size of the buffer.
-    new_val (Dict[str, Any]): New values to be added to the buffer.
-    field_list (List[str]): List of fields to be saved.
-    buffer_index (int): Current index in the buffer.
-    flush_index (int): Index to start flushing in the HDF5 file.
-    output_path (str): Path of the output HDF5 file.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    Tuple[int, int]: Updated buffer index and flush index.</p>
+<ul>
+<li><strong>buffer (Dict[str, Any]):</strong>  Data buffer.</li>
+<li><strong>buffer_size (int):</strong>  Maximum size of the buffer.</li>
+<li><strong>new_val (Dict[str, Any]):</strong>  New values to be added to the buffer.</li>
+<li><strong>field_list (List[str]):</strong>  List of fields to be saved.</li>
+<li><strong>buffer_index (int):</strong>  Current index in the buffer.</li>
+<li><strong>flush_index (int):</strong>  Index to start flushing in the HDF5 file.</li>
+<li><strong>output_path (str):</strong>  Path of the output HDF5 file.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>Tuple[int, int]: Updated buffer index and flush index.</p>
+</blockquote>
 </div>
 
 
@@ -475,12 +481,18 @@
 
             <div class="docstring"><p>Load data and attributes from an HDF5 file.</p>
 
-<p>Args:
-    file_name (str): Name and path of the HDF5 file to load.
-    field_list (List[str]): List of fields to be loaded.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    Tuple[Dict[str, Any], Dict[str, Any]]: Loaded data and associated parameters (attributes).</p>
+<ul>
+<li><strong>file_name (str):</strong>  Name and path of the HDF5 file to load.</li>
+<li><strong>field_list (List[str]):</strong>  List of fields to be loaded.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>Tuple[Dict[str, Any], Dict[str, Any]]: Loaded data and associated parameters (attributes).</p>
+</blockquote>
 </div>
 
 
@@ -529,12 +541,18 @@
 
             <div class="docstring"><p>Load data and attributes from an HDF5 file.</p>
 
-<p>Args:
-    file_name (str): Name and path of the HDF5 file to load.
-    field_list (List[str]): List of fields to be loaded.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    Tuple[Dict[str, Any], Dict[str, Any]]: Loaded data and associated parameters (attributes).</p>
+<ul>
+<li><strong>file_name (str):</strong>  Name and path of the HDF5 file to load.</li>
+<li><strong>field_list (List[str]):</strong>  List of fields to be loaded.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>Tuple[Dict[str, Any], Dict[str, Any]]: Loaded data and associated parameters (attributes).</p>
+</blockquote>
 </div>
 
 

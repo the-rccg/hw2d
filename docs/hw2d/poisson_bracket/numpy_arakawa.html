@@ -322,14 +322,20 @@ The functions are tailored for a 2D domain and utilize efficient NumPy array ope
 
             <div class="docstring"><p>Compute the Jacobian using centered differences for both fields.</p>
 
-<p>Args:
-    zeta (np.ndarray): Vorticity field.
-    psi (np.ndarray): Stream function field.
-    dx (float): Grid spacing.
-    i, j (int): Indices for spatial location.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    float: Jacobian value at (i, j).</p>
+<ul>
+<li><strong>zeta (np.ndarray):</strong>  Vorticity field.</li>
+<li><strong>psi (np.ndarray):</strong>  Stream function field.</li>
+<li><strong>dx (float):</strong>  Grid spacing.</li>
+<li><strong>i, j (int):</strong>  Indices for spatial location.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>float: Jacobian value at (i, j).</p>
+</blockquote>
 </div>
 
 
@@ -371,14 +377,20 @@ The functions are tailored for a 2D domain and utilize efficient NumPy array ope
             <div class="docstring"><p>Compute the Jacobian using centered differences for the vorticity field
 and staggered differences for the stream function field.</p>
 
-<p>Args:
-    zeta (np.ndarray): Vorticity field.
-    psi (np.ndarray): Stream function field.
-    dx (float): Grid spacing.
-    i, j (int): Indices for spatial location.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    float: Jacobian value at (i, j).</p>
+<ul>
+<li><strong>zeta (np.ndarray):</strong>  Vorticity field.</li>
+<li><strong>psi (np.ndarray):</strong>  Stream function field.</li>
+<li><strong>dx (float):</strong>  Grid spacing.</li>
+<li><strong>i, j (int):</strong>  Indices for spatial location.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>float: Jacobian value at (i, j).</p>
+</blockquote>
 </div>
 
 
@@ -420,14 +432,20 @@ and staggered differences for the stream function field.</p>
             <div class="docstring"><p>Compute the Jacobian using staggered differences for the vorticity field
 and centered differences for the stream function field.</p>
 
-<p>Args:
-    zeta (np.ndarray): Vorticity field.
-    psi (np.ndarray): Stream function field.
-    dx (float): Grid spacing.
-    i, j (int): Indices for spatial location.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    float: Jacobian value at (i, j).</p>
+<ul>
+<li><strong>zeta (np.ndarray):</strong>  Vorticity field.</li>
+<li><strong>psi (np.ndarray):</strong>  Stream function field.</li>
+<li><strong>dx (float):</strong>  Grid spacing.</li>
+<li><strong>i, j (int):</strong>  Indices for spatial location.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>float: Jacobian value at (i, j).</p>
+</blockquote>
 </div>
 
 
@@ -469,13 +487,19 @@ and centered differences for the stream function field.</p>
 
             <div class="docstring"><p>Compute the Poisson bracket as an average Jacobian using the Arakawa scheme.</p>
 
-<p>Args:
-    zeta (np.ndarray): Vorticity field.
-    psi (np.ndarray): Stream function field.
-    dx (float): Grid spacing.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    np.ndarray: Compute the Poisson bracket as an average Jacobian over the entire grid.</p>
+<ul>
+<li><strong>zeta (np.ndarray):</strong>  Vorticity field.</li>
+<li><strong>psi (np.ndarray):</strong>  Stream function field.</li>
+<li><strong>dx (float):</strong>  Grid spacing.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>np.ndarray: Compute the Poisson bracket as an average Jacobian over the entire grid.</p>
+</blockquote>
 </div>
 
 
@@ -511,13 +535,19 @@ and centered differences for the stream function field.</p>
 
             <div class="docstring"><p>Compute the Arakawa Scheme with periodic boundary conditions.</p>
 
-<p>Args:
-    zeta (np.ndarray): Vorticity field.
-    psi (np.ndarray): Stream function field.
-    dx (float): Grid spacing.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    np.ndarray: Compute the Poisson bracket as an average Jacobian over the grid without padding.</p>
+<ul>
+<li><strong>zeta (np.ndarray):</strong>  Vorticity field.</li>
+<li><strong>psi (np.ndarray):</strong>  Stream function field.</li>
+<li><strong>dx (float):</strong>  Grid spacing.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>np.ndarray: Compute the Poisson bracket as an average Jacobian over the grid without padding.</p>
+</blockquote>
 </div>
 
 
@@ -567,13 +597,19 @@ and centered differences for the stream function field.</p>
 using a vectorized version of the Arakawa scheme. This function is designed
 for a 2D periodic domain and requires a 1-cell padded input on each border.</p>
 
-<p>Args:
-    zeta (np.ndarray): Vorticity field with padding.
-    psi (np.ndarray): Stream function field with padding.
-    dx (float): Grid spacing.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    np.ndarray: Discretized Poisson bracket (Jacobian) over the grid.</p>
+<ul>
+<li><strong>zeta (np.ndarray):</strong>  Vorticity field with padding.</li>
+<li><strong>psi (np.ndarray):</strong>  Stream function field with padding.</li>
+<li><strong>dx (float):</strong>  Grid spacing.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>np.ndarray: Discretized Poisson bracket (Jacobian) over the grid.</p>
+</blockquote>
 </div>
 
 
@@ -611,13 +647,19 @@ for a 2D periodic domain and requires a 1-cell padded input on each border.</p>
 domain using a vectorized version of the Arakawa scheme. This function automatically
 handles the required padding.</p>
 
-<p>Args:
-    zeta (np.ndarray): Vorticity field.
-    psi (np.ndarray): Stream function field.
-    dx (float): Grid spacing.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    np.ndarray: Discretized Poisson bracket (Jacobian) over the grid without padding.</p>
+<ul>
+<li><strong>zeta (np.ndarray):</strong>  Vorticity field.</li>
+<li><strong>psi (np.ndarray):</strong>  Stream function field.</li>
+<li><strong>dx (float):</strong>  Grid spacing.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>np.ndarray: Discretized Poisson bracket (Jacobian) over the grid without padding.</p>
+</blockquote>
 </div>
 
 

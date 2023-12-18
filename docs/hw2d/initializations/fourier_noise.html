@@ -262,18 +262,24 @@ and visualization.</p>
 <p>This function creates a 2D noise pattern based on standard normal distributions in Fourier space.
 It allows for control over the frequency and wavelength components of the noise through the provided parameters.</p>
 
-<p>Args:
-    resolution (Tuple[int, int]): The dimensions of the generated noise.
-    size (float): Physical size.
-    scale (float): Scaling factor for the frequencies.
-    min_frequency (float, optional): Minimum frequency for filtering. Default is 0.
-    max_frequency (float, optional): Maximum frequency for filtering. Default is 0.
-    min_wavelength (float, optional): Minimum wavelength for filtering. Default is 0.
-    max_wavelength (float, optional): Maximum wavelength for filtering. Default is 0.
-    factor (int, optional): Factor used in calculating the frequency components. Default is 2.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    np.ndarray: The generated 2D noise pattern.</p>
+<ul>
+<li><strong>resolution (Tuple[int, int]):</strong>  The dimensions of the generated noise.</li>
+<li><strong>size (float):</strong>  Physical size.</li>
+<li><strong>scale (float):</strong>  Scaling factor for the frequencies.</li>
+<li><strong>min_frequency (float, optional):</strong>  Minimum frequency for filtering. Default is 0.</li>
+<li><strong>max_frequency (float, optional):</strong>  Maximum frequency for filtering. Default is 0.</li>
+<li><strong>min_wavelength (float, optional):</strong>  Minimum wavelength for filtering. Default is 0.</li>
+<li><strong>max_wavelength (float, optional):</strong>  Maximum wavelength for filtering. Default is 0.</li>
+<li><strong>factor (int, optional):</strong>  Factor used in calculating the frequency components. Default is 2.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>np.ndarray: The generated 2D noise pattern.</p>
+</blockquote>
 </div>
 
 

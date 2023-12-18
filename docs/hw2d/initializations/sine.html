@@ -160,26 +160,31 @@
 function applied to both the x and y coordinates. The resulting pattern can be
 visualized as a 2D sine wave in both the x and y directions.</p>
 
-<p>Args:
-    grid_size (Tuple[int, int]): Size of the grid (height, width) for the 2D sine pattern.
-    L (float): Physical extent of the domain. The resulting values will be in the range [0, L).</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    np.ndarray: A 2D numpy array of shape <code>grid_size</code> containing the sine pattern.</p>
+<ul>
+<li><strong>grid_size (Tuple[int, int]):</strong>  Size of the grid (height, width) for the 2D sine pattern.</li>
+<li><strong>L (float):</strong>  Physical extent of the domain. The resulting values will be in the range [0, L).</li>
+</ul>
 
-<p>Example:</p>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
-  <blockquote>
-    <blockquote>
-      <p>get_2d_sine((5,5), 1.0)
-          array([[ 0.        ,  0.58778525,  0.95105652,  0.95105652,  0.58778525],
-                 [ 0.        ,  0.48163507,  0.78183148,  0.78183148,  0.48163507],
-                 [-0.        , -0.48163507, -0.78183148, -0.78183148, -0.48163507],
-                 [-0.        , -0.58778525, -0.95105652, -0.95105652, -0.58778525],
-                 [-0.        , -0.48163507, -0.78183148, -0.78183148, -0.48163507]])</p>
-    </blockquote>
-  </blockquote>
+  <p>np.ndarray: A 2D numpy array of shape <code>grid_size</code> containing the sine pattern.</p>
+</blockquote>
+
+<h6 id="example">Example:</h6>
+
+<blockquote>
+  <div class="pdoc-code codehilite">
+<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">get_2d_sine</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="go">array([[ 0.        ,  0.58778525,  0.95105652,  0.95105652,  0.58778525],</span>
+<span class="go">       [ 0.        ,  0.48163507,  0.78183148,  0.78183148,  0.48163507],</span>
+<span class="go">       [-0.        , -0.48163507, -0.78183148, -0.78183148, -0.48163507],</span>
+<span class="go">       [-0.        , -0.58778525, -0.95105652, -0.95105652, -0.58778525],</span>
+<span class="go">       [-0.        , -0.48163507, -0.78183148, -0.78183148, -0.48163507]])</span>
+</code></pre>
+  </div>
 </blockquote>
 </div>
 

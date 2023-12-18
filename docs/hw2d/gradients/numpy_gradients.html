@@ -294,12 +294,18 @@ It provides a standard implementation based on array computation suitable for so
 
             <div class="docstring"><p>Compute the Laplace of a 2D array using finite differences.</p>
 
-<p>Args:
-    padded (np.ndarray): 2D array with padding of size 1.
-    dx (float): The spacing between grid points.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    np.ndarray: The Laplace of the input array.</p>
+<ul>
+<li><strong>padded (np.ndarray):</strong>  2D array with padding of size 1.</li>
+<li><strong>dx (float):</strong>  The spacing between grid points.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>np.ndarray: The Laplace of the input array.</p>
+</blockquote>
 </div>
 
 
@@ -337,12 +343,18 @@ It provides a standard implementation based on array computation suitable for so
 
             <div class="docstring"><p>Compute the Laplace of a 2D array using finite differences with periodic boundary conditions.</p>
 
-<p>Args:
-    a (np.ndarray): Input 2D array.
-    dx (float): The spacing between grid points.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    np.ndarray: The Laplace of the input array with periodic boundary conditions.</p>
+<ul>
+<li><strong>a (np.ndarray):</strong>  Input 2D array.</li>
+<li><strong>dx (float):</strong>  The spacing between grid points.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>np.ndarray: The Laplace of the input array with periodic boundary conditions.</p>
+</blockquote>
 </div>
 
 
@@ -378,13 +390,19 @@ It provides a standard implementation based on array computation suitable for so
 
             <div class="docstring"><p>Compute the Laplace of a 2D array using finite differences N times successively with periodic boundary conditions.</p>
 
-<p>Args:
-    a (np.ndarray): Input 2D array.
-    dx (float): The spacing between grid points.
-    N (int): Number of iterations.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    np.ndarray: The Laplace of the input array with periodic boundary conditions.</p>
+<ul>
+<li><strong>a (np.ndarray):</strong>  Input 2D array.</li>
+<li><strong>dx (float):</strong>  The spacing between grid points.</li>
+<li><strong>N (int):</strong>  Number of iterations.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>np.ndarray: The Laplace of the input array with periodic boundary conditions.</p>
+</blockquote>
 </div>
 
 
@@ -425,13 +443,19 @@ It provides a standard implementation based on array computation suitable for so
 
             <div class="docstring"><p>Compute the Laplace of a 2D array using Fourier transform.</p>
 
-<p>Args:
-    grid (np.ndarray): Input 2D array.
-    dx (float): The spacing between grid points.
-    times (int, optional): Number of times to apply the Laplace operator. Default is 1.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    np.ndarray: The Laplace of the input array using Fourier transform.</p>
+<ul>
+<li><strong>grid (np.ndarray):</strong>  Input 2D array.</li>
+<li><strong>dx (float):</strong>  The spacing between grid points.</li>
+<li><strong>times (int, optional):</strong>  Number of times to apply the Laplace operator. Default is 1.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>np.ndarray: The Laplace of the input array using Fourier transform.</p>
+</blockquote>
 </div>
 
 
@@ -472,13 +496,19 @@ It provides a standard implementation based on array computation suitable for so
 
             <div class="docstring"><p>Compute the gradient of a 2D array using finite differences.</p>
 
-<p>Args:
-    padded (np.ndarray): 2D array with padding of size 1.
-    dx (float): The spacing between grid points.
-    axis (int): Axis along which the gradient is tkaen</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    np.ndarray: Gradient in axis-direction.</p>
+<ul>
+<li><strong>padded (np.ndarray):</strong>  2D array with padding of size 1.</li>
+<li><strong>dx (float):</strong>  The spacing between grid points.</li>
+<li><strong>axis (int):</strong>  Axis along which the gradient is tkaen</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>np.ndarray: Gradient in axis-direction.</p>
+</blockquote>
 </div>
 
 
@@ -519,13 +549,19 @@ It provides a standard implementation based on array computation suitable for so
 
             <div class="docstring"><p>Compute the gradient of a 2D array using finite differences with periodic boundary conditions.</p>
 
-<p>Args:
-    input_field (np.ndarray): Input 2D array.
-    dx (float): The spacing between grid points.
-    axis (int): Axis along which the gradient is tkaen</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    tuple: Gradient in y-direction, gradient in x-direction with periodic boundary conditions.</p>
+<ul>
+<li><strong>input_field (np.ndarray):</strong>  Input 2D array.</li>
+<li><strong>dx (float):</strong>  The spacing between grid points.</li>
+<li><strong>axis (int):</strong>  Axis along which the gradient is tkaen</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>tuple: Gradient in y-direction, gradient in x-direction with periodic boundary conditions.</p>
+</blockquote>
 </div>
 
 

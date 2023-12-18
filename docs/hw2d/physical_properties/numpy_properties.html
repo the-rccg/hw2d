@@ -500,15 +500,21 @@ $$
     \Gamma_n = - \int{\mathrm{d^2} x \; \tilde{n} \frac{\partial \tilde{\phi}}{\partial y}}
 $$</p>
 
-<p>Args:
-    n (np.ndarray): Density (or similar field).
-    p (np.ndarray): Potential (or similar field).
-    dx (float): Grid spacing.
-    dy_p (np.ndarray, optional): Gradient of potential in the y-direction.
-        Computed from <code>p</code> if not provided.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    float: Computed average particle flux value.</p>
+<ul>
+<li><strong>n (np.ndarray):</strong>  Density (or similar field).</li>
+<li><strong>p (np.ndarray):</strong>  Potential (or similar field).</li>
+<li><strong>dx (float):</strong>  Grid spacing.</li>
+<li><strong>dy_p (np.ndarray, optional):</strong>  Gradient of potential in the y-direction.
+Computed from <code>p</code> if not provided.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>float: Computed average particle flux value.</p>
+</blockquote>
 </div>
 
 
@@ -550,14 +556,20 @@ $$
     \Gamma_c = c_1 \int{\mathrm{d^2} x \; (\tilde{n} - \tilde{\phi})^2}
 $$</p>
 
-<p>Args:
-    n (np.ndarray): Density (or similar field).
-    p (np.ndarray): Potential (or similar field).
-    c1 (float): Proportionality constant.
-    dx (float): Grid spacing.</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    float: Computed particle flux value.</p>
+<ul>
+<li><strong>n (np.ndarray):</strong>  Density (or similar field).</li>
+<li><strong>p (np.ndarray):</strong>  Potential (or similar field).</li>
+<li><strong>c1 (float):</strong>  Proportionality constant.</li>
+<li><strong>dx (float):</strong>  Grid spacing.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>float: Computed particle flux value.</p>
+</blockquote>
 </div>
 
 
@@ -764,14 +776,20 @@ $$
     \nu \; \nabla F
 $$</p>
 
-<p>Args:
-    arr (np.ndarray): Field to work on
-    nu (float): hyperdiffusion coefficient
-    N (int): order of hyperdiffusion
-    dx (float): grid spacing</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    np.ndarray: _description_</p>
+<ul>
+<li><strong>arr (np.ndarray):</strong>  Field to work on</li>
+<li><strong>nu (float):</strong>  hyperdiffusion coefficient</li>
+<li><strong>N (int):</strong>  order of hyperdiffusion</li>
+<li><strong>dx (float):</strong>  grid spacing</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>np.ndarray: _description_</p>
+</blockquote>
 </div>
 
 
@@ -811,14 +829,20 @@ $$</p>
     DE = \int{\mathrm{d^2} x \; n \; D_n - \phi \; D_p}
 $$</p>
 
-<p>Args:
-    n (np.ndarray): density field $n$
-    p (np.ndarray): potential field $\phi$
-    Dn (np.ndarray): hyperdiffusion of the density field $n$
-    Dp (np.ndarray): hyperdiffusion of the potential field $\phi$</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    float: Value of DE</p>
+<ul>
+<li><strong>n (np.ndarray):</strong>  density field $n$</li>
+<li><strong>p (np.ndarray):</strong>  potential field $\phi$</li>
+<li><strong>Dn (np.ndarray):</strong>  hyperdiffusion of the density field $n$</li>
+<li><strong>Dp (np.ndarray):</strong>  hyperdiffusion of the potential field $\phi$</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>float: Value of DE</p>
+</blockquote>
 </div>
 
 
@@ -858,14 +882,20 @@ $$</p>
     DU = \int{\mathrm{d^2} x \; (n - \Omega)  (D_n - D_\phi)}
 $$</p>
 
-<p>Args:
-    n (np.ndarray): density field $n$
-    o (np.ndarray): potential field $\phi$
-    Dn (np.ndarray): hyperdiffusion of the density field $n$
-    Dp (np.ndarray): hyperdiffusion of the potential field $\phi$</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    float: Value of D()</p>
+<ul>
+<li><strong>n (np.ndarray):</strong>  density field $n$</li>
+<li><strong>o (np.ndarray):</strong>  potential field $\phi$</li>
+<li><strong>Dn (np.ndarray):</strong>  hyperdiffusion of the density field $n$</li>
+<li><strong>Dp (np.ndarray):</strong>  hyperdiffusion of the potential field $\phi$</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>float: Value of D()</p>
+</blockquote>
 </div>
 
 
@@ -903,13 +933,19 @@ $$</p>
     \partial_t E = \Gamma_n - \Gamma_c - DE
 $$</p>
 
-<p>Args:
-    gamma_n (np.ndarray): $\Gamma_n$ 
-    gamma_c (np.ndarray): $\Gamma_c$
-    DE (np.ndarray): $DE = n\; D_n - \phi \; D_p$</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    float: Time gradient of energy (in-/outflow)</p>
+<ul>
+<li><strong>gamma_n (np.ndarray):</strong>  $\Gamma_n$ </li>
+<li><strong>gamma_c (np.ndarray):</strong>  $\Gamma_c$</li>
+<li><strong>DE (np.ndarray):</strong>  $DE = n\; D_n - \phi \; D_p$</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>float: Time gradient of energy (in-/outflow)</p>
+</blockquote>
 </div>
 
 
@@ -946,12 +982,18 @@ $$</p>
     \partial_t U = \Gamma_n - DU
 $$</p>
 
-<p>Args:
-    gamma_n (np.ndarray): $\Gamma_n$
-    DU (np.ndarray): $DU$</p>
+<h6 id="arguments">Arguments:</h6>
 
-<p>Returns:
-    float:  Time gradient of enstrophy (in-/outflow)</p>
+<ul>
+<li><strong>gamma_n (np.ndarray):</strong>  $\Gamma_n$</li>
+<li><strong>DU (np.ndarray):</strong>  $DU$</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>float:  Time gradient of enstrophy (in-/outflow)</p>
+</blockquote>
 </div>
 
 

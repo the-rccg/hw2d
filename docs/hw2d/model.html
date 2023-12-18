@@ -164,20 +164,33 @@
 It offers flexibility in terms of numerical schemes and allows for comprehensive profiling and debugging 
 of the simulation process.</p>
 
-<p>Functions:
-    - euler_step: Implements the Euler time-stepping method.
-    - rk4_step: Implements the Runge-Kutta 4th order time-stepping method.
-    - get_phi: Computes the electrostatic potential from vorticity.
-    - diffuse: Applies diffusion to an array.
-    - gradient_2d: Computes the 2D gradient of the system.
-    - get_gammas: Computes energy gradients.</p>
+<h6 id="functions">Functions:</h6>
 
-<p>Classes:
-    - HW: Represents the primary simulation entity for the Hasegawa-Wakatani model.</p>
+<blockquote>
+  <ul>
+  <li>euler_step: Implements the Euler time-stepping method.</li>
+  <li>rk4_step: Implements the Runge-Kutta 4th order time-stepping method.</li>
+  <li>get_phi: Computes the electrostatic potential from vorticity.</li>
+  <li>diffuse: Applies diffusion to an array.</li>
+  <li>gradient_2d: Computes the 2D gradient of the system.</li>
+  <li>get_gammas: Computes energy gradients.</li>
+  </ul>
+</blockquote>
 
-<p>Notes:
-    The module supports both NumPy and Numba for computational operations and provides detailed logging and 
-    profiling capabilities.</p>
+<h6 id="classes">Classes:</h6>
+
+<blockquote>
+  <ul>
+  <li>HW: Represents the primary simulation entity for the Hasegawa-Wakatani model.</li>
+  </ul>
+</blockquote>
+
+<h6 id="notes">Notes:</h6>
+
+<blockquote>
+  <p>The module supports both NumPy and Numba for computational operations and provides detailed logging and 
+  profiling capabilities.</p>
+</blockquote>
 </div>
 
                         <input id="mod-model-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -792,16 +805,19 @@ of the simulation process.</p>
 
             <div class="docstring"><p>Initialize the Hasegawa-Wakatani (HW) simulation.</p>
 
-<p>Parameters:
-    dx (float): Grid spacing.
-    N (int): System size.
-    c1 (float): Model-specific parameter.
-    nu (float): Diffusion coefficient.
-    k0 (float): Fundamental wavenumber.
-    poisson_bracket_coeff (float, optional): Coefficient for the Arakawa scheme. Default is 1.
-    kappa_coeff (float, optional): Coefficient for d/dy phi. Default is 1.
-    debug (bool, optional): Flag to enable debugging mode. Default is False.
-    TEST_CONSERVATION (bool, optional): Flag to test conservation properties. Default is True.</p>
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>dx (float):</strong>  Grid spacing.</li>
+<li><strong>N (int):</strong>  System size.</li>
+<li><strong>c1 (float):</strong>  Model-specific parameter.</li>
+<li><strong>nu (float):</strong>  Diffusion coefficient.</li>
+<li><strong>k0 (float):</strong>  Fundamental wavenumber.</li>
+<li><strong>poisson_bracket_coeff (float, optional):</strong>  Coefficient for the Arakawa scheme. Default is 1.</li>
+<li><strong>kappa_coeff (float, optional):</strong>  Coefficient for d/dy phi. Default is 1.</li>
+<li><strong>debug (bool, optional):</strong>  Flag to enable debugging mode. Default is False.</li>
+<li><strong>TEST_CONSERVATION (bool, optional):</strong>  Flag to test conservation properties. Default is True.</li>
+</ul>
 </div>
 
 
@@ -1030,9 +1046,12 @@ of the simulation process.</p>
 
             <div class="docstring"><p>Log the time taken by a specific function.</p>
 
-<p>Parameters:
-    name (str): Name of the function.
-    time (float): Time taken by the function.</p>
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>name (str):</strong>  Name of the function.</li>
+<li><strong>time (float):</strong>  Time taken by the function.</li>
+</ul>
 </div>
 
 
