@@ -33,7 +33,7 @@ jobs:
   
     - name: Generate documentation with MathJax support
       run: |
-          pdoc hw2d -o temp_docs --math
+          pdoc hw2d -o temp_docs --math --docformat google
 
     - name: Prepare docs directory for gh-pages
       run: |
