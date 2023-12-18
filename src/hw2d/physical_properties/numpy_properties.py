@@ -30,7 +30,7 @@ def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -> float:
     """
     Compute the average particle flux $(\Gamma_n)$ using the formula:
     $$
-        \Gamma_n = - \int{d^2 x \\tilde{n} \frac{\partial \\tilde{\phi}}{\partial y}}
+        \\Gamma_n = - \\int{d^2 x \\tilde{n} \frac{\partial \\tilde{\\phi}}{\\partial y}}
     $$
 
     Args:
@@ -75,7 +75,7 @@ def get_gamma_c(n: np.ndarray, p: np.ndarray, c1: float, dx: float) -> float:
 def get_gamma_n_ky(
     n: np.ndarray, p: np.ndarray, dx: float
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """Calculate the spectral components of $\\Gamma_n$, $\\Gamma_n(\k_y)$"""
+    """Calculate the spectral components of $\\Gamma_n$, $\\Gamma_n(k_y)$"""
     ky_max = n.shape[-2] // 2
     n_dft = np.fft.fft2(n, norm="ortho", axes=(-2, -1))  # n(ky, kx)
     p_dft = np.fft.fft2(p, norm="ortho", axes=(-2, -1))  # p(ky, kx)
@@ -91,7 +91,7 @@ def get_gamma_n_ky(
 
 
 def get_gamma_n_spectrally(n: np.ndarray, p: np.ndarray, dx: float) -> float:
-    """Calculate the $\\Gamma_n = \\int{d k_y \; \\Gamma_n(\k_y)}$"""
+    """Calculate the $\\Gamma_n = \\int{d k_y \; \\Gamma_n(k_y)}$"""
     ky, gamma_n_ky = get_gamma_n_ky(n=n, p=p, dx=dx)
     gamma_n = np.mean(gamma_n_ky, axis=-1)  # mean over ky
     return gamma_n
@@ -124,8 +124,8 @@ def get_energy(n: np.ndarray, phi: np.ndarray, dx: float) -> np.ndarray:
 def get_enstrophy(n: np.ndarray, omega: np.ndarray, dx: float) -> np.ndarray:
     """Enstrophy of the HW2D system
     $$
-        U = \frac{1}{2} \int{d^2 x (n^2 - \nabla^2 \phi)^2}
-          = \frac{1}{2} \int{d^2 x (n-\Omega)^2}
+        \\mathbf{U = \\frac{1}{2} \\int{d^2 x (n - \\Omega)^2}}
+          = \\frac{1}{2} \\int{d^2 x (n^2 - \\nabla^2 \\phi)^2}
     $$
     """
     # omega = omega - np.mean(omega, axis=(-1, -2), keepdims=True)
@@ -136,8 +136,8 @@ def get_enstrophy(n: np.ndarray, omega: np.ndarray, dx: float) -> np.ndarray:
 def get_enstrophy_phi(n: np.ndarray, phi: np.ndarray, dx: float) -> np.ndarray:
     """Enstrophy of the HW2D system from phi
     $$
-        U = \frac{1}{2} \int{d^2 x (n^2 - \nabla^2 \phi)^2}
-          = \frac{1}{2} \int{d^2 x (n-\Omega)^2}
+        \\mathbf{U = \\frac{1}{2} \\int{d^2 x (n^2 - \\nabla^2 \\phi)^2}}
+          = \\frac{1}{2} \\int{d^2 x (n - \\Omega)^2}
     $$
     """
     omega = periodic_laplace_N(phi, dx, N=1)
@@ -147,6 +147,20 @@ def get_enstrophy_phi(n: np.ndarray, phi: np.ndarray, dx: float) -> np.ndarray:
 
 
 def get_D(arr: np.ndarray, nu: float, N: int, dx: float) -> np.ndarray:
+    """Calculate the hyperdiffusion coefficient
+    $$
+        \\nu \; \\nabla F
+    $$
+
+    Args:
+        arr (np.ndarray): Field to work on
+        nu (float): hyperdiffusion coefficient
+        N (int): order of hyperdiffusion
+        dx (float): grid spacing
+
+    Returns:
+        np.ndarray: _description_
+    """
     return nu * periodic_laplace_N(arr, dx=dx, N=N)
 
 
@@ -154,6 +168,20 @@ def get_D(arr: np.ndarray, nu: float, N: int, dx: float) -> np.ndarray:
 
 
 def get_DE(n: np.ndarray, p: np.ndarray, Dn: np.ndarray, Dp: np.ndarray) -> float:
+    """
+    $$
+        n * D_n - \\phi * D_p
+    $$
+
+    Args:
+        n (np.ndarray): density field $n$
+        p (np.ndarray): potential field $\\phi$
+        Dn (np.ndarray): hyperdiffusion of the density field $n$
+        Dp (np.ndarray): hyperdiffusion of the potential field $\\phi$
+
+    Returns:
+        float: _description_
+    """
     DE = np.mean(n * Dn - p * Dp, axis=(-1, -2))
     return DE
 
@@ -179,7 +207,7 @@ def get_dU_dt(gamma_n: np.ndarray, DU: np.ndarray) -> float:
 
 def get_energy_N_ky(n: np.ndarray) -> np.ndarray:
     """thermal energy
-    $$ E^N(k) = \frac{1}{2} |n(k)|^2 $$
+    $$ E^N(k) = \\frac{1}{2} |n(k)|^2 $$
     """
     n_dft = np.fft.fft2(n, norm="ortho")
     # n_dft = np.mean(n_dft, axis=-1)
