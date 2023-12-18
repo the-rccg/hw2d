@@ -8,7 +8,7 @@ The provided functionalities help in understanding the physical and spectral pro
 
 Specifically, the module includes:
 
-- **Sources and Sinks** such as $\Gamma_n$ and $Gamma_c$.
+- **Sources and Sinks** such as $\\Gamma_n$ and $\\Gamma_c$.
 - **Energies** including total, kinetic, and potential energy.
 - **Enstrophy** to quantify the system's vorticity content.
 - **Dissipation Metrics** to understand the system's energy dissipation rate over time.
@@ -28,9 +28,9 @@ from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
 
 def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -> float:
     """
-    Compute the average particle flux $(\Gamma_n)$ using the formula:
+    Compute the average particle flux $(\\Gamma_n)$ using the formula:
     $$
-        \\Gamma_n = - \\int{\\mathrm{d^2} x \; \\tilde{n} \frac{\partial \\tilde{\\phi}}{\\partial y}}
+        \\Gamma_n = - \\int{\\mathrm{d^2} x \; \\tilde{n} \\frac{\partial \\tilde{\\phi}}{\\partial y}}
     $$
 
     Args:
@@ -51,9 +51,9 @@ def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -> float:
 
 def get_gamma_c(n: np.ndarray, p: np.ndarray, c1: float, dx: float) -> float:
     """
-    Compute the sink $\Gamma_c$ using the formula:
+    Compute the sink $\\Gamma_c$ using the formula:
     $$
-        \\Gamma_c = c_1 \\int{\\mathrm{d^2} x \; (\\tilde{n} - \\tilde{\phi})^2}
+        \\Gamma_c = c_1 \\int{\\mathrm{d^2} x \; (\\tilde{n} - \\tilde{\\phi})^2}
     $$
 
     Args:
@@ -217,7 +217,7 @@ def get_dE_dt(gamma_n: np.ndarray, gamma_c: np.ndarray, DE: np.ndarray) -> float
     Args:
         gamma_n (np.ndarray): $\\Gamma_n$ 
         gamma_c (np.ndarray): $\\Gamma_c$
-        DE (np.ndarray): $DE = n\;* D_n - \\phi \; D_p$
+        DE (np.ndarray): $DE = n\; D_n - \\phi \; D_p$
 
     Returns:
         float: Time gradient of energy (in-/outflow)
@@ -271,7 +271,7 @@ def get_energy_N_spectrally(n: np.ndarray) -> np.ndarray:
 def get_energy_V_ky(p: np.ndarray, dx: float) -> np.ndarray:
     """kinetic energy spectrum
     $$
-        E^V(k_y) = \frac{1}{2} |k_y \phi(k_y) |^2
+        E^V(k_y) = \\frac{1}{2} | k_y \\phi(k_y) |^2
     $$
     """
     k_kx, k_ky = np.meshgrid(
@@ -287,7 +287,8 @@ def get_energy_V_ky(p: np.ndarray, dx: float) -> np.ndarray:
 def get_energy_V_spectrally(p: np.ndarray, dx: float) -> np.ndarray:
     """kinetic energy spectrally integrated
     $$
-        E^V = \\int{\\mathrm{d} k_y \; E^V(k_y)} = \\int{dk_y \; \frac{1}{2} |k_y \phi(k_y) |^2 }
+        E^V = \\int{\\mathrm{d} k_y \; E^V(k_y)} 
+            = \\int{\\mathrm{d} k_y \; \\frac{1}{2} |k_y \\phi(k_y) |^2 }
     $$
     """
     E_V_ky = get_energy_V_ky(p, dx=dx)
