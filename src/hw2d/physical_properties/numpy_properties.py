@@ -28,9 +28,9 @@ from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
 
 def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -> float:
     """
-    Compute the average particle flux ($\Gamma_n$) using the formula:
+    Compute the average particle flux $(\Gamma_n)$ using the formula:
     $$
-        \Gamma_n = - \int{d^2 x \tilde{n} \frac{\partial \tilde{\phi}}{\partial y}}
+        \Gamma_n = - \int{d^2 x \\tilde{n} \frac{\partial \\tilde{\phi}}{\partial y}}
     $$
 
     Args:
@@ -44,8 +44,8 @@ def get_gamma_n(n: np.ndarray, p: np.ndarray, dx: float, dy_p=None) -> float:
         float: Computed average particle flux value.
     """
     if dy_p is None:
-        dy_p = periodic_gradient(p, dx=dx, axis=-2)
-    gamma_n = -np.mean((n * dy_p), axis=(-1, -2))
+        dy_p = periodic_gradient(p, dx=dx, axis=-2)  # gradient in y
+    gamma_n = -np.mean((n * dy_p), axis=(-1, -2))  # mean over y & x
     return gamma_n
 
 
@@ -53,7 +53,7 @@ def get_gamma_c(n: np.ndarray, p: np.ndarray, c1: float, dx: float) -> float:
     """
     Compute the sink $\Gamma_c$ using the formula:
     $$
-        \Gamma_c = c_1 \int{d^2 x (\tilde{n} - \tilde{\phi})^2}
+        \Gamma_c = c_1 \int{d^2 x (\\tilde{n} - \\tilde{\phi})^2}
     $$
 
     Args:
@@ -65,8 +65,7 @@ def get_gamma_c(n: np.ndarray, p: np.ndarray, c1: float, dx: float) -> float:
     Returns:
         float: Computed particle flux value.
     """
-
-    gamma_c = c1 * np.mean((n - p) ** 2, axis=(-1, -2))
+    gamma_c = c1 * np.mean((n - p) ** 2, axis=(-1, -2))  # mean over y & x
     return gamma_c
 
 
@@ -76,7 +75,7 @@ def get_gamma_c(n: np.ndarray, p: np.ndarray, c1: float, dx: float) -> float:
 def get_gamma_n_ky(
     n: np.ndarray, p: np.ndarray, dx: float
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """Calculate the spectral components of Gamma_n"""
+    """Calculate the spectral components of $\\Gamma_n$, $\\Gamma_n(\k_y)$"""
     ky_max = n.shape[-2] // 2
     n_dft = np.fft.fft2(n, norm="ortho", axes=(-2, -1))  # n(ky, kx)
     p_dft = np.fft.fft2(p, norm="ortho", axes=(-2, -1))  # p(ky, kx)
@@ -92,8 +91,9 @@ def get_gamma_n_ky(
 
 
 def get_gamma_n_spectrally(n: np.ndarray, p: np.ndarray, dx: float) -> float:
-    ky, integrated_gamma_n_k = get_gamma_n_ky(n=n, p=p, dx=dx)
-    gamma_n = np.mean(integrated_gamma_n_k, axis=-1)  # gamma_n
+    """Calculate the $\\Gamma_n = \\int{d k_y \; \\Gamma_n(\k_y)}$"""
+    ky, gamma_n_ky = get_gamma_n_ky(n=n, p=p, dx=dx)
+    gamma_n = np.mean(gamma_n_ky, axis=-1)  # mean over ky
     return gamma_n
 
 
@@ -102,9 +102,14 @@ def get_gamma_n_spectrally(n: np.ndarray, p: np.ndarray, dx: float) -> float:
 
 def get_energy(n: np.ndarray, phi: np.ndarray, dx: float) -> np.ndarray:
     """Energy of the HW2D system, sum of thermal and kinetic energy
-    $$ E = \\frac{1}{2} \int{d^2 x \left(n^2 + | \nabla \phi|^2 \right)} $$
+    $$
+        E = \\frac{1}{2} \\int{
+            d^2 x 
+            \\left(n^2 + | \\nabla \\phi |^2 \\right)
+        }
+    $$
     """
-    #Squared L2-Norm
+    # Squared L2-Norm
     squared_norm_grad_phi = periodic_gradient(phi, dx=dx, axis=-1)**2 + periodic_gradient(
         phi, dx=dx, axis=-2
     )**2
