@@ -133,7 +133,7 @@ The provided functionalities help in understanding the physical and spectral pro
 <p>Specifically, the module includes:</p>
 
 <ul>
-<li><strong>Sources and Sinks</strong> such as $\Gamma_n$ and $Gamma_c$.</li>
+<li><strong>Sources and Sinks</strong> such as $\Gamma_n$ and $\Gamma_c$.</li>
 <li><strong>Energies</strong> including total, kinetic, and potential energy.</li>
 <li><strong>Enstrophy</strong> to quantify the system's vorticity content.</li>
 <li><strong>Dissipation Metrics</strong> to understand the system's energy dissipation rate over time.</li>
@@ -157,7 +157,7 @@ The provided functionalities help in understanding the physical and spectral pro
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="sd">Specifically, the module includes:</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">- **Sources and Sinks** such as $\Gamma_n$ and $Gamma_c$.</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">- **Sources and Sinks** such as $\\Gamma_n$ and $\\Gamma_c$.</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="sd">- **Energies** including total, kinetic, and potential energy.</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="sd">- **Enstrophy** to quantify the system&#39;s vorticity content.</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="sd">- **Dissipation Metrics** to understand the system&#39;s energy dissipation rate over time.</span>
@@ -177,9 +177,9 @@ The provided functionalities help in understanding the physical and spectral pro
 </span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>
 </span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="k">def</span> <span class="nf">get_gamma_n</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dy_p</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 </span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="sd">    Compute the average particle flux $(\Gamma_n)$ using the formula:</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="sd">    Compute the average particle flux $(\\Gamma_n)$ using the formula:</span>
 </span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="sd">    $$</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="sd">        \\Gamma_n = - \\int{\\mathrm{d^2} x \; \\tilde{n} \frac{\partial \\tilde{\\phi}}{\\partial y}}</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="sd">        \\Gamma_n = - \\int{\\mathrm{d^2} x \; \\tilde{n} \\frac{\partial \\tilde{\\phi}}{\\partial y}}</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a><span class="sd">    $$</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="sd">    Args:</span>
@@ -200,9 +200,9 @@ The provided functionalities help in understanding the physical and spectral pro
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="k">def</span> <span class="nf">get_gamma_c</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">c1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 </span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">    Compute the sink $\Gamma_c$ using the formula:</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">    Compute the sink $\\Gamma_c$ using the formula:</span>
 </span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">    $$</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">        \\Gamma_c = c_1 \\int{\\mathrm{d^2} x \; (\\tilde{n} - \\tilde{\phi})^2}</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">        \\Gamma_c = c_1 \\int{\\mathrm{d^2} x \; (\\tilde{n} - \\tilde{\\phi})^2}</span>
 </span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">    $$</span>
 </span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>
 </span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">    Args:</span>
@@ -366,7 +366,7 @@ The provided functionalities help in understanding the physical and spectral pro
 </span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a><span class="sd">    Args:</span>
 </span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a><span class="sd">        gamma_n (np.ndarray): $\\Gamma_n$ </span>
 </span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a><span class="sd">        gamma_c (np.ndarray): $\\Gamma_c$</span>
-</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a><span class="sd">        DE (np.ndarray): $DE = n\;* D_n - \\phi \; D_p$</span>
+</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a><span class="sd">        DE (np.ndarray): $DE = n\; D_n - \\phi \; D_p$</span>
 </span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>
 </span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a><span class="sd">    Returns:</span>
 </span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a><span class="sd">        float: Time gradient of energy (in-/outflow)</span>
@@ -420,7 +420,7 @@ The provided functionalities help in understanding the physical and spectral pro
 </span><span id="L-271"><a href="#L-271"><span class="linenos">271</span></a><span class="k">def</span> <span class="nf">get_energy_V_ky</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 </span><span id="L-272"><a href="#L-272"><span class="linenos">272</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;kinetic energy spectrum</span>
 </span><span id="L-273"><a href="#L-273"><span class="linenos">273</span></a><span class="sd">    $$</span>
-</span><span id="L-274"><a href="#L-274"><span class="linenos">274</span></a><span class="sd">        E^V(k_y) = \frac{1}{2} |k_y \phi(k_y) |^2</span>
+</span><span id="L-274"><a href="#L-274"><span class="linenos">274</span></a><span class="sd">        E^V(k_y) = \\frac{1}{2} | k_y \\phi(k_y) |^2</span>
 </span><span id="L-275"><a href="#L-275"><span class="linenos">275</span></a><span class="sd">    $$</span>
 </span><span id="L-276"><a href="#L-276"><span class="linenos">276</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-277"><a href="#L-277"><span class="linenos">277</span></a>    <span class="n">k_kx</span><span class="p">,</span> <span class="n">k_ky</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
@@ -436,25 +436,26 @@ The provided functionalities help in understanding the physical and spectral pro
 </span><span id="L-287"><a href="#L-287"><span class="linenos">287</span></a><span class="k">def</span> <span class="nf">get_energy_V_spectrally</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 </span><span id="L-288"><a href="#L-288"><span class="linenos">288</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;kinetic energy spectrally integrated</span>
 </span><span id="L-289"><a href="#L-289"><span class="linenos">289</span></a><span class="sd">    $$</span>
-</span><span id="L-290"><a href="#L-290"><span class="linenos">290</span></a><span class="sd">        E^V = \\int{\\mathrm{d} k_y \; E^V(k_y)} = \\int{dk_y \; \frac{1}{2} |k_y \phi(k_y) |^2 }</span>
-</span><span id="L-291"><a href="#L-291"><span class="linenos">291</span></a><span class="sd">    $$</span>
-</span><span id="L-292"><a href="#L-292"><span class="linenos">292</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-293"><a href="#L-293"><span class="linenos">293</span></a>    <span class="n">E_V_ky</span> <span class="o">=</span> <span class="n">get_energy_V_ky</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
-</span><span id="L-294"><a href="#L-294"><span class="linenos">294</span></a>    <span class="n">E_V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">E_V_ky</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="L-295"><a href="#L-295"><span class="linenos">295</span></a>    <span class="k">return</span> <span class="n">E_V</span>
-</span><span id="L-296"><a href="#L-296"><span class="linenos">296</span></a>
+</span><span id="L-290"><a href="#L-290"><span class="linenos">290</span></a><span class="sd">        E^V = \\int{\\mathrm{d} k_y \; E^V(k_y)} </span>
+</span><span id="L-291"><a href="#L-291"><span class="linenos">291</span></a><span class="sd">            = \\int{\\mathrm{d} k_y \; \\frac{1}{2} |k_y \\phi(k_y) |^2 }</span>
+</span><span id="L-292"><a href="#L-292"><span class="linenos">292</span></a><span class="sd">    $$</span>
+</span><span id="L-293"><a href="#L-293"><span class="linenos">293</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-294"><a href="#L-294"><span class="linenos">294</span></a>    <span class="n">E_V_ky</span> <span class="o">=</span> <span class="n">get_energy_V_ky</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
+</span><span id="L-295"><a href="#L-295"><span class="linenos">295</span></a>    <span class="n">E_V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">E_V_ky</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="L-296"><a href="#L-296"><span class="linenos">296</span></a>    <span class="k">return</span> <span class="n">E_V</span>
 </span><span id="L-297"><a href="#L-297"><span class="linenos">297</span></a>
-</span><span id="L-298"><a href="#L-298"><span class="linenos">298</span></a><span class="c1"># Phase Angle Spectra</span>
-</span><span id="L-299"><a href="#L-299"><span class="linenos">299</span></a>
+</span><span id="L-298"><a href="#L-298"><span class="linenos">298</span></a>
+</span><span id="L-299"><a href="#L-299"><span class="linenos">299</span></a><span class="c1"># Phase Angle Spectra</span>
 </span><span id="L-300"><a href="#L-300"><span class="linenos">300</span></a>
-</span><span id="L-301"><a href="#L-301"><span class="linenos">301</span></a><span class="k">def</span> <span class="nf">get_delta_ky</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="L-302"><a href="#L-302"><span class="linenos">302</span></a>    <span class="n">n_dft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;ortho&quot;</span><span class="p">)</span>
-</span><span id="L-303"><a href="#L-303"><span class="linenos">303</span></a>    <span class="n">p_dft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;ortho&quot;</span><span class="p">)</span>
-</span><span id="L-304"><a href="#L-304"><span class="linenos">304</span></a>    <span class="n">delta_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">n_dft</span><span class="p">)</span> <span class="o">*</span> <span class="n">p_dft</span><span class="p">))</span>
-</span><span id="L-305"><a href="#L-305"><span class="linenos">305</span></a>    <span class="n">delta_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">delta_k</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># mean in x</span>
-</span><span id="L-306"><a href="#L-306"><span class="linenos">306</span></a>    <span class="c1"># Get Real component</span>
-</span><span id="L-307"><a href="#L-307"><span class="linenos">307</span></a>    <span class="n">delta_k</span> <span class="o">=</span> <span class="n">delta_k</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span> <span class="n">n</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span>
-</span><span id="L-308"><a href="#L-308"><span class="linenos">308</span></a>    <span class="k">return</span> <span class="n">delta_k</span>
+</span><span id="L-301"><a href="#L-301"><span class="linenos">301</span></a>
+</span><span id="L-302"><a href="#L-302"><span class="linenos">302</span></a><span class="k">def</span> <span class="nf">get_delta_ky</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="L-303"><a href="#L-303"><span class="linenos">303</span></a>    <span class="n">n_dft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;ortho&quot;</span><span class="p">)</span>
+</span><span id="L-304"><a href="#L-304"><span class="linenos">304</span></a>    <span class="n">p_dft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;ortho&quot;</span><span class="p">)</span>
+</span><span id="L-305"><a href="#L-305"><span class="linenos">305</span></a>    <span class="n">delta_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">n_dft</span><span class="p">)</span> <span class="o">*</span> <span class="n">p_dft</span><span class="p">))</span>
+</span><span id="L-306"><a href="#L-306"><span class="linenos">306</span></a>    <span class="n">delta_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">delta_k</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># mean in x</span>
+</span><span id="L-307"><a href="#L-307"><span class="linenos">307</span></a>    <span class="c1"># Get Real component</span>
+</span><span id="L-308"><a href="#L-308"><span class="linenos">308</span></a>    <span class="n">delta_k</span> <span class="o">=</span> <span class="n">delta_k</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span> <span class="n">n</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span>
+</span><span id="L-309"><a href="#L-309"><span class="linenos">309</span></a>    <span class="k">return</span> <span class="n">delta_k</span>
 </span></pre></div>
 
 
@@ -472,9 +473,9 @@ The provided functionalities help in understanding the physical and spectral pro
     <a class="headerlink" href="#get_gamma_n"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="get_gamma_n-30"><a href="#get_gamma_n-30"><span class="linenos">30</span></a><span class="k">def</span> <span class="nf">get_gamma_n</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dy_p</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 </span><span id="get_gamma_n-31"><a href="#get_gamma_n-31"><span class="linenos">31</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="get_gamma_n-32"><a href="#get_gamma_n-32"><span class="linenos">32</span></a><span class="sd">    Compute the average particle flux $(\Gamma_n)$ using the formula:</span>
+</span><span id="get_gamma_n-32"><a href="#get_gamma_n-32"><span class="linenos">32</span></a><span class="sd">    Compute the average particle flux $(\\Gamma_n)$ using the formula:</span>
 </span><span id="get_gamma_n-33"><a href="#get_gamma_n-33"><span class="linenos">33</span></a><span class="sd">    $$</span>
-</span><span id="get_gamma_n-34"><a href="#get_gamma_n-34"><span class="linenos">34</span></a><span class="sd">        \\Gamma_n = - \\int{\\mathrm{d^2} x \; \\tilde{n} \frac{\partial \\tilde{\\phi}}{\\partial y}}</span>
+</span><span id="get_gamma_n-34"><a href="#get_gamma_n-34"><span class="linenos">34</span></a><span class="sd">        \\Gamma_n = - \\int{\\mathrm{d^2} x \; \\tilde{n} \\frac{\partial \\tilde{\\phi}}{\\partial y}}</span>
 </span><span id="get_gamma_n-35"><a href="#get_gamma_n-35"><span class="linenos">35</span></a><span class="sd">    $$</span>
 </span><span id="get_gamma_n-36"><a href="#get_gamma_n-36"><span class="linenos">36</span></a>
 </span><span id="get_gamma_n-37"><a href="#get_gamma_n-37"><span class="linenos">37</span></a><span class="sd">    Args:</span>
@@ -496,7 +497,7 @@ The provided functionalities help in understanding the physical and spectral pro
 
             <div class="docstring"><p>Compute the average particle flux $(\Gamma_n)$ using the formula:
 $$
-    \Gamma_n = - \int{\mathrm{d^2} x \; \tilde{n} rac{\partial \tilde{\phi}}{\partial y}}
+    \Gamma_n = - \int{\mathrm{d^2} x \; \tilde{n} \frac{\partial \tilde{\phi}}{\partial y}}
 $$</p>
 
 <p>Args:
@@ -525,9 +526,9 @@ $$</p>
     <a class="headerlink" href="#get_gamma_c"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="get_gamma_c-53"><a href="#get_gamma_c-53"><span class="linenos">53</span></a><span class="k">def</span> <span class="nf">get_gamma_c</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">c1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 </span><span id="get_gamma_c-54"><a href="#get_gamma_c-54"><span class="linenos">54</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="get_gamma_c-55"><a href="#get_gamma_c-55"><span class="linenos">55</span></a><span class="sd">    Compute the sink $\Gamma_c$ using the formula:</span>
+</span><span id="get_gamma_c-55"><a href="#get_gamma_c-55"><span class="linenos">55</span></a><span class="sd">    Compute the sink $\\Gamma_c$ using the formula:</span>
 </span><span id="get_gamma_c-56"><a href="#get_gamma_c-56"><span class="linenos">56</span></a><span class="sd">    $$</span>
-</span><span id="get_gamma_c-57"><a href="#get_gamma_c-57"><span class="linenos">57</span></a><span class="sd">        \\Gamma_c = c_1 \\int{\\mathrm{d^2} x \; (\\tilde{n} - \\tilde{\phi})^2}</span>
+</span><span id="get_gamma_c-57"><a href="#get_gamma_c-57"><span class="linenos">57</span></a><span class="sd">        \\Gamma_c = c_1 \\int{\\mathrm{d^2} x \; (\\tilde{n} - \\tilde{\\phi})^2}</span>
 </span><span id="get_gamma_c-58"><a href="#get_gamma_c-58"><span class="linenos">58</span></a><span class="sd">    $$</span>
 </span><span id="get_gamma_c-59"><a href="#get_gamma_c-59"><span class="linenos">59</span></a>
 </span><span id="get_gamma_c-60"><a href="#get_gamma_c-60"><span class="linenos">60</span></a><span class="sd">    Args:</span>
@@ -889,7 +890,7 @@ $$</p>
 </span><span id="get_dE_dt-218"><a href="#get_dE_dt-218"><span class="linenos">218</span></a><span class="sd">    Args:</span>
 </span><span id="get_dE_dt-219"><a href="#get_dE_dt-219"><span class="linenos">219</span></a><span class="sd">        gamma_n (np.ndarray): $\\Gamma_n$ </span>
 </span><span id="get_dE_dt-220"><a href="#get_dE_dt-220"><span class="linenos">220</span></a><span class="sd">        gamma_c (np.ndarray): $\\Gamma_c$</span>
-</span><span id="get_dE_dt-221"><a href="#get_dE_dt-221"><span class="linenos">221</span></a><span class="sd">        DE (np.ndarray): $DE = n\;* D_n - \\phi \; D_p$</span>
+</span><span id="get_dE_dt-221"><a href="#get_dE_dt-221"><span class="linenos">221</span></a><span class="sd">        DE (np.ndarray): $DE = n\; D_n - \\phi \; D_p$</span>
 </span><span id="get_dE_dt-222"><a href="#get_dE_dt-222"><span class="linenos">222</span></a>
 </span><span id="get_dE_dt-223"><a href="#get_dE_dt-223"><span class="linenos">223</span></a><span class="sd">    Returns:</span>
 </span><span id="get_dE_dt-224"><a href="#get_dE_dt-224"><span class="linenos">224</span></a><span class="sd">        float: Time gradient of energy (in-/outflow)</span>
@@ -905,7 +906,7 @@ $$</p>
 <p>Args:
     gamma_n (np.ndarray): $\Gamma_n$ 
     gamma_c (np.ndarray): $\Gamma_c$
-    DE (np.ndarray): $DE = n\;* D_n - \phi \; D_p$</p>
+    DE (np.ndarray): $DE = n\; D_n - \phi \; D_p$</p>
 
 <p>Returns:
     float: Time gradient of energy (in-/outflow)</p>
@@ -1033,7 +1034,7 @@ $$</p>
             <div class="pdoc-code codehilite"><pre><span></span><span id="get_energy_V_ky-272"><a href="#get_energy_V_ky-272"><span class="linenos">272</span></a><span class="k">def</span> <span class="nf">get_energy_V_ky</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 </span><span id="get_energy_V_ky-273"><a href="#get_energy_V_ky-273"><span class="linenos">273</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;kinetic energy spectrum</span>
 </span><span id="get_energy_V_ky-274"><a href="#get_energy_V_ky-274"><span class="linenos">274</span></a><span class="sd">    $$</span>
-</span><span id="get_energy_V_ky-275"><a href="#get_energy_V_ky-275"><span class="linenos">275</span></a><span class="sd">        E^V(k_y) = \frac{1}{2} |k_y \phi(k_y) |^2</span>
+</span><span id="get_energy_V_ky-275"><a href="#get_energy_V_ky-275"><span class="linenos">275</span></a><span class="sd">        E^V(k_y) = \\frac{1}{2} | k_y \\phi(k_y) |^2</span>
 </span><span id="get_energy_V_ky-276"><a href="#get_energy_V_ky-276"><span class="linenos">276</span></a><span class="sd">    $$</span>
 </span><span id="get_energy_V_ky-277"><a href="#get_energy_V_ky-277"><span class="linenos">277</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="get_energy_V_ky-278"><a href="#get_energy_V_ky-278"><span class="linenos">278</span></a>    <span class="n">k_kx</span><span class="p">,</span> <span class="n">k_ky</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
@@ -1049,7 +1050,7 @@ $$</p>
 
             <div class="docstring"><p>kinetic energy spectrum
 $$
-    E^V(k_y) = rac{1}{2} |k_y \phi(k_y) |^2
+    E^V(k_y) = \frac{1}{2} | k_y \phi(k_y) |^2
 $$</p>
 </div>
 
@@ -1069,18 +1070,20 @@ $$</p>
             <div class="pdoc-code codehilite"><pre><span></span><span id="get_energy_V_spectrally-288"><a href="#get_energy_V_spectrally-288"><span class="linenos">288</span></a><span class="k">def</span> <span class="nf">get_energy_V_spectrally</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 </span><span id="get_energy_V_spectrally-289"><a href="#get_energy_V_spectrally-289"><span class="linenos">289</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;kinetic energy spectrally integrated</span>
 </span><span id="get_energy_V_spectrally-290"><a href="#get_energy_V_spectrally-290"><span class="linenos">290</span></a><span class="sd">    $$</span>
-</span><span id="get_energy_V_spectrally-291"><a href="#get_energy_V_spectrally-291"><span class="linenos">291</span></a><span class="sd">        E^V = \\int{\\mathrm{d} k_y \; E^V(k_y)} = \\int{dk_y \; \frac{1}{2} |k_y \phi(k_y) |^2 }</span>
-</span><span id="get_energy_V_spectrally-292"><a href="#get_energy_V_spectrally-292"><span class="linenos">292</span></a><span class="sd">    $$</span>
-</span><span id="get_energy_V_spectrally-293"><a href="#get_energy_V_spectrally-293"><span class="linenos">293</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="get_energy_V_spectrally-294"><a href="#get_energy_V_spectrally-294"><span class="linenos">294</span></a>    <span class="n">E_V_ky</span> <span class="o">=</span> <span class="n">get_energy_V_ky</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
-</span><span id="get_energy_V_spectrally-295"><a href="#get_energy_V_spectrally-295"><span class="linenos">295</span></a>    <span class="n">E_V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">E_V_ky</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="get_energy_V_spectrally-296"><a href="#get_energy_V_spectrally-296"><span class="linenos">296</span></a>    <span class="k">return</span> <span class="n">E_V</span>
+</span><span id="get_energy_V_spectrally-291"><a href="#get_energy_V_spectrally-291"><span class="linenos">291</span></a><span class="sd">        E^V = \\int{\\mathrm{d} k_y \; E^V(k_y)} </span>
+</span><span id="get_energy_V_spectrally-292"><a href="#get_energy_V_spectrally-292"><span class="linenos">292</span></a><span class="sd">            = \\int{\\mathrm{d} k_y \; \\frac{1}{2} |k_y \\phi(k_y) |^2 }</span>
+</span><span id="get_energy_V_spectrally-293"><a href="#get_energy_V_spectrally-293"><span class="linenos">293</span></a><span class="sd">    $$</span>
+</span><span id="get_energy_V_spectrally-294"><a href="#get_energy_V_spectrally-294"><span class="linenos">294</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="get_energy_V_spectrally-295"><a href="#get_energy_V_spectrally-295"><span class="linenos">295</span></a>    <span class="n">E_V_ky</span> <span class="o">=</span> <span class="n">get_energy_V_ky</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
+</span><span id="get_energy_V_spectrally-296"><a href="#get_energy_V_spectrally-296"><span class="linenos">296</span></a>    <span class="n">E_V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">E_V_ky</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="get_energy_V_spectrally-297"><a href="#get_energy_V_spectrally-297"><span class="linenos">297</span></a>    <span class="k">return</span> <span class="n">E_V</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>kinetic energy spectrally integrated
 $$
-    E^V = \int{\mathrm{d} k_y \; E^V(k_y)} = \int{dk_y \; rac{1}{2} |k_y \phi(k_y) |^2 }
+    E^V = \int{\mathrm{d} k_y \; E^V(k_y)} 
+        = \int{\mathrm{d} k_y \; \frac{1}{2} |k_y \phi(k_y) |^2 }
 $$</p>
 </div>
 
@@ -1097,14 +1100,14 @@ $$</p>
 
     </div>
     <a class="headerlink" href="#get_delta_ky"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="get_delta_ky-302"><a href="#get_delta_ky-302"><span class="linenos">302</span></a><span class="k">def</span> <span class="nf">get_delta_ky</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-</span><span id="get_delta_ky-303"><a href="#get_delta_ky-303"><span class="linenos">303</span></a>    <span class="n">n_dft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;ortho&quot;</span><span class="p">)</span>
-</span><span id="get_delta_ky-304"><a href="#get_delta_ky-304"><span class="linenos">304</span></a>    <span class="n">p_dft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;ortho&quot;</span><span class="p">)</span>
-</span><span id="get_delta_ky-305"><a href="#get_delta_ky-305"><span class="linenos">305</span></a>    <span class="n">delta_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">n_dft</span><span class="p">)</span> <span class="o">*</span> <span class="n">p_dft</span><span class="p">))</span>
-</span><span id="get_delta_ky-306"><a href="#get_delta_ky-306"><span class="linenos">306</span></a>    <span class="n">delta_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">delta_k</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># mean in x</span>
-</span><span id="get_delta_ky-307"><a href="#get_delta_ky-307"><span class="linenos">307</span></a>    <span class="c1"># Get Real component</span>
-</span><span id="get_delta_ky-308"><a href="#get_delta_ky-308"><span class="linenos">308</span></a>    <span class="n">delta_k</span> <span class="o">=</span> <span class="n">delta_k</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span> <span class="n">n</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span>
-</span><span id="get_delta_ky-309"><a href="#get_delta_ky-309"><span class="linenos">309</span></a>    <span class="k">return</span> <span class="n">delta_k</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="get_delta_ky-303"><a href="#get_delta_ky-303"><span class="linenos">303</span></a><span class="k">def</span> <span class="nf">get_delta_ky</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="get_delta_ky-304"><a href="#get_delta_ky-304"><span class="linenos">304</span></a>    <span class="n">n_dft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;ortho&quot;</span><span class="p">)</span>
+</span><span id="get_delta_ky-305"><a href="#get_delta_ky-305"><span class="linenos">305</span></a>    <span class="n">p_dft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;ortho&quot;</span><span class="p">)</span>
+</span><span id="get_delta_ky-306"><a href="#get_delta_ky-306"><span class="linenos">306</span></a>    <span class="n">delta_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">n_dft</span><span class="p">)</span> <span class="o">*</span> <span class="n">p_dft</span><span class="p">))</span>
+</span><span id="get_delta_ky-307"><a href="#get_delta_ky-307"><span class="linenos">307</span></a>    <span class="n">delta_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">delta_k</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># mean in x</span>
+</span><span id="get_delta_ky-308"><a href="#get_delta_ky-308"><span class="linenos">308</span></a>    <span class="c1"># Get Real component</span>
+</span><span id="get_delta_ky-309"><a href="#get_delta_ky-309"><span class="linenos">309</span></a>    <span class="n">delta_k</span> <span class="o">=</span> <span class="n">delta_k</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span> <span class="n">n</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span>
+</span><span id="get_delta_ky-310"><a href="#get_delta_ky-310"><span class="linenos">310</span></a>    <span class="k">return</span> <span class="n">delta_k</span>
 </span></pre></div>
 
 
