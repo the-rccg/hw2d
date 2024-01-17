@@ -26,14 +26,14 @@ def jpp(zeta, psi, dx, i, j):
         zeta (np.ndarray): Vorticity field.
         psi (np.ndarray): Stream function field.
         dx (float): Grid spacing.
-        i, j (int): Indices for spatial location.
+        i, j (int): Indices for spatial location (x, y respectively)
 
     Returns:
         float: Jacobian value at (i, j).
     """
     return (
-        (zeta[i + 1, j] - zeta[i - 1, j]) * (psi[i, j + 1] - psi[i, j - 1])
-        - (zeta[i, j + 1] - zeta[i, j - 1]) * (psi[i + 1, j] - psi[i - 1, j])
+        (zeta[j, i + 1] - zeta[j,i - 1]) * (psi[j + 1, i] - psi[j - 1, i])
+        - (zeta[j + 1, i] - zeta[j - 1, i]) * (psi[j, i + 1] - psi[j, i - 1])
     ) / (4 * dx**2)
 
 
@@ -46,16 +46,16 @@ def jpx(zeta, psi, dx, i, j):
         zeta (np.ndarray): Vorticity field.
         psi (np.ndarray): Stream function field.
         dx (float): Grid spacing.
-        i, j (int): Indices for spatial location.
+        i, j (int): Indices for spatial location (x, y respectively)
 
     Returns:
         float: Jacobian value at (i, j).
     """
     return (
-        zeta[i + 1, j] * (psi[i + 1, j + 1] - psi[i + 1, j - 1])
-        - zeta[i - 1, j] * (psi[i - 1, j + 1] - psi[i - 1, j - 1])
-        - zeta[i, j + 1] * (psi[i + 1, j + 1] - psi[i - 1, j + 1])
-        + zeta[i, j - 1] * (psi[i + 1, j - 1] - psi[i - 1, j - 1])
+        zeta[j, i + 1] * (psi[j + 1, i + 1] - psi[j - 1, i + 1])
+        - zeta[j, i - 1] * (psi[j + 1, i - 1] - psi[j - 1, i - 1])
+        - zeta[j + 1, i] * (psi[j + 1, i + 1] - psi[j + 1, i - 1])
+        + zeta[j - 1, i] * (psi[j - 1, i + 1] - psi[j - 1, i - 1])
     ) / (4 * dx**2)
 
 
@@ -68,16 +68,16 @@ def jxp(zeta, psi, dx, i, j):
         zeta (np.ndarray): Vorticity field.
         psi (np.ndarray): Stream function field.
         dx (float): Grid spacing.
-        i, j (int): Indices for spatial location.
+        i, j (int): Indices for spatial location (x, y respectively)
 
     Returns:
         float: Jacobian value at (i, j).
     """
     return (
-        zeta[i + 1, j + 1] * (psi[i, j + 1] - psi[i + 1, j])
-        - zeta[i - 1, j - 1] * (psi[i - 1, j] - psi[i, j - 1])
-        - zeta[i - 1, j + 1] * (psi[i, j + 1] - psi[i - 1, j])
-        + zeta[i + 1, j - 1] * (psi[i + 1, j] - psi[i, j - 1])
+        zeta[j + 1, i + 1] * (psi[j + 1, i] - psi[j, i + 1])
+        - zeta[j - 1, i - 1] * (psi[j, i - 1] - psi[j - 1, i])
+        - zeta[j + 1, i - 1] * (psi[j + 1, i] - psi[j, i - 1])
+        + zeta[j - 1, i + 1] * (psi[j, i + 1] - psi[j - 1, i])
     ) / (4 * dx**2)
 
 
@@ -94,9 +94,9 @@ def arakawa(zeta, psi, dx):
         np.ndarray: Compute the Poisson bracket as an average Jacobian over the entire grid.
     """
     val = np.empty_like(zeta)
-    for i in range(1, zeta.shape[0] - 1):
-        for j in range(1, zeta.shape[1] - 1):
-            val[i][j] = (
+    for j in range(1, zeta.shape[0] - 1):  # j = y
+        for i in range(1, zeta.shape[1] - 1):  # i = x
+            val[j][i] = (
                 jpp(zeta, psi, dx, i, j)
                 + jpx(zeta, psi, dx, i, j)
                 + jxp(zeta, psi, dx, i, j)
@@ -126,7 +126,7 @@ def periodic_arakawa(zeta, psi, dx):
 
 def arakawa_vec(zeta, psi, dx):
     """
-    Compute the Poisson bracket (Jacobian) of vorticity and streamfunction
+    Compute the Poisson bracket (Jacobian) of vorticity and stream function
     using a vectorized version of the Arakawa scheme. This function is designed
     for a 2D periodic domain and requires a 1-cell padded input on each border.
 
@@ -139,23 +139,23 @@ def arakawa_vec(zeta, psi, dx):
         np.ndarray: Discretized Poisson bracket (Jacobian) over the grid.
     """
     return (
-        zeta[2:, 1:-1] * (psi[1:-1, 2:] - psi[1:-1, 0:-2] + psi[2:, 2:] - psi[2:, 0:-2])
-        - zeta[0:-2, 1:-1]
-        * (psi[1:-1, 2:] - psi[1:-1, 0:-2] + psi[0:-2, 2:] - psi[0:-2, 0:-2])
-        - zeta[1:-1, 2:]
-        * (psi[2:, 1:-1] - psi[0:-2, 1:-1] + psi[2:, 2:] - psi[0:-2, 2:])
-        + zeta[1:-1, 0:-2]
+        zeta[1:-1, 2:] * (psi[2:,1:-1] - psi[0:-2, 1:-1] + psi[2:, 2:] - psi[0:-2, 2:])
+        - zeta[1:-1,0:-2]
         * (psi[2:, 1:-1] - psi[0:-2, 1:-1] + psi[2:, 0:-2] - psi[0:-2, 0:-2])
-        + zeta[2:, 0:-2] * (psi[2:, 1:-1] - psi[1:-1, 0:-2])
-        + zeta[2:, 2:] * (psi[1:-1, 2:] - psi[2:, 1:-1])
-        - zeta[0:-2, 2:] * (psi[1:-1, 2:] - psi[0:-2, 1:-1])
-        - zeta[0:-2, 0:-2] * (psi[0:-2, 1:-1] - psi[1:-1, 0:-2])
+        - zeta[2:, 1:-1]
+        * (psi[1:-1, 2:] - psi[1:-1, 0:-2] + psi[2:, 2:] - psi[2:, 0:-2])
+        + zeta[0:-2, 1:-1]
+        * (psi[1:-1, 2:] - psi[1:-1, 0:-2] + psi[0:-2, 2:] - psi[0:-2, 0:-2])
+        + zeta[0:-2, 2:] * (psi[1:-1, 2:] - psi[0:-2, 1:-1])
+        + zeta[2:, 2:] * (psi[2:, 1:-1] - psi[1:-1, 2:])
+        - zeta[2:, 0:-2] * (psi[2:, 1:-1] - psi[1:-1, 0:-2])
+        - zeta[0:-2, 0:-2] * (psi[1:-1, 0:-2] - psi[0:-2, 1:-1])
     ) / (12 * dx**2)
 
 
 def periodic_arakawa_vec(zeta, psi, dx):
     """
-    Compute the Poisson bracket (Jacobian) of vorticity and streamfunction for a 2D periodic
+    Compute the Poisson bracket (Jacobian) of vorticity and stream function for a 2D periodic
     domain using a vectorized version of the Arakawa scheme. This function automatically
     handles the required padding.
 

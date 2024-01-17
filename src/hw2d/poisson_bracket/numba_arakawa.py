@@ -5,28 +5,28 @@ from numba import stencil, jit, prange
 @stencil
 def jpp(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
     return (
-        (zeta[1, 0] - zeta[-1, 0]) * (psi[0, 1] - psi[0, -1])
-        - (zeta[0, 1] - zeta[0, -1]) * (psi[1, 0] - psi[-1, 0])
+        (zeta[0, 1] - zeta[0, -1]) * (psi[1, 0] - psi[-1, 0])
+        - (zeta[1, 0] - zeta[-1, 0]) * (psi[0, 1] - psi[0, -1])
     ) / (4 * d**2)
 
 
 @stencil
 def jpx(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
     return (
-        zeta[1, 0] * (psi[1, 1] - psi[1, -1])
-        - zeta[-1, 0] * (psi[-1, 1] - psi[-1, -1])
-        - zeta[0, 1] * (psi[1, 1] - psi[-1, 1])
-        + zeta[0, -1] * (psi[1, -1] - psi[-1, -1])
+        zeta[0, 1] * (psi[1, 1] - psi[-1, 1])
+        - zeta[0, -1] * (psi[1, -1] - psi[-1, -1])
+        - zeta[1, 0] * (psi[1, 1] - psi[1, -1])
+        + zeta[-1, 0] * (psi[-1, 1] - psi[-1, -1])
     ) / (4 * d**2)
 
 
 @stencil
 def jxp(zeta: np.ndarray, psi: np.ndarray, d: float) -> np.ndarray:
     return (
-        zeta[1, 1] * (psi[0, 1] - psi[1, 0])
-        - zeta[-1, -1] * (psi[-1, 0] - psi[0, -1])
-        - zeta[-1, 1] * (psi[0, 1] - psi[-1, 0])
-        + zeta[1, -1] * (psi[1, 0] - psi[0, -1])
+        zeta[1, 1] * (psi[1, 0] - psi[0, 1])
+        - zeta[-1, -1] * (psi[0, -1] - psi[-1, 0])
+        - zeta[1, -1] * (psi[1, 0] - psi[0, -1])
+        + zeta[-1, 1] * (psi[0, 1] - psi[-1, 0])
     ) / (4 * d**2)
 
 
@@ -45,14 +45,14 @@ def periodic_arakawa(zeta, psi, dx):
 @stencil
 def arakawa_stencil(zeta: np.ndarray, psi: np.ndarray) -> np.ndarray:
     return (
-        zeta[1, 0] * (psi[0, 1] - psi[0, -1] + psi[1, 1] - psi[1, -1])
-        - zeta[-1, 0] * (psi[0, 1] - psi[0, -1] + psi[-1, 1] - psi[-1, -1])
-        - zeta[0, 1] * (psi[1, 0] - psi[-1, 0] + psi[1, 1] - psi[-1, 1])
-        + zeta[0, -1] * (psi[1, 0] - psi[-1, 0] + psi[1, -1] - psi[-1, -1])
-        + zeta[1, -1] * (psi[1, 0] - psi[0, -1])
-        + zeta[1, 1] * (psi[0, 1] - psi[1, 0])
-        - zeta[-1, 1] * (psi[0, 1] - psi[-1, 0])
-        - zeta[-1, -1] * (psi[-1, 0] - psi[0, -1])
+        zeta[0, 1] * (psi[1, 0] - psi[-1, 0] + psi[1, 1] - psi[-1, 1])
+        - zeta[0, -1] * (psi[1, 0] - psi[-1, 0] + psi[1, -1] - psi[-1, -1])
+        - zeta[1, 0] * (psi[0, 1] - psi[0, -1] + psi[1, 1] - psi[1, -1])
+        + zeta[-1, 0] * (psi[0, 1] - psi[0, -1] + psi[-1, 1] - psi[-1, -1])
+        + zeta[-1, 1] * (psi[0, 1] - psi[-1, 0])
+        + zeta[1, 1] * (psi[1, 0] - psi[0, 1])
+        - zeta[1, -1] * (psi[1, 0] - psi[0, -1])
+        - zeta[-1, -1] * (psi[0, -1] - psi[-1, 0])
     )
 
 
@@ -77,17 +77,17 @@ def arakawa_vec(zeta: np.ndarray, psi: np.ndarray, dx: float) -> np.ndarray:
     """2D periodic first-order Arakawa
     requires 1 cell padded input on each border"""
     return (
-        zeta[2:, 1:-1] * (psi[1:-1, 2:] - psi[1:-1, 0:-2] + psi[2:, 2:] - psi[2:, 0:-2])
-        - zeta[0:-2, 1:-1]
-        * (psi[1:-1, 2:] - psi[1:-1, 0:-2] + psi[0:-2, 2:] - psi[0:-2, 0:-2])
-        - zeta[1:-1, 2:]
-        * (psi[2:, 1:-1] - psi[0:-2, 1:-1] + psi[2:, 2:] - psi[0:-2, 2:])
-        + zeta[1:-1, 0:-2]
+        zeta[1:-1, 2:] * (psi[2:,1:-1] - psi[0:-2, 1:-1] + psi[2:, 2:] - psi[0:-2, 2:])
+        - zeta[1:-1,0:-2]
         * (psi[2:, 1:-1] - psi[0:-2, 1:-1] + psi[2:, 0:-2] - psi[0:-2, 0:-2])
-        + zeta[2:, 0:-2] * (psi[2:, 1:-1] - psi[1:-1, 0:-2])
-        + zeta[2:, 2:] * (psi[1:-1, 2:] - psi[2:, 1:-1])
-        - zeta[0:-2, 2:] * (psi[1:-1, 2:] - psi[0:-2, 1:-1])
-        - zeta[0:-2, 0:-2] * (psi[0:-2, 1:-1] - psi[1:-1, 0:-2])
+        - zeta[2:, 1:-1]
+        * (psi[1:-1, 2:] - psi[1:-1, 0:-2] + psi[2:, 2:] - psi[2:, 0:-2])
+        + zeta[0:-2, 1:-1]
+        * (psi[1:-1, 2:] - psi[1:-1, 0:-2] + psi[0:-2, 2:] - psi[0:-2, 0:-2])
+        + zeta[0:-2, 2:] * (psi[1:-1, 2:] - psi[0:-2, 1:-1])
+        + zeta[2:, 2:] * (psi[2:, 1:-1] - psi[1:-1, 2:])
+        - zeta[2:, 0:-2] * (psi[2:, 1:-1] - psi[1:-1, 0:-2])
+        - zeta[0:-2, 0:-2] * (psi[1:-1, 0:-2] - psi[0:-2, 1:-1])
     ) / (12 * dx**2)
 
 
