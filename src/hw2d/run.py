@@ -20,13 +20,14 @@ from hw2d.utils.namespaces import Namespace
 from hw2d.utils.plot.movie import create_movie
 from hw2d.utils.run_properties import calculate_properties
 from hw2d.utils.plot.timetrace import plot_timetraces
+from hw2d.utils.downsample import fourier_downsample
 
 
 def run(
     # Physics & Numerics
     step_size: float = 0.025,
-    end_time: float = 1_000,
-    grid_pts: int = 512,
+    end_time: float = 300,
+    grid_pts: int = 64,
     k0: float = 0.15,
     N: int = 3,
     nu: float = 5.0e-08,
@@ -40,8 +41,9 @@ def run(
     # Saving
     output_path: str = "_test.h5",
     continue_file: bool = False,
-    buffer_size: int = 100,
+    buffer_length: int = 100,
     snaps: int = 1,
+    downsample_factor: float = 2,
     # Movie
     movie: bool = True,
     min_fps: int = 10,
@@ -86,7 +88,7 @@ def run(
         init_scale (float, optional): Scaling factor for initialization. Defaults to 0.01.
         output_path (str, optional): Where to save the simulation data. Defaults to ''.
         continue_file (bool, optional): If True, continue with existing file. Defaults to False.
-        buffer_size (int, optional): Size of buffer for storage. Defaults to 100.
+        buffer_length (int, optional): Size of buffer for storage. Defaults to 100.
         snaps (int, optional): Snapshot intervals for saving. Defaults to 1.
         movie (bool, optional): If True, generate a movie out of simulation. Defaults to True.
         min_fps (int, optional): Parameter for movie generation. Defaults to 10.
@@ -126,6 +128,7 @@ def run(
         "random": lambda y, x: np.random.rand(y, x).astype(np.float64),
         "normal": lambda y, x: np.random.normal(size=(y, x)).astype(np.float64),
     }
+    downsample_fnc = fourier_downsample
 
     # Physics
     physics_params = dict(
@@ -159,9 +162,15 @@ def run(
             f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}"
         )
     if output_path:
+        y_save = y
+        x_save = x
+        if downsample_factor != 1:
+            y_save = int(round(y / downsample_factor))
+            x_save = int(round(x / downsample_factor))
+            print(f"Downsampling by a factor {downsample_factor} for saving to: {y_save}x{x_save}")
         # Output data from this run
         buffer = {
-            field: np.zeros((buffer_size, y, x), dtype=np.float32)
+            field: np.zeros((buffer_length, y_save, x_save), dtype=np.float32)
             for field in field_list
         }
         output_params = {
@@ -176,12 +185,15 @@ def run(
                 return
         # Create
         else:
-            save_params = get_save_params(physics_params, step_size, snaps, x, y)
+            save_params = get_save_params(physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save)
             create_appendable_h5(
                 output_path, save_params, dtype=np.float32, chunk_size=100
             )
+            new_val = plasma
+            if downsample_factor != 1:
+                new_val = Namespace(**{k: downsample_fnc(v, downsample_factor) for k,v in plasma.items() if k in ("phi", "omega", "density")})
             output_params["buffer_index"] = save_to_buffered_h5(
-                new_val=plasma, buffer_size=buffer_size, **output_params
+                new_val=new_val, buffer_length=buffer_length, **output_params
             )
 
     # Setup Simulation
@@ -196,8 +208,11 @@ def run(
 
         # Save to records
         if output_path and i % snaps == 0:
+            new_val = plasma
+            if downsample_factor != 1:
+                new_val = Namespace(**{k: downsample_fnc(v, downsample_factor) for k,v in plasma.items() if k in ("phi", "omega", "density")})
             output_params["buffer_index"] = save_to_buffered_h5(
-                new_val=plasma, buffer_size=buffer_size, **output_params
+                new_val=new_val, buffer_length=buffer_length, **output_params
             )
 
         # Check for breaking
@@ -230,7 +245,7 @@ def run(
         print(f"Calculating properties...")
         calculate_properties(
             file_path=output_path,
-            batch_size=buffer_size,
+            batch_size=buffer_length,
             property_list=properties,
             force_recompute=True,
             is_debug=False,

@@ -5,13 +5,15 @@ from hw2d.utils.namespaces import Namespace
 
 
 def get_save_params(
-    params: Dict[str, Any], dt: float, snaps: int, x: int, y: int
+    params: Dict[str, Any], dt: float, snaps: int, x: int, y: int, x_save: int or None = None, y_save: int or None = None
 ) -> Dict[str, Any]:
     params = params.copy()
     params["dt"] = dt
     params["frame_dt"] = dt * snaps
     params["x"] = x
     params["y"] = y
+    params["x_save"] = x_save if x_save is not None else x
+    params["y_save"] = y_save if y_save is not None else y
     params["grid_pts"] = x
     return params
 
@@ -23,8 +25,8 @@ def create_appendable_h5(
     chunk_size: int = 100,
     field_list: List[str] = ["density", "omega", "phi"],
 ) -> None:
-    y = params["y"]
-    x = params["x"]
+    y = params["y_save"]
+    x = params["x_save"]
     with h5py.File(f"{filepath}", "w") as hf:
         for field_name in field_list:
             hf.create_dataset(
@@ -49,7 +51,7 @@ def append_h5(output_path: str, buffer: np.ndarray, buffer_index: int) -> None:
 
 def save_to_buffered_h5(
     buffer: Dict[str, Any],
-    buffer_size: int,
+    buffer_length: int,
     buffer_index: int,
     new_val: Dict[str, Any],
     output_path: str,
@@ -60,7 +62,7 @@ def save_to_buffered_h5(
 
     Args:
         buffer (Dict[str, Any]): Data buffer.
-        buffer_size (int): Maximum size of the buffer.
+        buffer_length (int): Maximum size of the buffer.
         new_val (Dict[str, Any]): New values to be added to the buffer.
         field_list (List[str]): List of fields to be saved.
         buffer_index (int): Current index in the buffer.
@@ -74,7 +76,7 @@ def save_to_buffered_h5(
         buffer[field][buffer_index] = new_val[field]
     buffer_index += 1
     # If buffer is full, flush to HDF5 and reset buffer index
-    if buffer_index == buffer_size:
+    if buffer_index == buffer_length:
         append_h5(output_path, buffer, buffer_index)
         buffer_index = 0
     return buffer_index

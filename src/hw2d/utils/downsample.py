@@ -1,3 +1,4 @@
+from typing import Tuple
 import numpy as np
 import scipy.signal
 
@@ -57,11 +58,11 @@ def median_downsampleNx(x: np.ndarray, lowerscale: float) -> np.ndarray:
     return x
 
 
-def fourier_downsample(x: np.ndarray, lowerscale: float) -> np.ndarray:
+def fourier_downsample(x: np.ndarray, lowerscale: float, axes: Tuple[int] = (-1, -2)) -> np.ndarray:
     """resample in fourier space and will round output shape"""
     rounded_shape = list(map(round, np.array(x.shape) / lowerscale))
     new_lengths = np.array(rounded_shape).astype(int)
-    for axis_idx in range(1, len(x.shape)):
+    for axis_idx in axes:
         x = scipy.signal.resample(x, num=new_lengths[axis_idx], axis=axis_idx)
     return x
 5
