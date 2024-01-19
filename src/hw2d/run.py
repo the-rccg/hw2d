@@ -23,6 +23,7 @@ from hw2d.utils.plot.timetrace import plot_timetraces
 
 
 def run(
+    # Physics & Numerics
     step_size: float = 0.025,
     end_time: float = 1_000,
     grid_pts: int = 512,
@@ -32,18 +33,21 @@ def run(
     c1: float = 1.0,
     kappa_coeff: float = 1.0,
     poisson_bracket_coeff: float = 1.0,
+    # Initialization
     seed: int or None = None,
     init_type: str = "normal",
     init_scale: float = 1 / 100,
-    snaps: int = 1,
-    buffer_size: int = 100,
+    # Saving
     output_path: str = "_test.h5",
     continue_file: bool = False,
+    buffer_size: int = 100,
+    snaps: int = 1,
+    # Movie
     movie: bool = True,
     min_fps: int = 10,
     dpi: int = 75,
     speed: int = 5,
-    debug: bool = False,
+    # Properties
     properties: Iterable[str] = [
         "gamma_n",
         "gamma_n_spectral",
@@ -54,12 +58,15 @@ def run(
         "enstrophy",
         "enstrophy_phi",
     ],
+    # Plotting
     plot_properties: Iterable[str] = (
         "enstrophy",
         "energy",
         "kinetic_energy",
         "thermal_energy",
     ),
+    # Other
+    debug: bool = False,
 ):
     """
     Run the simulation with the given parameters.
@@ -77,17 +84,17 @@ def run(
         seed (int or None, optional): Seed for random number generation. Defaults to None.
         init_type (str, optional): Initialization method. Choices: 'fourier', 'sine', 'random', 'normal'. Defaults to 'normal'.
         init_scale (float, optional): Scaling factor for initialization. Defaults to 0.01.
-        snaps (int, optional): Snapshot intervals for saving. Defaults to 1.
-        buffer_size (int, optional): Size of buffer for storage. Defaults to 100.
         output_path (str, optional): Where to save the simulation data. Defaults to ''.
         continue_file (bool, optional): If True, continue with existing file. Defaults to False.
+        buffer_size (int, optional): Size of buffer for storage. Defaults to 100.
+        snaps (int, optional): Snapshot intervals for saving. Defaults to 1.
         movie (bool, optional): If True, generate a movie out of simulation. Defaults to True.
         min_fps (int, optional): Parameter for movie generation. Defaults to 10.
         dpi (int, optional): Parameter for movie generation. Defaults to 75.
         speed (int, optional): Parameter for movie generation. Defaults to 5.
-        debug (bool, optional): Enable or disable debug mode. Defaults to False.
         properties (Iterable[str], optional): List of properties to calculate for the saved file.
         plot_properties (Iterable[str], optional): List of properties to plot a timetrace for.
+        debug (bool, optional): Enable or disable debug mode. Defaults to False.
 
     Returns:
         None: The function saves simulation data or generates a movie as specified.
