@@ -110,7 +110,7 @@ The purpose is to provide a playground for education and scientific purposes: be
 <pre><code>pip install hw2d
 </code></pre>
 
-<p>and to include accelerators (currently supporting: numba), use the following:</p>
+<p>and to include accelerators (currently supporting: Numba), use the following:</p>
 
 <pre><code>pip install hw2d[accelerators]
 </code></pre>
@@ -119,7 +119,7 @@ The purpose is to provide a playground for education and scientific purposes: be
 
 <p>Running <code>python -m hw2d</code> will let you run a hw2d simulation. It exposes the CLI Interface of the code located in src/hw2d/run.py with all parameters available there. Simply run <code>python -m hw2d --help</code> to get a full rundown of all available parameters along with their explanations.</p>
 
-<p>If accelerators like numba are installed, these will be used automatically. To manually decide which function should be run with which accelerator, simply change the imports in srd/hw2d/model.py to select the appropriate function. Default uses Numba for periodic gradients and the arakawa scheme, and to be extended in the future.</p>
+<p>If accelerators like Numba are installed, these will be used automatically. To manually decide which function should be run with which accelerator, simply change the imports in srd/hw2d/model.py to select the appropriate function. Default uses Numba for periodic gradients and the Arakawa scheme, and to be extended in the future.</p>
 
 <h3 id="example-usage">Example Usage</h3>
 
@@ -143,7 +143,7 @@ This reference implementation uses:</p>
 <li>Gradients $\left(\partial_x, \partial_y, \nabla \right)$: Central finite difference schemes (2nd order accurate)</li>
 <li>Poisson Bracket $\left([\cdot, \cdot]\right)$: Arakawa Scheme (2nd order accurate, higher order preserving)</li>
 <li>Poisson Solver $\left(\nabla^{-2}\cdot\right)$: Fourier based solver</li>
-<li>Time Integration $\left(\partial_t\right)$: Explicit Runge Kutte (4th order accurate)</li>
+<li>Time Integration $\left(\partial_t\right)$: Explicit Runge-Kutta (4th order accurate)</li>
 </ul>
 
 <p>The framework presented here can be easily extended to use alternative implementations.</p>
@@ -187,16 +187,16 @@ $$</p>
 
 <p>For the interesting intermediary phase for the adiabatic coefficient, <code>c1=1</code>, the initial perturbation will start organizing to produce linear drift waves through the $\partial_t \phi$ component. 
 The system transitions into this first linear phase at roughly t=15, saturates at around t=45, and breaks down to transition into the turbulent phase at about t=80.
-The turbulent phase is visually saturated at around t=125, but physical parameters overshoot and only fall into the long term stable phase at aroung t=200. </p>
+The turbulent phase is visually saturated at around t=125, but physical parameters overshoot and only fall into the long term stable phase at around t=200. </p>
 
 <h2 id="physical-properties">Physical Properties</h2>
 
 <h3 id="numerical-values-for-each-frame">Numerical values for each frame</h3>
 
 <p>The reason why the Hasegawa-Wakatani Model has been the de-facto testing bed for new methods are its statistically stationary properties of the complex turbulent system.
-The moduel includes all code needed to generate these values.
+The module includes all code needed to generate these values.
 It goes further, however, and provides reference values along with statistical bounds for the first time for a vast range of values.
-This allows simple comparison, as well es evalutaion of new methods to one reference community built resource.</p>
+This allows simple comparison, as well es evaluation of new methods to one reference community built resource.</p>
 
 <p>$$
 \begin{align}
@@ -222,7 +222,7 @@ $$</p>
 
 <h3 id="predictable-in-and-outflows-over-time">Predictable in- and outflows over time</h3>
 
-<p>Finally, due to the definition of the fields as perturbation fields with background desnity gradients, the system gains and loses energy and enstrophy in a predictable manner over time.
+<p>Finally, due to the definition of the fields as perturbation fields with background density gradients, the system gains and loses energy and enstrophy in a predictable manner over time.
 The conservation of these are also tested within the continuous integration pipeline.
 The definitions are given by:</p>
 
@@ -274,7 +274,7 @@ $$</p>
 
 <h3 id="physical-values-deviate-from-references">Physical values deviate from references</h3>
 
-<p>The HW2D model can create stable simulations that are underresolved, through very large hyper-diffusion terms. A higher resolution is needed for this box size.</p>
+<p>The HW2D model can create stable simulations that are under-resolved, through very large hyper-diffusion terms. A higher resolution is needed for this box size.</p>
 
 <ul>
 <li>increase: <code>grid_pts</code></li>
@@ -288,11 +288,11 @@ $$</p>
 
 <h1 id="references">References</h1>
 
-<p>The region between the adiabatic and hydrodynamic limit is defined at <code>c_1=1</code>. For this dynamic and a box size of <code>k0=0.15</code>, a minimum grid size of <code>512x512</code> is needed at a <code>dt=0.025</code>. To generate a stable simulation with hyperdiffusion (<code>N=3</code>) requires a value of <code>nu=5e-08</code>.</p>
+<p>The region between the adiabatic and hydrodynamic limit is defined at <code>c_1=1</code>. For this dynamic and a box size of <code>k0=0.15</code>, a minimum grid size of <code>512x512</code> is needed at a <code>dt=0.025</code>. To generate a stable simulation with hyper-diffusion (<code>N=3</code>) requires a value of <code>nu=5e-08</code>.</p>
 
 <h2 id="reference-step-sizes">Reference Step Sizes</h2>
 
-<p>Minimum step sizes for the system can be evaluated by setting hyperdiffusion to zero <code>N=0</code> and <code>nu=0</code> and running to about <code>age=200</code> to reach into the turbulent steady-state regime.</p>
+<p>Minimum step sizes for the system can be evaluated by setting hyper-diffusion to zero <code>N=0</code> and <code>nu=0</code> and running to about <code>age=200</code> to reach into the turbulent steady-state regime.</p>
 
 <table>
 <thead>
@@ -379,7 +379,7 @@ As a result, it is practically unfeasible to supply this data. </p>
   <td><em>*</em>*</td>
   <td>512x512</td>
   <td><a href="https://doi.org/10.17617/2.2085490">Stegmeir et al.</a></td>
-  <td><a href="https://doi.org/10.1063/1.871116">Camarco et al.</a></td>
+  <td><a href="https://doi.org/10.1063/1.871116">Camargo et al.</a></td>
   <td><a href="https://doi.org/10.1088/1361-6587/aaa373">In Stegmeir</a></td>
   <td><a href="https://doi.org/10.1063/1.871566">Zeiler et al.</a></td>
 </tr>
