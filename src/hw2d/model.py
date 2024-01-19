@@ -20,7 +20,7 @@ Notes:
     The module supports both NumPy and Numba for computational operations and provides detailed logging and 
     profiling capabilities.
 """
-from typing import Tuple
+from typing import Tuple, Callable, Dict
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -31,23 +31,22 @@ from hw2d.initializations.fourier_noise import get_fft_noise
 from hw2d.utils.namespaces import Namespace
 
 # NumPy Version
-from hw2d.poisson_bracket.numpy_arakawa import periodic_arakawa_vec
-
-periodic_arakawa = periodic_arakawa_vec
 from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
+from hw2d.poisson_bracket.numpy_arakawa import periodic_arakawa_vec
 from hw2d.poisson_solvers.numpy_fourier_poisson import fourier_poisson_double
 from hw2d.physical_properties.numpy_properties import *
+periodic_arakawa = periodic_arakawa_vec
 
 try:
     # Numba
+    from hw2d.gradients.numba_gradients import periodic_laplace_N, periodic_gradient
     from hw2d.poisson_bracket.numba_arakawa import periodic_arakawa_stencil
-    from hw2d.gradients.numba_gradients import periodic_laplace_N  # , periodic_gradient
-
-    # from hw2d.poisson_solvers.numba_fourier_poisson import fourier_poisson_double
+    from hw2d.poisson_solvers.numba_fourier_poisson import fourier_poisson_double
 
     periodic_arakawa = periodic_arakawa_stencil
 except:
     pass
+
 # Other
 # from hw2d.poisson_solvers.pyfftw_fourier_poisson import fourier_poisson_pyfftw
 
@@ -80,33 +79,33 @@ class HW:
             TEST_CONSERVATION (bool, optional): Flag to test conservation properties. Default is True.
         """
         # Numerical Schemes
-        self.poisson_solver = fourier_poisson_double
-        self.diffuse_N = periodic_laplace_N
-        self.poisson_bracket = periodic_arakawa
-        self.gradient_func = periodic_gradient
+        self.poisson_solver: Callable = fourier_poisson_double
+        self.diffuse_N: Callable = periodic_laplace_N
+        self.poisson_bracket: Callable = periodic_arakawa
+        self.gradient_func: Callable = periodic_gradient
         # Physical Values
-        self.N = int(N)
-        self.c1 = c1
-        self.nu = (-1) ** (self.N + 1) * nu
-        self.k0 = k0
-        self.poisson_bracket_coeff = poisson_bracket_coeff
-        self.kappa_coeff = kappa_coeff
-        self.dx = dx
-        self.L = 2 * np.pi / k0
+        self.N: int = int(N)
+        self.c1: float = c1
+        self.nu: float = (-1) ** (self.N + 1) * nu
+        self.k0: float = k0
+        self.poisson_bracket_coeff: float = poisson_bracket_coeff
+        self.kappa_coeff: float = kappa_coeff
+        self.dx: float = dx
+        self.L: float = 2 * np.pi / k0
         # Physical Properties
-        self.TEST_CONSERVATION = TEST_CONSERVATION
+        self.TEST_CONSERVATION: bool = TEST_CONSERVATION
         # Debug Values
-        self.debug = debug
-        self.counter = 0
-        self.watch_fncs = (
+        self.debug: bool = debug
+        self.counter: int = 0
+        self.watch_fncs: Tuple[str] = (
             "full_step",
             "get_phi",
             "diffuse",
             "gradient_2d",
             "poisson_bracket",
         )
-        self.timings = {k: 0 for k in self.watch_fncs}
-        self.calls = {k: 0 for k in self.watch_fncs}
+        self.timings: Dict[str, float] = {k: 0 for k in self.watch_fncs}
+        self.calls: Dict[str, int] = {k: 0 for k in self.watch_fncs}
 
     def log(self, name: str, time: float):
         """
@@ -127,32 +126,46 @@ class HW:
         df.sort_values("time/call", inplace=True)
         print(df)
 
-    def euler_step(self, plasma: Namespace, dt: float, dx: float) -> Namespace:
+    def euler_step(
+        self, plasma: Namespace, dt: float, dx: float, **kwargs
+    ) -> Namespace:
         t0 = time.time()
-        d = dt * self.gradient_2d(plasma=plasma, phi=plasma["phi"], dt=0, dx=dx)
-        y = plasma + d
+        y = Namespace(**{k:v for k,v in plasma.items() if k != "phi"})
+        if "phi" in plasma:
+            d = dt * self.gradient_2d(**y, phi=plasma["phi"], dt=0, dx=dx)
+        else:
+            d = dt * self.gradient_2d(**y, dt=0, dx=dx)
+        y += d
         y["phi"] = self.get_phi(omega=y.omega, dx=dx)
         y["age"] = plasma.age + dt
+        # Wrap-up
         self.log("full_step", time.time() - t0)
         return y
 
-    def rk4_step(self, plasma: Namespace, dt: float, dx: float) -> Namespace:
+    def rk4_step(self, plasma: Namespace, dt: float, dx: float, **kwargs) -> Namespace:
         # RK4
         t0 = time.time()
-        yn = plasma
+        yn = Namespace(**{k:v for k,v in plasma.items() if k != "phi"})
         # pn = self.get_phi(omega=yn.omega, dx=dx)  # TODO: only execute for t=0
-        pn = yn.phi
-        k1 = dt * self.gradient_2d(plasma=yn, phi=pn, dt=0, dx=dx)
-        p1 = self.get_phi(omega=(yn + k1 * 0.5).omega, dx=dx)
-        k2 = dt * self.gradient_2d(plasma=yn + k1 * 0.5, phi=p1, dt=dt / 2, dx=dx)
-        p2 = self.get_phi(omega=(yn + k2 * 0.5).omega, dx=dx)
-        k3 = dt * self.gradient_2d(plasma=yn + k2 * 0.5, phi=p2, dt=dt / 2, dx=dx)
-        p3 = self.get_phi(omega=(yn + k3).omega, dx=dx)
-        k4 = dt * self.gradient_2d(plasma=yn + k3, phi=p3, dt=dt, dx=dx)
+        pn = plasma.phi
+        k1 = dt * self.gradient_2d(**yn, phi=pn, dt=0, dx=dx)
+        y1 = yn + k1 * 0.5
+        p1 = self.get_phi(omega=y1.omega, dx=dx)
+        k2 = dt * self.gradient_2d(**y1, phi=p1, dt=dt / 2, dx=dx)
+        y2 = yn + k2 * 0.5
+        p2 = self.get_phi(omega=y2.omega, dx=dx)
+        k3 = dt * self.gradient_2d(**y2, phi=p2, dt=dt / 2, dx=dx)
+        y3 = yn + k3
+        p3 = self.get_phi(omega=y3.omega, dx=dx)
+        k4 = dt * self.gradient_2d(**y3, phi=p3, dt=dt, dx=dx)
         # p4 = self.get_phi(k4.omega)
         # TODO: currently adds two timesteps
-        y1 = yn + (k1 + 2 * k2 + 2 * k3 + k4) * (1 / 6)
+        yk1 = yn + (k1 + 2 * k2 + 2 * k3 + k4) * (1 / 6)
         phi = self.get_phi(omega=y1.omega, dx=dx)
+        # Set properties not valid through y1
+        yk1["phi"] = phi
+        yk1["age"] = plasma.age + dt
+        # Wrap-up
         self.log("full_step", time.time() - t0)
         if self.debug:
             print(
@@ -168,10 +181,7 @@ class HW:
                     ]
                 )
             )
-        # Set properties not valid through y1
-        y1["phi"] = phi
-        y1["age"] = plasma.age + dt
-        return y1
+        return yk1
 
     def get_phi(self, omega: np.ndarray, dx: float) -> np.ndarray:
         t0 = time.time()
@@ -189,12 +199,17 @@ class HW:
 
     def gradient_2d(
         self,
-        plasma: Namespace,
-        phi: np.ndarray,
+        density: np.ndarray,
+        omega: np.ndarray,
         dt: float,
         dx: float,
+        phi: np.ndarray or None = None,
         debug: bool = False,
-    ) -> np.ndarray:
+        **kwargs
+    ) -> Namespace:
+        if phi is None:
+            phi = self.get_phi(omega, dx=dx)
+        # Setup
         arak_comp_o = 0
         arak_comp_n = 0
         kap = 0
@@ -205,19 +220,19 @@ class HW:
         self.log("gradient_2d", time.time() - t0)
 
         # Calculate Gradients
-        diff = phi - plasma.density
+        diff = phi - density
 
         # Step 2.1: New Omega.
         o = self.c1 * diff
         if self.poisson_bracket_coeff:
             t0 = time.time()
             arak_comp_o = -self.poisson_bracket_coeff * self.poisson_bracket(
-                zeta=phi, psi=plasma.omega, dx=dx
+                zeta=phi, psi=omega, dx=dx
             )
             self.log("poisson_bracket", time.time() - t0)
             o += arak_comp_o
         if self.nu:
-            Do = self.nu * self.diffuse(arr=plasma.omega, dx=dx, N=self.N)
+            Do = self.nu * self.diffuse(arr=omega, dx=dx, N=self.N)
             o += Do
 
         # Step 2.2: New Density.
@@ -225,7 +240,7 @@ class HW:
         if self.poisson_bracket_coeff:
             t0 = time.time()
             arak_comp_n = -self.poisson_bracket_coeff * self.poisson_bracket(
-                zeta=phi, psi=plasma.density, dx=dx
+                zeta=phi, psi=density, dx=dx
             )
             self.log("poisson_bracket", time.time() - t0)
             n += arak_comp_n
@@ -233,9 +248,10 @@ class HW:
             kap = -self.kappa_coeff * dy_p
             n += kap
         if self.nu:
-            Dn = self.nu * self.diffuse(arr=plasma.density, dx=dx, N=self.N)
+            Dn = self.nu * self.diffuse(arr=density, dx=dx, N=self.N)
             n += Dn
 
+        # Print gradients to see which one explodes
         if debug:
             print(
                 "  |  ".join(
@@ -248,19 +264,21 @@ class HW:
                 )
             )
 
+        # Structure return
         return_dict = Namespace(
             density=n,
-            omega=o,
-            phi=phi,  # NOTE: NOT A GRADIENT
-            age=plasma.age + dt,
-            dx=dx,
+            omega=o
         )
 
+        if "age" in kwargs:
+            return_dict["age"] = kwargs["age"] + dt
+
+        # Add energy gradients for testing conservation
         if self.TEST_CONSERVATION:
-            gamma_n, gamma_c = self.get_gammas(plasma.density, phi)
+            gamma_n, gamma_c = self.get_gammas(density, phi)
             Dp = self.nu * self.diffuse(arr=phi, dx=dx, N=self.N)
-            DE = get_DE(n=plasma.density, p=phi, Dn=Dn, Dp=Dp)
-            DU = get_DU(n=plasma.density, o=plasma.omega, Dn=Dn, Dp=Dp)
+            DE = get_DE(n=density, p=phi, Dn=Dn, Dp=Dp)
+            DU = get_DU(n=density, o=omega, Dn=Dn, Dp=Dp)
             dE_dt = get_dE_dt(gamma_n=gamma_n, gamma_c=gamma_c, DE=DE)
             dU_dt = get_dU_dt(gamma_n=gamma_n, DU=DU)
             return_dict["dE"] = dE_dt

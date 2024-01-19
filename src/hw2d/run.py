@@ -37,7 +37,7 @@ def run(
     init_scale: float = 1 / 100,
     snaps: int = 1,
     buffer_size: int = 100,
-    output_path: str = "",
+    output_path: str = "_test.h5",
     continue_file: bool = False,
     movie: bool = True,
     min_fps: int = 10,
@@ -101,6 +101,8 @@ def run(
     steps = int(end_time / step_size)  # Number of Steps until end_time
     snap_count = steps // snaps + 1  # number of snapshots
     field_list = ("density", "omega", "phi")
+    current_time = 0
+    iteration_count = 0
     np.random.seed(seed)
 
     # Define Initializations
@@ -134,7 +136,6 @@ def run(
         omega=noise[init_type](y, x) * init_scale,
         phi=noise[init_type](y, x) * init_scale,
         age=0,
-        dx=dx,
     )
 
     # File Handling
