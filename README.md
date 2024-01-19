@@ -21,7 +21,7 @@ Install a pure NumPy version via
 pip install hw2d
 ```
 
-and to include accelerators (currently supporting: numba), use the following:
+and to include accelerators (currently supporting: Numba), use the following:
 ```
 pip install hw2d[accelerators]
 ```
@@ -30,7 +30,7 @@ pip install hw2d[accelerators]
 
 Running `python -m hw2d` will let you run a hw2d simulation. It exposes the CLI Interface of the code located in src/hw2d/run.py with all parameters available there. Simply run `python -m hw2d --help` to get a full rundown of all available parameters along with their explanations.
 
-If accelerators like numba are installed, these will be used automatically. To manually decide which function should be run with which accelerator, simply change the imports in srd/hw2d/model.py to select the appropriate function. Default uses Numba for periodic gradients and the arakawa scheme, and to be extended in the future.
+If accelerators like Numba are installed, these will be used automatically. To manually decide which function should be run with which accelerator, simply change the imports in srd/hw2d/model.py to select the appropriate function. Default uses Numba for periodic gradients and the Arakawa scheme, and to be extended in the future.
 
 ### Example Usage 
 
@@ -50,7 +50,7 @@ This reference implementation uses:
 - Gradients $\left(\partial_x, \partial_y, \nabla \right)$: Central finite difference schemes (2nd order accurate)
 - Poisson Bracket $\left([\cdot, \cdot]\right)$: Arakawa Scheme (2nd order accurate, higher order preserving)
 - Poisson Solver $\left(\nabla^{-2}\cdot\right)$: Fourier based solver
-- Time Integration $\left(\partial_t\right)$: Explicit Runge Kutte (4th order accurate)
+- Time Integration $\left(\partial_t\right)$: Explicit Runge-Kutta (4th order accurate)
 
 The framework presented here can be easily extended to use alternative implementations.
 
@@ -99,7 +99,7 @@ The model produces self-organizing turbulent structures in a three distinct stag
 
 For the interesting intermediary phase for the adiabatic coefficient, `c1=1`, the initial perturbation will start organizing to produce linear drift waves through the $\partial_t \phi$ component. 
 The system transitions into this first linear phase at roughly t=15, saturates at around t=45, and breaks down to transition into the turbulent phase at about t=80.
-The turbulent phase is visually saturated at around t=125, but physical parameters overshoot and only fall into the long term stable phase at aroung t=200. 
+The turbulent phase is visually saturated at around t=125, but physical parameters overshoot and only fall into the long term stable phase at around t=200. 
 
 
 ## Physical Properties
@@ -107,9 +107,9 @@ The turbulent phase is visually saturated at around t=125, but physical paramete
 ### Numerical values for each frame
 
 The reason why the Hasegawa-Wakatani Model has been the de-facto testing bed for new methods are its statistically stationary properties of the complex turbulent system.
-The moduel includes all code needed to generate these values.
+The module includes all code needed to generate these values.
 It goes further, however, and provides reference values along with statistical bounds for the first time for a vast range of values.
-This allows simple comparison, as well es evalutaion of new methods to one reference community built resource.
+This allows simple comparison, as well es evaluation of new methods to one reference community built resource.
 
 $$
 \begin{align}
@@ -137,7 +137,7 @@ $$
 
 ### Predictable in- and outflows over time
 
-Finally, due to the definition of the fields as perturbation fields with background desnity gradients, the system gains and loses energy and enstrophy in a predictable manner over time.
+Finally, due to the definition of the fields as perturbation fields with background density gradients, the system gains and loses energy and enstrophy in a predictable manner over time.
 The conservation of these are also tested within the continuous integration pipeline.
 The definitions are given by:
 
@@ -183,7 +183,7 @@ The energy accumulates at grid scale. Hyper-diffusion component is not large eno
 
 ### Physical values deviate from references
 
-The HW2D model can create stable simulations that are underresolved, through very large hyper-diffusion terms. A higher resolution is needed for this box size.
+The HW2D model can create stable simulations that are under-resolved, through very large hyper-diffusion terms. A higher resolution is needed for this box size.
 - increase: `grid_pts`
 
 If the esntrophy goes way above reference values, however, it can mean that the hyper-diffusion is too small.
@@ -191,11 +191,11 @@ If the esntrophy goes way above reference values, however, it can mean that the 
 
 # References
 
-The region between the adiabatic and hydrodynamic limit is defined at `c_1=1`. For this dynamic and a box size of `k0=0.15`, a minimum grid size of `512x512` is needed at a `dt=0.025`. To generate a stable simulation with hyperdiffusion (`N=3`) requires a value of `nu=5e-08`.
+The region between the adiabatic and hydrodynamic limit is defined at `c_1=1`. For this dynamic and a box size of `k0=0.15`, a minimum grid size of `512x512` is needed at a `dt=0.025`. To generate a stable simulation with hyper-diffusion (`N=3`) requires a value of `nu=5e-08`.
 
 ## Reference Step Sizes
 
-Minimum step sizes for the system can be evaluated by setting hyperdiffusion to zero `N=0` and `nu=0` and running to about `age=200` to reach into the turbulent steady-state regime.
+Minimum step sizes for the system can be evaluated by setting hyper-diffusion to zero `N=0` and `nu=0` and running to about `age=200` to reach into the turbulent steady-state regime.
 
 | integrator | `c1` | Box Size | `grid_pts` | min `dt` |
 | ---------- | ---- | -------- | ---------- | -------- |
@@ -223,7 +223,7 @@ As a result, it is practically unfeasible to supply this data.
 
 | **Metric**           | **HW2D Data**    | **Stegmeir** | **Camargo** | **HW**     | **Zeiler** |
 | -------------------- | --------------- | ------------ | ----------- | ---------- | ---------- |
-| ****                 | 512x512         | [Stegmeir et al.](https://doi.org/10.17617/2.2085490)   | [Camarco et al.](https://doi.org/10.1063/1.871116)  | [In Stegmeir](https://doi.org/10.1088/1361-6587/aaa373) | [Zeiler et al.](https://doi.org/10.1063/1.871566)  |
+| ****                 | 512x512         | [Stegmeir et al.](https://doi.org/10.17617/2.2085490)   | [Camargo et al.](https://doi.org/10.1063/1.871116)  | [In Stegmeir](https://doi.org/10.1088/1361-6587/aaa373) | [Zeiler et al.](https://doi.org/10.1063/1.871566)  |
 | **$\Gamma_n$**       | $0.60 \pm 0.01$ | $0.64$       | $0.73$      | $0.61$     | $0.8$      |
 | **$\delta\Gamma_n$** | $0.05 \pm 0.01$ | $n/a$        | $n/a$       | $n/a$      | $n/a$      |
 | **$\Gamma_c$**       | $0.60 \pm 0.01$ | $n/a$        | $0.72$      | $n/a$      | $n/a$      |
