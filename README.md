@@ -36,9 +36,9 @@ If accelerators like numba are installed, these will be used automatically. To m
 
 Example of running a fully converged turbulent simulation:
 ```python
-python -m hw2d --step_size=0.025 --end_time=1000 --grid_pts=512 --c1=1.0 --k0=0.15 --N=3 --nu=5.0e-08 --snaps=1 --buffer_size=100 --output_path="test.h5" --movie=1 --min_fps=10 --speed=5 --debug=0
+python -m hw2d --step_size=0.025 --end_time=1000 --grid_pts=512 --c1=1.0 --k0=0.15 --N=3 --nu=5.0e-08 --output_path="test.h5" --buffer_length=100 --snaps=1 --downsample_factor=2 --movie=1 --min_fps=10 --speed=5 --debug=0
 ```
-The code will run a grid of `512x512` in steps of `0.025` from 0 to `1000` for an adiabatic coefficient of `1.0` and hyperdiffusion of order `3` with a coefficient of `5.0e-08`. The resulting data will be saved after every `1` frame and written in batches of `100` into file `test.h5`. This file will then be turned into a movie with at least `10` frames per second, running at `5`t per second. The entire process will use no debugging. 
+The code will run a grid of `512x512` in steps of `0.025` from 0 to `1000` for an adiabatic coefficient of `1.0` and hyperdiffusion of order `3` with a coefficient of `5.0e-08`. The resulting data will be saved to "test.h5" after every `1` frame and written in batches of `100` using a `2`x downsampled representation (256,256). This file will then be turned into a movie with at least `10` frames per second, running at `5`t per second. The entire process will use no debugging. 
 
 Full documentation is available at: https://the-rccg.github.io/hw2d/
 
