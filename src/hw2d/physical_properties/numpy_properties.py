@@ -8,10 +8,11 @@ The provided functionalities help in understanding the physical and spectral pro
 
 Specifically, the module includes:
 
-- **Sources and Sinks** such as $\\Gamma_n$ and $\\Gamma_c$.
-- **Energies** including total, kinetic, and potential energy.
-- **Enstrophy** to quantify the system's vorticity content.
-- **Dissipation Metrics** to understand the system's energy dissipation rate over time.
+- **Source** $\\Gamma_n$ as scaler in (x,y) and (kx,ky), as well as array in ky.
+- **Sinks** $\\Gamma_c$, $DE$, and $DU$.
+- **Energies** including total-, kinetic-, and potential energy.
+- **Enstrophy** to quantify the system's vorticity content calculated from Omega and from Phi.
+- **Dissipation Metrics** to understand the system's energy dissipation rate over time ($\\partial_t E$, $\\partial_t U$).
 - **Spectral Properties** of various metrics for further analysis and verification.
 
 Refer to each function's docstring for detailed information on their use and mathematical formulation.
