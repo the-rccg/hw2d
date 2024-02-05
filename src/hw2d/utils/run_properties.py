@@ -44,7 +44,8 @@ def calculate_properties(
     with h5py.File(file_path, "r+") as h5_file:
         # Parameters
         parameters = dict(h5_file.attrs)
-        dx = parameters["dx"]
+        L = 2 * np.pi / parameters["k0"]
+        dx = L / parameters["x_save"]
         c1 = parameters["c1"]
         dt = parameters["dt"]
         steps = len(h5_file["density"])
