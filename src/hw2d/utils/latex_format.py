@@ -3,6 +3,7 @@ names = {
     "integrated gamma_n": "$\\Gamma_n(t) = \\int{dk_y \\; \\Gamma_n \\left( k_y \\right) }$",
     "gamma_n": "$\\Gamma_n$",
     "gamma_n_k": "$\\Gamma_n \\left(k_y\\right)$",
+    "gamma_n_spectral": "$\\int{\\Gamma_n \\left( k_y \\right) }$",
     "gamma_c": "$\\Gamma_c$",
     "ky_phi": "$\\phi \\left( k_y \\right)$",
     "ky_omega": "$\\Omega \\left( k_y \\right)$",
@@ -39,6 +40,7 @@ names = {
     "thermal_energy": "$E_T$",
     "energy": "Energy $(E)$",
     "enstrophy": "Enstrophy $(U)$",
+    "enstrophy_phi": "Enstrophy $(U(n,\\phi))$",
 }
 
 

@@ -89,8 +89,6 @@ def plot_timeline_with_stds(
     time = length * dt
     x = np.arange(t0, t0 + time, dt)
     x = x[: len(y)]
-    # Axes
-    add_axes(x, y, ax)
     # Setup Plotting
     elements = []
     label = f"{latex_format(name)} "
@@ -103,22 +101,18 @@ def plot_timeline_with_stds(
     # Timeline
     e = ax.plot(x, y, linestyle="-", linewidth=linewidth)
     elements.append(e[0])
+    # Axes
+    add_axes(x, y, ax)
     # Limits
     ax.set_xlim(t0, t0 + time)
-    if (np.min(y) == 0) or (
-        (np.min(y) > 0) and (np.min(y) - 0.01 * (np.max(y) - np.min(y)) < 0)
-    ):
-        ylims = ax.get_ylim()
-        ylims = (0, ylims[1])
-        ax.set_ylim(ylims)
     return tuple(elements), label
 
 
 def plot_timetraces(
     file_path: str,
     out_path: str or None = None,
-    properties: List = ("gamma_n", "gamma_c"),
-    # properties: List = ("enstrophy", "energy", "kinetic_energy", "thermal_energy"),
+    properties: List = ("gamma_c", "gamma_n", "gamma_n_spectral"),
+    # properties: List = ("energy", "kinetic_energy", "thermal_energy", "enstrophy", "enstrophy_phi"),
     t0: int = 0,
     t0_std: float = 300,
 ):
@@ -143,10 +137,14 @@ def plot_timetraces(
         age = hf[list(hf.keys())[0]].shape[0] * parameters["dt"]
         elements = []
         labels = []
+        min_val = 0
+        max_val = 0
         for property in properties:
             prop_std = np.std(hf[property][t0_std_idx:])
             prop_mean = np.mean(hf[property][t0_std_idx:])
             prop_data = hf[property][t0_idx:]
+            min_val = min(min_val, np.min(hf[property]))
+            max_val = max(max_val, np.min(hf[property]))
             if not len(prop_data):
                 print(f"WARNING no data in: {property}")
                 continue
@@ -161,6 +159,14 @@ def plot_timetraces(
             label += f" = {prop_mean:.2f}$\\pm${prop_std:.2f}"
             labels.append(label)
             elements.append(element[0])
+        # Adjust y-axis
+        if (min_val == 0) or (
+            (min_val > 0) and (min_val - 0.01 * (max_val - min_val) < 0)
+        ):
+            ylims = ax.get_ylim()
+            ylims = (0, ylims[1])
+            ax.set_ylim(ylims)
+        # Adjust Labels
         ax.legend(elements, labels)
         ax.set_ylabel("value")
         ax.set_xlabel("time (t)")
@@ -174,5 +180,26 @@ def plot_timetraces(
         print(out_path)
 
 
+def main(
+    file_path: str,
+    out_path: str or None = None,
+    t0: int = 0,
+    t0_std: float = 300,
+):
+    plot_timetraces(
+        file_path=file_path,
+        out_path=out_path,
+        properties=("gamma_c", "gamma_n", "gamma_n_spectral"),
+        t0=t0,
+        t0_std=t0_std,
+    )
+    plot_timetraces(
+        file_path=file_path,
+        out_path=out_path,
+        properties=("energy", "kinetic_energy", "thermal_energy", "enstrophy", "enstrophy_phi"),
+        t0=t0,
+        t0_std=t0_std,
+    )
+
 if __name__ == "__main__":
-    fire.Fire(plot_timetraces)
+    fire.Fire(main)
