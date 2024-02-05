@@ -10,10 +10,10 @@ from hw2d.utils.latex_format import latex_format
 
 
 def is_zero_included(vals: np.ndarray, frac: float = 0.025) -> None:
-    min_vals = np.min(vals)
-    max_vals = np.max(vals)
-    range_vals = max_vals - min_vals
-    if (min_vals - frac * range_vals <= 0) and (0 <= max_vals - frac * range_vals):
+    min_yvals = np.min(vals)
+    max_yvals = np.max(vals)
+    range_vals = max_yvals - min_yvals
+    if (min_yvals - frac * range_vals <= 0) and (0 <= max_yvals - frac * range_vals):
         return True
     else:
         return False
@@ -137,14 +137,14 @@ def plot_timetraces(
         age = hf[list(hf.keys())[0]].shape[0] * parameters["dt"]
         elements = []
         labels = []
-        min_val = 0
-        max_val = 0
+        min_yval = 0
+        max_yval = 0
         for property in properties:
             prop_std = np.std(hf[property][t0_std_idx:])
             prop_mean = np.mean(hf[property][t0_std_idx:])
             prop_data = hf[property][t0_idx:]
-            min_val = min(min_val, np.min(hf[property]))
-            max_val = max(max_val, np.min(hf[property]))
+            min_yval = min(min_yval, np.min(hf[property]))
+            max_yval = max(max_yval, np.min(hf[property]))
             if not len(prop_data):
                 print(f"WARNING no data in: {property}")
                 continue
@@ -160,8 +160,8 @@ def plot_timetraces(
             labels.append(label)
             elements.append(element[0])
         # Adjust y-axis
-        if (min_val == 0) or (
-            (min_val > 0) and (min_val - 0.01 * (max_val - min_val) < 0)
+        if np.isclose(min_yval, 0, rtol=1e-05, atol=1e-08, equal_nan=False) or (
+            (min_yval > 0) and (min_yval - 0.01 * (max_yval - min_yval) < 0)
         ):
             ylims = ax.get_ylim()
             ylims = (0, ylims[1])
