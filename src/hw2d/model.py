@@ -213,7 +213,7 @@ class HW:
         arak_comp_o = 0
         arak_comp_n = 0
         kap = 0
-        DO = 0
+        Do = 0
         Dn = 0
         t0 = time.time()
         dy_p = self.gradient_func(phi, dx=dx, axis=0)
@@ -256,9 +256,9 @@ class HW:
             print(
                 "  |  ".join(
                     [
-                        f"  dO/dt = {np.max(np.abs(self.c1 * diff)):>8.2g} + {np.max(np.abs(arak_comp_o)):>8.2g} + {np.max(np.abs(DO)):>8.2g}"
+                        f"  dO/dt = {np.max(np.abs(self.c1 * diff)):>8.2g} + {np.max(np.abs(arak_comp_o)):>8.2g} + {np.max(np.abs(Do)):>8.2g}"
                         f"  dn/dt = {np.max(np.abs(self.c1 * diff)):>8.2g} + {np.max(np.abs(arak_comp_n)):>8.2g} + {np.max(np.abs(kap)):>8.2g} + {np.max(np.abs(Dn)):>8.2g}",
-                        f"  dO/dt = {np.mean(self.c1 * diff):>8.2g} + {np.mean(arak_comp_o):>8.2g} + {np.mean(DO):>8.2g}",
+                        f"  dO/dt = {np.mean(self.c1 * diff):>8.2g} + {np.mean(arak_comp_o):>8.2g} + {np.mean(Do):>8.2g}",
                         f"  dn/dt = {np.mean(self.c1 * diff):>8.2g} + {np.mean(arak_comp_n):>8.2g} + {np.mean(kap):>8.2g} + {np.mean(Dn):>8.2g}",
                     ]
                 )
