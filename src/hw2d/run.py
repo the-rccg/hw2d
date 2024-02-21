@@ -21,13 +21,14 @@ from hw2d.utils.plot.movie import create_movie
 from hw2d.utils.run_properties import calculate_properties
 from hw2d.utils.plot.timetrace import plot_timetraces
 from hw2d.utils.downsample import fourier_downsample
+from hw2d.utils.helpers import format_print_dict
 
 
 def run(
     # Physics & Numerics
     step_size: float = 0.025,
-    end_time: float = 300,
-    grid_pts: int = 64,
+    end_time: float = 1_000,
+    grid_pts: int = 512,
     k0: float = 0.15,
     N: int = 3,
     nu: float = 5.0e-08,
@@ -43,12 +44,12 @@ def run(
     continue_file: bool = False,
     buffer_length: int = 100,
     snaps: int = 1,
-    downsample_factor: float = 2,
+    downsample_factor: float = 1,
     # Movie
     movie: bool = True,
     min_fps: int = 10,
     dpi: int = 75,
-    speed: int = 5,
+    speed: int = 10,
     # Properties
     properties: Iterable[str] = [
         "gamma_n",
@@ -62,6 +63,9 @@ def run(
     ],
     # Plotting
     plot_properties: Iterable[str] = (
+        "gamma_c",
+        "gamma_n",
+        "gamma_n_spectral",
         "enstrophy",
         "energy",
         "kinetic_energy",
@@ -196,18 +200,21 @@ def run(
                 new_val=new_val, buffer_length=buffer_length, **output_params
             )
 
+    # Display runtime parameters
+    format_print_dict(save_params)
+
     # Setup Simulation
     hw = HW(**physics_params, debug=debug)
     plasma["phi"] = hw.get_phi(plasma.omega, physics_params["dx"])
 
     # Run Simulation
     print("Running simulation...")
-    for i in tqdm(range(1, steps + 1)):
+    for iteration_count in tqdm(range(1, steps + 1)):
         # Progress one step, alternatively: hw.euler_step()
         plasma = hw.rk4_step(plasma, dt=step_size, dx=dx)
 
         # Save to records
-        if output_path and i % snaps == 0:
+        if output_path and iteration_count % snaps == 0:
             new_val = plasma
             if downsample_factor != 1:
                 new_val = Namespace(**{k: downsample_fnc(v, downsample_factor) for k,v in plasma.items() if k in ("phi", "omega", "density")})
@@ -217,7 +224,7 @@ def run(
 
         # Check for breaking
         if np.isnan(np.sum(plasma.density)):
-            print(f"FAILED @ {i:,} steps ({plasma.age:,})")
+            print(f"FAILED @ {iteration_count:,} steps ({plasma.age:,})")
             break
 
     # If output_path is defined, flush any remaining data in the buffer
