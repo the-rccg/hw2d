@@ -60,9 +60,6 @@
             <li>
                     <a class="function" href="#fourier_poisson_single">fourier_poisson_single</a>
             </li>
-            <li>
-                    <a class="function" href="#conv_poisson_single">conv_poisson_single</a>
-            </li>
     </ul>
 
 
@@ -126,16 +123,6 @@
 </span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="n">safe_division</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">safe_div</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">divisor</span><span class="p">)</span>
 </span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">safe_division</span><span class="p">))</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="k">return</span> <span class="p">(</span><span class="n">result</span> <span class="o">*</span> <span class="n">dx</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="k">def</span> <span class="nf">conv_poisson_single</span><span class="p">(</span><span class="n">tensor</span><span class="p">:</span> <span class="n">pm</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">times</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pm</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Inverse operation to `fourier_laplace`.&quot;&quot;&quot;</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="n">frequencies</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="n">divisor</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pm</span><span class="o">.</span><span class="n">PI</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">pm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;vector&quot;</span><span class="p">)</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="c1">#safe_division = pm.where(divisor != 0, frequencies / divisor, 0)</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="n">safe_division</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">safe_div</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">divisor</span><span class="p">)</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">safe_division</span><span class="p">))</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="k">return</span> <span class="p">(</span><span class="n">result</span> <span class="o">*</span> <span class="n">dx</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -161,33 +148,6 @@
 </span><span id="fourier_poisson_single-27"><a href="#fourier_poisson_single-27"><span class="linenos">27</span></a>    <span class="n">safe_division</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">safe_div</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">divisor</span><span class="p">)</span>
 </span><span id="fourier_poisson_single-28"><a href="#fourier_poisson_single-28"><span class="linenos">28</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">safe_division</span><span class="p">))</span>
 </span><span id="fourier_poisson_single-29"><a href="#fourier_poisson_single-29"><span class="linenos">29</span></a>    <span class="k">return</span> <span class="p">(</span><span class="n">result</span> <span class="o">*</span> <span class="n">dx</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Inverse operation to <code>fourier_laplace</code>.</p>
-</div>
-
-
-                </section>
-                <section id="conv_poisson_single">
-                            <input id="conv_poisson_single-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">conv_poisson_single</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">tensor</span><span class="p">:</span> <span class="n">phiml</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">_tensors</span><span class="o">.</span><span class="n">Tensor</span>,</span><span class="param">	<span class="n">dx</span><span class="p">:</span> <span class="nb">float</span>,</span><span class="param">	<span class="n">times</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span></span><span class="return-annotation">) -> <span class="n">phiml</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">_tensors</span><span class="o">.</span><span class="n">Tensor</span>:</span></span>
-
-                <label class="view-source-button" for="conv_poisson_single-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#conv_poisson_single"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="conv_poisson_single-32"><a href="#conv_poisson_single-32"><span class="linenos">32</span></a><span class="k">def</span> <span class="nf">conv_poisson_single</span><span class="p">(</span><span class="n">tensor</span><span class="p">:</span> <span class="n">pm</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">times</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pm</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-</span><span id="conv_poisson_single-33"><a href="#conv_poisson_single-33"><span class="linenos">33</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Inverse operation to `fourier_laplace`.&quot;&quot;&quot;</span>
-</span><span id="conv_poisson_single-34"><a href="#conv_poisson_single-34"><span class="linenos">34</span></a>    <span class="n">frequencies</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">))</span>
-</span><span id="conv_poisson_single-35"><a href="#conv_poisson_single-35"><span class="linenos">35</span></a>    <span class="n">divisor</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pm</span><span class="o">.</span><span class="n">PI</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">pm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">fftfreq</span><span class="p">(</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;vector&quot;</span><span class="p">)</span>
-</span><span id="conv_poisson_single-36"><a href="#conv_poisson_single-36"><span class="linenos">36</span></a>    <span class="c1">#safe_division = pm.where(divisor != 0, frequencies / divisor, 0)</span>
-</span><span id="conv_poisson_single-37"><a href="#conv_poisson_single-37"><span class="linenos">37</span></a>    <span class="n">safe_division</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">safe_div</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">divisor</span><span class="p">)</span>
-</span><span id="conv_poisson_single-38"><a href="#conv_poisson_single-38"><span class="linenos">38</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">pm</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">safe_division</span><span class="p">))</span>
-</span><span id="conv_poisson_single-39"><a href="#conv_poisson_single-39"><span class="linenos">39</span></a>    <span class="k">return</span> <span class="p">(</span><span class="n">result</span> <span class="o">*</span> <span class="n">dx</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 </span></pre></div>
 
 
