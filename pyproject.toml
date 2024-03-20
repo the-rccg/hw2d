@@ -45,7 +45,8 @@ requires-python = ">=3.7.1"
 
 [project.optional-dependencies]
 accelerators = [
-    "numba"
+    "numba",
+    "phiml"
 ]
 develop = [
     "coverage",
