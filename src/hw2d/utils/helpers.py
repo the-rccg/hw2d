@@ -1,5 +1,14 @@
 import os
 from typing import Dict
+import numbers
+import numpy as np
+
+
+def is_number(value):
+    # Check for basic Python numbers, NumPy numbers
+    if isinstance(value, numbers.Number) or np.isscalar(value):
+        return True
+    return False
 
 
 def format_print_dict(
@@ -20,6 +29,7 @@ def format_print_dict(
         value_format (str, optional): Format to write values as. Defaults to ".2g".
         value_length (int, optional): Length of values reserved for the floating representation. Defaults to 7.
     """
+    dictionary = {k: v for k,v in dictionary.items() if is_number(v)}
     key_lengths = [len(k) for k in dictionary.keys()]
     longest_key_length = max(key_lengths) + 1
     try:
