@@ -155,13 +155,19 @@ def run(
     # File Handling
     if continue_file:
         # Continue from previous run
-        plasma, physics_params = continue_h5_file(continue_file, field_list)
+        plasma, physics_params = continue_h5_file(output_path, field_list)
         current_time = plasma.age
         # Check if broken
+        _dx = plasma.pop("dx")
+        if dx != _dx:
+            msg = f"The passed dx {dx} doesn't match the stored dx ({_dx})"
+            raise ValueError(msg)
+
         for field in plasma.keys():
             if np.isnan(np.sum(plasma[field])):
                 print(f"FAILED @ {iteration_count:,} steps ({plasma.age:,})")
                 raise BaseException(f"Input File is broken: FAILED @ {iteration_count:,} steps ({plasma.age:,})")
+
         print(
             f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}"
         )
@@ -187,6 +193,7 @@ def run(
             if not continue_file:
                 print(f"File already exists.")
                 return
+            save_params = get_save_params(physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save)
         # Create
         else:
             save_params = get_save_params(physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save)
