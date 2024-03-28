@@ -1,5 +1,8 @@
+import numpy as np
 import pytest
 from hw2d.run import run
+
+np.seterr(all="raise")
 
 
 @pytest.mark.slow()
