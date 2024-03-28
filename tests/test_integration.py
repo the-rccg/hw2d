@@ -11,6 +11,7 @@ def test_integration(tmp_path):
         k0=0.15,
         N=3,
         nu=1e-9,
+        c1=5,
         kappa_coeff=1,
         movie=False,
         debug=True,
