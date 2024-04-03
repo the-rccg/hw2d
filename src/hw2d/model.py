@@ -1,8 +1,8 @@
 """
 hw2d.model: Hasegawa-Wakatani 2D Simulation Module
 
-This module provides the core functionality to simulate the Hasegawa-Wakatani (HW) model in two dimensions. 
-It offers flexibility in terms of numerical schemes and allows for comprehensive profiling and debugging 
+This module provides the core functionality to simulate the Hasegawa-Wakatani (HW) model in two dimensions.
+It offers flexibility in terms of numerical schemes and allows for comprehensive profiling and debugging
 of the simulation process.
 
 Functions:
@@ -17,7 +17,7 @@ Classes:
     - HW: Represents the primary simulation entity for the Hasegawa-Wakatani model.
 
 Notes:
-    The module supports both NumPy and Numba for computational operations and provides detailed logging and 
+    The module supports both NumPy and Numba for computational operations and provides detailed logging and
     profiling capabilities.
 """
 from typing import Tuple, Callable, Dict
@@ -161,7 +161,7 @@ class HW:
         # p4 = self.get_phi(k4.omega)
         # TODO: currently adds two timesteps
         yk1 = yn + (k1 + 2 * k2 + 2 * k3 + k4) * (1 / 6)
-        phi = self.get_phi(omega=y1.omega, dx=dx)
+        phi = self.get_phi(omega=yk1.omega, dx=dx)
         # Set properties not valid through y1
         yk1["phi"] = phi
         yk1["age"] = plasma.age + dt
