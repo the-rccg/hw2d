@@ -160,8 +160,8 @@
 
                         <div class="docstring"><p><a href="">hw2d.model</a>: Hasegawa-Wakatani 2D Simulation Module</p>
 
-<p>This module provides the core functionality to simulate the Hasegawa-Wakatani (HW) model in two dimensions. 
-It offers flexibility in terms of numerical schemes and allows for comprehensive profiling and debugging 
+<p>This module provides the core functionality to simulate the Hasegawa-Wakatani (HW) model in two dimensions.
+It offers flexibility in terms of numerical schemes and allows for comprehensive profiling and debugging
 of the simulation process.</p>
 
 <h6 id="functions">Functions:</h6>
@@ -188,7 +188,7 @@ of the simulation process.</p>
 <h6 id="notes">Notes:</h6>
 
 <blockquote>
-  <p>The module supports both NumPy and Numba for computational operations and provides detailed logging and 
+  <p>The module supports both NumPy and Numba for computational operations and provides detailed logging and
   profiling capabilities.</p>
 </blockquote>
 </div>
@@ -200,8 +200,8 @@ of the simulation process.</p>
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">hw2d.model: Hasegawa-Wakatani 2D Simulation Module</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">This module provides the core functionality to simulate the Hasegawa-Wakatani (HW) model in two dimensions. </span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">It offers flexibility in terms of numerical schemes and allows for comprehensive profiling and debugging </span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">This module provides the core functionality to simulate the Hasegawa-Wakatani (HW) model in two dimensions.</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">It offers flexibility in terms of numerical schemes and allows for comprehensive profiling and debugging</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="sd">of the simulation process.</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="sd">Functions:</span>
@@ -216,7 +216,7 @@ of the simulation process.</p>
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="sd">    - HW: Represents the primary simulation entity for the Hasegawa-Wakatani model.</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="sd">Notes:</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">    The module supports both NumPy and Numba for computational operations and provides detailed logging and </span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">    The module supports both NumPy and Numba for computational operations and provides detailed logging and</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="sd">    profiling capabilities.</span>
 </span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span>
@@ -360,7 +360,7 @@ of the simulation process.</p>
 </span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>        <span class="c1"># p4 = self.get_phi(k4.omega)</span>
 </span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>        <span class="c1"># TODO: currently adds two timesteps</span>
 </span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>        <span class="n">yk1</span> <span class="o">=</span> <span class="n">yn</span> <span class="o">+</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k3</span> <span class="o">+</span> <span class="n">k4</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">6</span><span class="p">)</span>
-</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_phi</span><span class="p">(</span><span class="n">omega</span><span class="o">=</span><span class="n">y1</span><span class="o">.</span><span class="n">omega</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
+</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_phi</span><span class="p">(</span><span class="n">omega</span><span class="o">=</span><span class="n">yk1</span><span class="o">.</span><span class="n">omega</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
 </span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>        <span class="c1"># Set properties not valid through y1</span>
 </span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>        <span class="n">yk1</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi</span>
 </span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>        <span class="n">yk1</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plasma</span><span class="o">.</span><span class="n">age</span> <span class="o">+</span> <span class="n">dt</span>
@@ -638,7 +638,7 @@ of the simulation process.</p>
 </span><span id="HW-162"><a href="#HW-162"><span class="linenos">162</span></a>        <span class="c1"># p4 = self.get_phi(k4.omega)</span>
 </span><span id="HW-163"><a href="#HW-163"><span class="linenos">163</span></a>        <span class="c1"># TODO: currently adds two timesteps</span>
 </span><span id="HW-164"><a href="#HW-164"><span class="linenos">164</span></a>        <span class="n">yk1</span> <span class="o">=</span> <span class="n">yn</span> <span class="o">+</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k3</span> <span class="o">+</span> <span class="n">k4</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">6</span><span class="p">)</span>
-</span><span id="HW-165"><a href="#HW-165"><span class="linenos">165</span></a>        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_phi</span><span class="p">(</span><span class="n">omega</span><span class="o">=</span><span class="n">y1</span><span class="o">.</span><span class="n">omega</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
+</span><span id="HW-165"><a href="#HW-165"><span class="linenos">165</span></a>        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_phi</span><span class="p">(</span><span class="n">omega</span><span class="o">=</span><span class="n">yk1</span><span class="o">.</span><span class="n">omega</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
 </span><span id="HW-166"><a href="#HW-166"><span class="linenos">166</span></a>        <span class="c1"># Set properties not valid through y1</span>
 </span><span id="HW-167"><a href="#HW-167"><span class="linenos">167</span></a>        <span class="n">yk1</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi</span>
 </span><span id="HW-168"><a href="#HW-168"><span class="linenos">168</span></a>        <span class="n">yk1</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plasma</span><span class="o">.</span><span class="n">age</span> <span class="o">+</span> <span class="n">dt</span>
@@ -1181,7 +1181,7 @@ of the simulation process.</p>
 </span><span id="HW.rk4_step-162"><a href="#HW.rk4_step-162"><span class="linenos">162</span></a>        <span class="c1"># p4 = self.get_phi(k4.omega)</span>
 </span><span id="HW.rk4_step-163"><a href="#HW.rk4_step-163"><span class="linenos">163</span></a>        <span class="c1"># TODO: currently adds two timesteps</span>
 </span><span id="HW.rk4_step-164"><a href="#HW.rk4_step-164"><span class="linenos">164</span></a>        <span class="n">yk1</span> <span class="o">=</span> <span class="n">yn</span> <span class="o">+</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k3</span> <span class="o">+</span> <span class="n">k4</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">6</span><span class="p">)</span>
-</span><span id="HW.rk4_step-165"><a href="#HW.rk4_step-165"><span class="linenos">165</span></a>        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_phi</span><span class="p">(</span><span class="n">omega</span><span class="o">=</span><span class="n">y1</span><span class="o">.</span><span class="n">omega</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
+</span><span id="HW.rk4_step-165"><a href="#HW.rk4_step-165"><span class="linenos">165</span></a>        <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_phi</span><span class="p">(</span><span class="n">omega</span><span class="o">=</span><span class="n">yk1</span><span class="o">.</span><span class="n">omega</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">)</span>
 </span><span id="HW.rk4_step-166"><a href="#HW.rk4_step-166"><span class="linenos">166</span></a>        <span class="c1"># Set properties not valid through y1</span>
 </span><span id="HW.rk4_step-167"><a href="#HW.rk4_step-167"><span class="linenos">167</span></a>        <span class="n">yk1</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi</span>
 </span><span id="HW.rk4_step-168"><a href="#HW.rk4_step-168"><span class="linenos">168</span></a>        <span class="n">yk1</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plasma</span><span class="o">.</span><span class="n">age</span> <span class="o">+</span> <span class="n">dt</span>
