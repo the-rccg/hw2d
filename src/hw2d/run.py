@@ -28,7 +28,7 @@ def run(
     # Physics & Numerics
     step_size: float = 0.025,
     end_time: float = 1_000,
-    grid_pts: int = 512,
+    grid_pts: int = 1024,
     k0: float = 0.15,
     N: int = 3,
     nu: float = 5.0e-08,
@@ -41,7 +41,7 @@ def run(
     init_scale: float = 1 / 100,
     # Saving
     output_path: str = "_test.h5",
-    continue_file: bool = False,
+    continue_file: bool or str = False,
     buffer_length: int = 100,
     snaps: int = 1,
     downsample_factor: float = 1,
@@ -73,6 +73,7 @@ def run(
     ),
     # Other
     debug: bool = False,
+    force_recompute: bool = True,
 ):
     """
     Run the simulation with the given parameters.
@@ -91,7 +92,7 @@ def run(
         init_type (str, optional): Initialization method. Choices: 'fourier', 'sine', 'random', 'normal'. Defaults to 'normal'.
         init_scale (float, optional): Scaling factor for initialization. Defaults to 0.01.
         output_path (str, optional): Where to save the simulation data. Defaults to ''.
-        continue_file (bool, optional): If True, continue with existing file. Defaults to False.
+        continue_file (bool or str, optional): If True, continue with existing file. If path, it will continue with file from path. Defaults to False.
         buffer_length (int, optional): Size of buffer for storage. Defaults to 100.
         snaps (int, optional): Snapshot intervals for saving. Defaults to 1.
         movie (bool, optional): If True, generate a movie out of simulation. Defaults to True.
@@ -153,7 +154,7 @@ def run(
     )
 
     # File Handling
-    if continue_file:
+    if continue_file and isinstance(continue_file, str):
         # Continue from previous run
         plasma, physics_params = continue_h5_file(continue_file, field_list)
         current_time = plasma.age
@@ -183,8 +184,14 @@ def run(
             "output_path": output_path,
         }
         # Load Data
-        if os.path.isfile(output_path):
-            if not continue_file:
+        if os.path.isfile(output_path) and not force_recompute:
+            if continue_file:
+                plasma, physics_params = continue_h5_file(output_path, field_list)
+                print(
+                    f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}"
+                )
+                current_time = plasma.age
+            else:
                 print(f"File already exists.")
                 return
         # Create
@@ -195,6 +202,7 @@ def run(
             )
             new_val = plasma
             if downsample_factor != 1:
+                # TODO: Create space for last state that gets overwritten every batch
                 new_val = Namespace(**{k: downsample_fnc(v, downsample_factor) for k,v in plasma.items() if k in ("phi", "omega", "density")})
             output_params["buffer_index"] = save_to_buffered_h5(
                 new_val=new_val, buffer_length=buffer_length, **output_params
