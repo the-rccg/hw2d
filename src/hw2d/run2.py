@@ -55,7 +55,7 @@ def run(
     k0: float = 0.15,
     N: int = 3,
     nu: float = 5.0e-08,
-    c1: float = 1.5,
+    c1: float = 1,
     kappa_coeff: float = 1.0,
     poisson_bracket_coeff: float = 1.0,
     # Initialization
@@ -66,7 +66,7 @@ def run(
     output_path: str = "_test.h5",
     continue_file: bool = False,
     buffer_length: int = 100,
-    snaps: int = 1,
+    snaps: int = 10,
     downsample_factor: float = 16,
     # Movie
     movie: bool = True,
@@ -96,7 +96,7 @@ def run(
     ),
     # Other
     debug: bool = False,
-    force_recompute: bool = False,
+    force_recompute: bool = True,
 ):
     """
     Run the simulation with the given parameters.
@@ -284,6 +284,7 @@ def run(
                             c1=c1
                         )
                     new_val["time"] = current_time
+
                     # Save to records
                     if output_path:
                         if downsample_factor != 1:
@@ -299,16 +300,16 @@ def run(
                         print(f"FAILED @ {iteration_count:,} steps ({plasma.age:,})")
                         break
 
-                    # Calculate iterations per second, handling division by zero
-                    try:
-                        iter_per_sec = iteration_count / pbar.format_dict['elapsed']
-                    except ZeroDivisionError:
-                        iter_per_sec = float('inf')  # or set to 0 or any default value
+                # Calculate iterations per second, handling division by zero
+                try:
+                    iter_per_sec = iteration_count / pbar.format_dict['elapsed']
+                except ZeroDivisionError:
+                    iter_per_sec = float('inf')  # or set to 0 or any default value
 
-                    # Update progress
-                    pbar.update(used_step_size)
-                    pbar.set_description(f"{iter_per_sec:.2f}it/s | Γn = {new_val['gamma_n_spectral']:.2g}")
-                    iteration_count += 1
+                # Update progress
+                pbar.update(used_step_size)
+                pbar.set_description(f"{iter_per_sec:.2f}it/s | Γn = {new_val['gamma_n_spectral']:.2g}")
+                iteration_count += 1
 
     except Exception as e:
         print(e)

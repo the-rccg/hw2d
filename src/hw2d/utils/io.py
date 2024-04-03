@@ -1,6 +1,7 @@
 from typing import Dict, List, Tuple, Any
 import h5py
 import numpy as np
+
 from hw2d.utils.namespaces import Namespace
 
 
@@ -24,6 +25,7 @@ def create_appendable_h5(
     dtype: np.dtype = np.float32,
     chunk_size: int = 100,
     field_list: List[str] = ["density", "omega", "phi"],
+    properties: List[str] = []
 ) -> None:
     y = params["y_save"]
     x = params["x_save"]
@@ -37,8 +39,18 @@ def create_appendable_h5(
                 chunks=(chunk_size, y, x),
                 compression="gzip",
             )
+        for prop_name in properties:
+            hf.create_dataset(
+                prop_name,
+                dtype=dtype,
+                shape=(0, 1),
+                maxshape=(None, 1),
+                chunks=(chunk_size, 1),
+                compression="gzip",
+            )
         for key, value in params.items():
             hf.attrs[key] = value
+    print(f"Created: {filepath}")
 
 
 def append_h5(output_path: str, buffer: np.ndarray, buffer_index: int) -> None:
