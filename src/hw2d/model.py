@@ -20,6 +20,7 @@ Notes:
     The module supports both NumPy and Numba for computational operations and provides detailed logging and
     profiling capabilities.
 """
+
 from typing import Tuple, Callable, Dict
 import numpy as np
 import matplotlib.pyplot as plt
@@ -34,7 +35,8 @@ from hw2d.utils.namespaces import Namespace
 from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
 from hw2d.poisson_bracket.numpy_arakawa import periodic_arakawa_vec
 from hw2d.poisson_solvers.numpy_fourier_poisson import fourier_poisson_double
-from hw2d.physical_properties.numpy_properties import *
+from hw2d.physical_properties.numpy_properties import get_DE, get_DU, get_dE_dt, get_dU_dt, get_gamma_n, get_gamma_c
+
 periodic_arakawa = periodic_arakawa_vec
 
 try:
@@ -44,11 +46,118 @@ try:
     from hw2d.poisson_solvers.numba_fourier_poisson import fourier_poisson_double
 
     periodic_arakawa = periodic_arakawa_stencil
+    pass
 except:
     pass
 
 # Other
 # from hw2d.poisson_solvers.pyfftw_fourier_poisson import fourier_poisson_pyfftw
+
+
+def pass_func(*args, **kwargs):
+    """do nothing function"""
+    return
+
+
+def hw2d_gradient(
+    density: np.ndarray,
+    omega: np.ndarray,
+    dt: float,
+    dx: float,
+    get_phi_func: Callable,
+    gradient_func: Callable,
+    diffuse_func: Callable,
+    poisson_bracket_func: Callable,
+    get_gammas_func: Callable,
+    poisson_bracket_coeff: float,
+    kappa_coeff: float,
+    c1: float,
+    nu: float,
+    N: int,
+    log: Callable = pass_func,
+    phi: np.ndarray or None = None,
+    debug: bool = False,
+    TEST_CONSERVATION: bool = False,
+    **kwargs
+) -> Namespace:
+    if phi is None:
+        phi = get_phi_func(omega, dx=dx)
+    # Setup
+    arak_comp_o = 0
+    arak_comp_n = 0
+    kap = 0
+    Do = 0
+    Dn = 0
+    t0 = time.time()
+    dy_p = gradient_func(phi, dx=dx, axis=0)
+    log("gradient_2d", time.time() - t0)
+
+    # Calculate Gradients
+    diff = phi - density
+
+    # Step 2.1: New Omega.
+    o = c1 * diff
+    if poisson_bracket_coeff:
+        t0 = time.time()
+        arak_comp_o = -poisson_bracket_coeff * poisson_bracket_func(
+            zeta=phi, psi=omega, dx=dx
+        )
+        log("poisson_bracket", time.time() - t0)
+        o += arak_comp_o
+    if nu:
+        Do = nu * diffuse_func(arr=omega, dx=dx, N=N)
+        o += Do
+
+    # Step 2.2: New Density.
+    n = c1 * diff
+    if poisson_bracket_coeff:
+        t0 = time.time()
+        arak_comp_n = -poisson_bracket_coeff * poisson_bracket_func(
+            zeta=phi, psi=density, dx=dx
+        )
+        log("poisson_bracket", time.time() - t0)
+        n += arak_comp_n
+    if kappa_coeff:
+        kap = -kappa_coeff * dy_p
+        n += kap
+    if nu:
+        Dn = nu * diffuse_func(arr=density, dx=dx, N=N)
+        n += Dn
+
+    # Print gradients to see which one explodes
+    if debug:
+        print(
+            "  |  ".join(
+                [
+                    f"  dO/dt = {np.max(np.abs(c1 * diff)):>8.2g} + {np.max(np.abs(arak_comp_o)):>8.2g} + {np.max(np.abs(Do)):>8.2g}"
+                    f"  dn/dt = {np.max(np.abs(c1 * diff)):>8.2g} + {np.max(np.abs(arak_comp_n)):>8.2g} + {np.max(np.abs(kap)):>8.2g} + {np.max(np.abs(Dn)):>8.2g}",
+                    f"  dO/dt = {np.mean(c1 * diff):>8.2g} + {np.mean(arak_comp_o):>8.2g} + {np.mean(Do):>8.2g}",
+                    f"  dn/dt = {np.mean(c1 * diff):>8.2g} + {np.mean(arak_comp_n):>8.2g} + {np.mean(kap):>8.2g} + {np.mean(Dn):>8.2g}",
+                ]
+            )
+        )
+
+    # Structure return
+    return_dict = Namespace(
+        density=n,
+        omega=o
+    )
+
+    if "age" in kwargs:
+        return_dict["age"] = kwargs["age"] + dt
+
+    # Add energy gradients for testing conservation
+    if TEST_CONSERVATION:
+        gamma_n, gamma_c = get_gammas_func(density, phi)
+        Dp = nu * diffuse_func(arr=phi, dx=dx, N=N)
+        DE = get_DE(n=density, p=phi, Dn=Dn, Dp=Dp)
+        DU = get_DU(n=density, o=omega, Dn=Dn, Dp=Dp)
+        dE_dt = get_dE_dt(gamma_n=gamma_n, gamma_c=gamma_c, DE=DE)
+        dU_dt = get_dU_dt(gamma_n=gamma_n, DU=DU)
+        return_dict["dE"] = dE_dt
+        return_dict["dU"] = dU_dt
+
+    return return_dict
 
 
 class HW:
@@ -130,7 +239,7 @@ class HW:
         self, plasma: Namespace, dt: float, dx: float, **kwargs
     ) -> Namespace:
         t0 = time.time()
-        y = Namespace(**{k:v for k,v in plasma.items() if k != "phi"})
+        y = Namespace(**{k: v for k, v in plasma.items() if k != "phi"})
         if "phi" in plasma:
             d = dt * self.gradient_2d(**y, phi=plasma["phi"], dt=0, dx=dx)
         else:
@@ -145,7 +254,7 @@ class HW:
     def rk4_step(self, plasma: Namespace, dt: float, dx: float, **kwargs) -> Namespace:
         # RK4
         t0 = time.time()
-        yn = Namespace(**{k:v for k,v in plasma.items() if k != "phi"})
+        yn = Namespace(**{k: v for k, v in plasma.items() if k != "phi"})
         # pn = self.get_phi(omega=yn.omega, dx=dx)  # TODO: only execute for t=0
         pn = plasma.phi
         k1 = dt * self.gradient_2d(**yn, phi=pn, dt=0, dx=dx)
@@ -207,84 +316,28 @@ class HW:
         debug: bool = False,
         **kwargs
     ) -> Namespace:
-        if phi is None:
-            phi = self.get_phi(omega, dx=dx)
-        # Setup
-        arak_comp_o = 0
-        arak_comp_n = 0
-        kap = 0
-        Do = 0
-        Dn = 0
-        t0 = time.time()
-        dy_p = self.gradient_func(phi, dx=dx, axis=0)
-        self.log("gradient_2d", time.time() - t0)
-
-        # Calculate Gradients
-        diff = phi - density
-
-        # Step 2.1: New Omega.
-        o = self.c1 * diff
-        if self.poisson_bracket_coeff:
-            t0 = time.time()
-            arak_comp_o = -self.poisson_bracket_coeff * self.poisson_bracket(
-                zeta=phi, psi=omega, dx=dx
-            )
-            self.log("poisson_bracket", time.time() - t0)
-            o += arak_comp_o
-        if self.nu:
-            Do = self.nu * self.diffuse(arr=omega, dx=dx, N=self.N)
-            o += Do
-
-        # Step 2.2: New Density.
-        n = self.c1 * diff
-        if self.poisson_bracket_coeff:
-            t0 = time.time()
-            arak_comp_n = -self.poisson_bracket_coeff * self.poisson_bracket(
-                zeta=phi, psi=density, dx=dx
-            )
-            self.log("poisson_bracket", time.time() - t0)
-            n += arak_comp_n
-        if self.kappa_coeff:
-            kap = -self.kappa_coeff * dy_p
-            n += kap
-        if self.nu:
-            Dn = self.nu * self.diffuse(arr=density, dx=dx, N=self.N)
-            n += Dn
-
-        # Print gradients to see which one explodes
-        if debug:
-            print(
-                "  |  ".join(
-                    [
-                        f"  dO/dt = {np.max(np.abs(self.c1 * diff)):>8.2g} + {np.max(np.abs(arak_comp_o)):>8.2g} + {np.max(np.abs(Do)):>8.2g}"
-                        f"  dn/dt = {np.max(np.abs(self.c1 * diff)):>8.2g} + {np.max(np.abs(arak_comp_n)):>8.2g} + {np.max(np.abs(kap)):>8.2g} + {np.max(np.abs(Dn)):>8.2g}",
-                        f"  dO/dt = {np.mean(self.c1 * diff):>8.2g} + {np.mean(arak_comp_o):>8.2g} + {np.mean(Do):>8.2g}",
-                        f"  dn/dt = {np.mean(self.c1 * diff):>8.2g} + {np.mean(arak_comp_n):>8.2g} + {np.mean(kap):>8.2g} + {np.mean(Dn):>8.2g}",
-                    ]
-                )
-            )
-
-        # Structure return
-        return_dict = Namespace(
-            density=n,
-            omega=o
+        return hw2d_gradient(
+            density=density,
+            omega=omega,
+            dt=dt,
+            dx=dx,
+            get_phi_func=self.get_phi,
+            gradient_func=self.gradient_func,
+            diffuse_func=self.diffuse,
+            poisson_bracket_func=self.poisson_bracket,
+            get_gammas_func=self.get_gammas,
+            log=self.log,
+            poisson_bracket_coeff=self.poisson_bracket_coeff,
+            kappa_coeff=self.kappa_coeff,
+            c1=self.c1,
+            nu=self.nu,
+            N=self.N,
+            phi=phi,
+            debug=debug,
+            TEST_CONSERVATION=self.TEST_CONSERVATION,
+            **kwargs
         )
 
-        if "age" in kwargs:
-            return_dict["age"] = kwargs["age"] + dt
-
-        # Add energy gradients for testing conservation
-        if self.TEST_CONSERVATION:
-            gamma_n, gamma_c = self.get_gammas(density, phi)
-            Dp = self.nu * self.diffuse(arr=phi, dx=dx, N=self.N)
-            DE = get_DE(n=density, p=phi, Dn=Dn, Dp=Dp)
-            DU = get_DU(n=density, o=omega, Dn=Dn, Dp=Dp)
-            dE_dt = get_dE_dt(gamma_n=gamma_n, gamma_c=gamma_c, DE=DE)
-            dU_dt = get_dU_dt(gamma_n=gamma_n, DU=DU)
-            return_dict["dE"] = dE_dt
-            return_dict["dU"] = dU_dt
-
-        return return_dict
 
     def get_gammas(self, n: np.ndarray, p: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         # Generate Energy Gradients
