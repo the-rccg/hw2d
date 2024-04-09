@@ -167,9 +167,7 @@ def run(
         if downsample_factor != 1:
             y_save = int(round(y / downsample_factor))
             x_save = int(round(x / downsample_factor))
-            print(
-                f"Downsampling by a factor {downsample_factor} for saving to: {y_save}x{x_save}"
-            )
+            print(f"Downsample by {downsample_factor}x to: {y_save}x{x_save}")
         # Output data from this run
         buffer = {
             field: np.zeros((buffer_length, y_save, x_save), dtype=np.float32)
@@ -188,9 +186,7 @@ def run(
         if os.path.isfile(output_path) and not force_recompute:
             if continue_file:
                 plasma, physics_params = continue_h5_file(output_path, field_list)
-                print(
-                    f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}"
-                )
+                print(f"Loaded: {output_path} (age={plasma.age})\n{physics_params}")
                 save_params = get_save_params(
                     physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
                 )
@@ -199,10 +195,8 @@ def run(
                 for field in plasma.keys():
                     # No NaNs
                     if np.isnan(np.sum(plasma[field])):
-                        print(f"FAILED @ {iteration_count:,} steps ({plasma.age:,})")
-                        raise BaseException(
-                            f"Input File is broken: FAILED @ {iteration_count:,} steps ({plasma.age:,})"
-                        )
+                        print(f"Input file is broken: NaNs in {field}")
+                        raise BaseException(f"Input file is broken: NaNs in {field}")
                     # Not zeros
                     if field in ("density", "omega"):
                         if np.all(plasma[field] == 0):
@@ -215,26 +209,20 @@ def run(
         else:
             # Initial Values
             new_val = Namespace(
-                {
-                    **{
-                        k: v
-                        for k, v in plasma.items()
-                        if k in ("phi", "omega", "density")
-                    }
-                }
+                **{k: v for k, v in plasma.items() if k in ("phi", "omega", "density")}
             )
-            new_attrs = {}
+            last_state = {}
             for k, v in plasma.items():
                 if k in ("phi", "omega", "density"):
                     if downsample_factor != 1:
                         new_val[k] = downsample_fnc(v, downsample_factor)
                     if add_last_state:
-                        new_attrs[f"state_{k}"] = v
+                        last_state[f"state_{k}"] = v
             new_val["time"] = current_time
-            # Create file
             save_params = get_save_params(
                 physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
             )
+            # Create file
             create_appendable_h5(
                 output_path,
                 save_params,
@@ -246,7 +234,7 @@ def run(
             # Save initial values
             output_params["buffer_index"] = save_to_buffered_h5(
                 new_val=new_val,
-                new_attrs=new_attrs,
+                last_state=last_state,
                 buffer_length=buffer_length,
                 **output_params,
             )
@@ -267,25 +255,20 @@ def run(
         # Save to records
         if output_path and iteration_count % snaps == 0:
             new_val = Namespace(
-                {
-                    **{
-                        k: v
-                        for k, v in plasma.items()
-                        if k in ("phi", "omega", "density")
-                    }
-                }
+                **{k: v for k, v in plasma.items() if k in ("phi", "omega", "density")}
             )
-            new_attrs = {}
+            last_state = {}
             new_val["time"] = current_time
             # Save downsampled & state
             for k, v in plasma.items():
                 if k in ("phi", "omega", "density"):
                     if downsample_factor != 1:
-                        new_attrs[f"state_{k}"] = v
                         new_val[k] = downsample_fnc(v, downsample_factor)
+                    if add_last_state:
+                        last_state[f"state_{k}"] = v
             output_params["buffer_index"] = save_to_buffered_h5(
                 new_val=new_val,
-                new_attrs=new_attrs,
+                last_state=last_state,
                 buffer_length=buffer_length,
                 **output_params,
             )

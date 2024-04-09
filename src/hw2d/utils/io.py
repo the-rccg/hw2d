@@ -51,17 +51,13 @@ def create_appendable_h5(
                 chunks=(chunk_size, 1),
                 compression="gzip",
             )
+        # Add last state for continuation
+        if add_last_state:
+            for field_name in ["density", "phi", "omega"]:
+                hf.create_dataset(f"state_{field_name}", (params["y"], params["x"]), dtype=np.float64)
         # Add simulation parameters
         for key, value in params.items():
             hf.attrs[key] = value
-            # Add last state for continuation
-            if add_last_state:
-                # Add last fields state
-                for field_name in field_list:
-                    hf.attrs[f"state_{field_name}"] = np.zeros((params["y"], params["x"]), dtype=np.float64)
-            # Add simulation parameters
-            for key, value in params.items():
-                hf.attrs[f"state_{key}"] = value
     print(f"Created: {filepath}")
 
 
@@ -73,10 +69,10 @@ def append_h5(output_path: str, buffer: np.ndarray, buffer_index: int) -> None:
             hf[field_name][-buffer_index:] = buffer[field_name][:buffer_index]
 
 
-def update_attrs(output_path: str, new_attrs: Dict[str, Any]) -> None:
+def update_last_state(output_path: str, last_state: Dict[str, Any]) -> None:
     with h5py.File(output_path, "r+") as hf:
-        for name, value in new_attrs.items():
-            hf.attrs[name] = value
+        for name, value in last_state.items():
+            hf[name][:] = value
 
 
 def save_to_buffered_h5(
@@ -85,7 +81,7 @@ def save_to_buffered_h5(
     buffer_index: int,
     new_val: Dict[str, Any],
     output_path: str,
-    new_attrs: Dict[str, Any] = {}
+    last_state: Dict[str, Any] = {}
 ) -> int:
     """
     Save data to a buffer. If the buffer is full, flush the buffer to the HDF5 file.
@@ -108,8 +104,8 @@ def save_to_buffered_h5(
     # If buffer is full, flush to HDF5 and reset buffer index
     if buffer_index == buffer_length:
         append_h5(output_path, buffer, buffer_index)
-        if new_attrs:
-            update_attrs(output_path, new_attrs)
+        if last_state:
+            update_last_state(output_path, last_state)
         buffer_index = 0
     return buffer_index
 
@@ -177,14 +173,14 @@ def continue_h5_file(
         data = {}
         for field in field_list:
             # Load saved state
-            if f"state_{field}" in attributes.keys():
-                data[field] = attributes[f"state_{field}"].astype(np.float64)
+            if f"state_{field}" in h5_file.keys():
+                data[field] = h5_file[f"state_{field}"][:].astype(np.float64)
             else:
                 data[field] = h5_file[field][-1].astype(np.float64)
             # Load Length
             lengths.append(len(h5_file[field]))
         # Age
-        age = h5_file["time"][-1]
+        age = h5_file["time"][-1][0]
         #age = params["frame_dt"] * (length - 1)
     length = min(lengths)
     # Prepare data structure

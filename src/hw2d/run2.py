@@ -67,7 +67,7 @@ def run(
     init_type: str = "normal",
     init_scale: float = 1 / 100,
     # Saving
-    output_path: str = "_test.h5",
+    output_path: str = "c1=5.0.h5",
     continue_file: bool = False,
     buffer_length: int = 100,
     snaps: int = 10,
@@ -147,7 +147,7 @@ def run(
     steps = int(end_time / step_size)  # Number of Steps until end_time
     snap_count = steps // snaps + 1  # number of snapshots
     field_list = ("density", "omega", "phi")
-    current_time = 0
+    initial_time = np.float64(0)
     iteration_count = 0
     np.random.seed(seed)
     if downsample_factor != 1:
@@ -195,9 +195,7 @@ def run(
         if downsample_factor != 1:
             y_save = int(round(y / downsample_factor))
             x_save = int(round(x / downsample_factor))
-            print(
-                f"Downsampling by a factor {downsample_factor} for saving to: {y_save}x{x_save}"
-            )
+            print(f"Downsample by {downsample_factor}x to: {y_save}x{x_save}")
         # Output data from this run
         buffer = {
             field: np.zeros((buffer_length, y_save, x_save), dtype=np.float32)
@@ -216,20 +214,19 @@ def run(
         if os.path.isfile(output_path) and not force_recompute:
             if continue_file:
                 plasma, physics_params = continue_h5_file(output_path, field_list)
-                print(
-                    f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}"
-                )
                 save_params = get_save_params(
                     physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
                 )
-                current_time = plasma.age
+                initial_time = np.float64(plasma.age)
+                print(
+                    f"Loaded: {output_path} (age={plasma.age}, time={initial_time})\n{physics_params}"
+                )
                 # Check if broken
                 for field in plasma.keys():
+                    # Not NaNs
                     if np.isnan(np.sum(plasma[field])):
-                        print(f"FAILED @ {iteration_count:,} steps ({plasma.age:,})")
-                        raise BaseException(
-                            f"Input File is broken: FAILED @ {iteration_count:,} steps ({plasma.age:,})"
-                        )
+                        print(f"Input file is broken: NaNs in {field}")
+                        raise BaseException(f"Input file is broken: NaNs in {field}")
                     # Not zeros
                     if field in ("density", "omega"):
                         if np.all(plasma[field] == 0):
@@ -242,21 +239,15 @@ def run(
         else:
             # Initial Values
             new_val = Namespace(
-                {
-                    **{
-                        k: v
-                        for k, v in plasma.items()
-                        if k in ("phi", "omega", "density")
-                    }
-                }
+                **{k: v for k, v in plasma.items() if k in ("phi", "omega", "density")}
             )
-            new_attrs = {}
+            last_state = {}
             for k, v in plasma.items():
                 if k in ("phi", "omega", "density"):
                     if downsample_factor != 1:
                         new_val[k] = downsample_fnc(v, downsample_factor)
                     if add_last_state:
-                        new_attrs[f"state_{k}"] = v
+                        last_state[f"state_{k}"] = v
             for prop_name in properties:
                 new_val[prop_name] = property_fncs[prop_name](
                     n=plasma["density"],
@@ -265,11 +256,11 @@ def run(
                     dx=dx,
                     c1=c1,
                 )
-            new_val["time"] = current_time
-            # Create file
+            new_val["time"] = initial_time
             save_params = get_save_params(
                 physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
             )
+            # Create file
             create_appendable_h5(
                 output_path,
                 save_params,
@@ -281,7 +272,7 @@ def run(
             # Save initial values
             output_params["buffer_index"] = save_to_buffered_h5(
                 new_val=new_val,
-                new_attrs=new_attrs,
+                last_state=last_state,
                 buffer_length=buffer_length,
                 **output_params,
             )
@@ -300,15 +291,17 @@ def run(
     bar_format = "{rate_fmt} | {desc} {percentage:>6.2f}%|{bar}| {n:.2f}/{total:.2f} [{elapsed}<{remaining}]"
     # bar_format = "{percentage:>6.2f}%|{bar}| {n:.4f}/{total_fmt} [{elapsed}<{remaining}] ({rate_fmt})"
     used_step_size = step_size
+    used_time_steps = []
+    current_time = initial_time
 
     try:
         with tqdm(
-            total=end_time,
+            total=end_time - initial_time,
             unit="t",
             bar_format=bar_format,
         ) as pbar:
             # Run Simulation
-            while current_time < end_time:
+            while round(current_time, 4) < end_time:
                 # Progress one step, alternatively: hw.euler_step()
                 successful = False
                 while not successful:
@@ -319,20 +312,19 @@ def run(
                         print(e)
                         time.sleep(10)
                 used_step_size = step_size
-                current_time += used_step_size
+                # Improved accuracy of tiem tracking
+                used_time_steps.append(np.float64(used_step_size))
+                current_time = initial_time + np.sum(used_time_steps)
 
                 # Batched Processing
                 if iteration_count % snaps == 0:
                     new_val = Namespace(
-                        {
-                            **{
-                                k: v
-                                for k, v in plasma.items()
-                                if k in ("phi", "omega", "density")
-                            }
+                        **{
+                            k: v
+                            for k, v in plasma.items()
+                            if k in ("phi", "omega", "density")
                         }
                     )
-                    new_attrs = {}
                     # Add properties if they were selected
                     # TODO: Faster to do before saving through trivial parallelization
                     new_val["time"] = current_time
@@ -347,15 +339,17 @@ def run(
 
                     # Save to records
                     if output_path:
+                        last_state = {}
                         # Save downsampled & state
                         for k, v in plasma.items():
                             if k in ("phi", "omega", "density"):
                                 if downsample_factor != 1:
-                                    new_attrs[f"state_{k}"] = v
                                     new_val[k] = downsample_fnc(v, downsample_factor)
+                                if add_last_state:
+                                    last_state[f"state_{k}"] = v
                         output_params["buffer_index"] = save_to_buffered_h5(
                             new_val=new_val,
-                            new_attrs=new_attrs,
+                            last_state=last_state,
                             buffer_length=buffer_length,
                             **output_params,
                         )

@@ -9,7 +9,7 @@ def test_continue_run2(tmp_path=os.getcwd()):
     test_parameters = dict(
         # Physics & Numerics
         step_size=0.025,
-        grid_pts=64,
+        grid_pts=256,
         k0=0.15,
         N=3,
         nu=1.0e-08,
@@ -27,7 +27,7 @@ def test_continue_run2(tmp_path=os.getcwd()):
         buffer_length=2,
         snaps=1,
         chunk_size=1,
-        downsample_factor=2,
+        downsample_factor=4,
         # Movie
         movie=False,
         # Properties
@@ -74,6 +74,6 @@ def test_continue_run(tmp_path=os.getcwd()):
 
 
 if __name__ == "__main__":
-    pytest.main()
-    #test_continue_run(os.getcwd())
-    #test_continue_run2(os.getcwd())
+    #pytest.main()
+    test_continue_run(os.getcwd())
+    test_continue_run2(os.getcwd())
