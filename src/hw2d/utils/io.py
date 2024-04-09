@@ -25,20 +25,23 @@ def create_appendable_h5(
     dtype: np.dtype = np.float32,
     chunk_size: int = 100,
     field_list: List[str] = ["density", "omega", "phi"],
-    properties: List[str] = []
+    properties: List[str] = [],
+    add_last_state: bool = True,
 ) -> None:
-    y = params["y_save"]
-    x = params["x_save"]
+    y_save = params["y_save"]
+    x_save = params["x_save"]
     with h5py.File(f"{filepath}", "w") as hf:
+        # Add simulation fields
         for field_name in field_list:
             hf.create_dataset(
                 field_name,
                 dtype=dtype,
-                shape=(0, y, x),
-                maxshape=(None, y, x),
-                chunks=(chunk_size, y, x),
+                shape=(0, y_save, x_save),
+                maxshape=(None, y_save, x_save),
+                chunks=(chunk_size, y_save, x_save),
                 compression="gzip",
             )
+        # Add properties
         for prop_name in properties:
             hf.create_dataset(
                 prop_name,
@@ -48,8 +51,17 @@ def create_appendable_h5(
                 chunks=(chunk_size, 1),
                 compression="gzip",
             )
+        # Add simulation parameters
         for key, value in params.items():
             hf.attrs[key] = value
+            # Add last state for continuation
+            if add_last_state:
+                # Add last fields state
+                for field_name in field_list:
+                    hf.attrs[f"state_{field_name}"] = np.zeros((params["y"], params["x"]), dtype=np.float64)
+            # Add simulation parameters
+            for key, value in params.items():
+                hf.attrs[f"state_{key}"] = value
     print(f"Created: {filepath}")
 
 
@@ -61,13 +73,19 @@ def append_h5(output_path: str, buffer: np.ndarray, buffer_index: int) -> None:
             hf[field_name][-buffer_index:] = buffer[field_name][:buffer_index]
 
 
+def update_attrs(output_path: str, new_attrs: Dict[str, Any]) -> None:
+    with h5py.File(output_path, "r+") as hf:
+        for name, value in new_attrs.items():
+            hf.attrs[name] = value
+
+
 def save_to_buffered_h5(
     buffer: Dict[str, Any],
     buffer_length: int,
     buffer_index: int,
     new_val: Dict[str, Any],
     output_path: str,
-    field_list: List[str] = ["density", "omega", "phi"],
+    new_attrs: Dict[str, Any] = {}
 ) -> int:
     """
     Save data to a buffer. If the buffer is full, flush the buffer to the HDF5 file.
@@ -84,12 +102,14 @@ def save_to_buffered_h5(
     Returns:
         Tuple[int, int]: Updated buffer index and flush index.
     """
-    for idx, field in enumerate(field_list):
+    for idx, field in enumerate(buffer.keys()):
         buffer[field][buffer_index] = new_val[field]
     buffer_index += 1
     # If buffer is full, flush to HDF5 and reset buffer index
     if buffer_index == buffer_length:
         append_h5(output_path, buffer, buffer_index)
+        if new_attrs:
+            update_attrs(output_path, new_attrs)
         buffer_index = 0
     return buffer_index
 
@@ -152,16 +172,25 @@ def continue_h5_file(
     """
     lengths = []
     with h5py.File(file_name, "r") as h5_file:
+        # properties
+        attributes = dict(h5_file.attrs)
         data = {}
         for field in field_list:
-            data[field] = h5_file[field][-1].astype(np.float64)
+            # Load saved state
+            if f"state_{field}" in attributes.keys():
+                data[field] = attributes[f"state_{field}"].astype(np.float64)
+            else:
+                data[field] = h5_file[field][-1].astype(np.float64)
+            # Load Length
             lengths.append(len(h5_file[field]))
-        params = dict(h5_file.attrs)
+        # Age
+        age = h5_file["time"][-1]
+        #age = params["frame_dt"] * (length - 1)
     length = min(lengths)
-    age = params["frame_dt"] * (length - 1)
-    data = Namespace(**data, age=age, dx=params["dx"])
-    params = {
-        k: params[k]
+    # Prepare data structure
+    data = Namespace(**data, age=age)
+    physics_params = {
+        k: attributes[k]
         for k in ("dx", "N", "c1", "nu", "k0", "poisson_bracket_coeff", "kappa_coeff")
     }
-    return data, params
+    return data, physics_params

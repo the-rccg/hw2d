@@ -37,7 +37,9 @@ from hw2d.physical_properties.numpy_properties import (
 
 property_fncs = {
     "gamma_n": lambda n, p, dx, **kwargs: get_gamma_n(n=n, p=p, dx=dx),
-    "gamma_n_spectral": lambda n, p, dx, **kwargs: get_gamma_n_spectrally(n=n, p=p, dx=dx),
+    "gamma_n_spectral": lambda n, p, dx, **kwargs: get_gamma_n_spectrally(
+        n=n, p=p, dx=dx
+    ),
     "gamma_c": lambda n, p, dx, c1, **kwargs: get_gamma_c(n=n, p=p, c1=c1, dx=dx),
     "energy": lambda n, p, dx, **kwargs: get_energy(n=n, phi=p, dx=dx),
     "thermal_energy": lambda n, **kwargs: get_energy_N_spectrally(n=n),
@@ -54,10 +56,12 @@ def run(
     grid_pts: int = 512,
     k0: float = 0.15,
     N: int = 3,
-    nu: float = 5.0e-08,
-    c1: float = 1,
+    nu: float = 1.0e-09,
+    c1: float = 5,
     kappa_coeff: float = 1.0,
     poisson_bracket_coeff: float = 1.0,
+    # Running
+    show_property: str = "",
     # Initialization
     seed: int or None = None,
     init_type: str = "normal",
@@ -67,9 +71,11 @@ def run(
     continue_file: bool = False,
     buffer_length: int = 100,
     snaps: int = 10,
+    chunk_size: int = 100,
     downsample_factor: float = 16,
+    add_last_state: bool = True,
     # Movie
-    movie: bool = True,
+    movie: bool = False,
     min_fps: int = 10,
     dpi: int = 75,
     speed: int = 10,
@@ -117,6 +123,9 @@ def run(
         output_path (str, optional): Where to save the simulation data. Defaults to ''.
         continue_file (bool, optional): If True, continue with existing file. Defaults to False.
         buffer_length (int, optional): Size of buffer for storage. Defaults to 100.
+        chunks (int, optional): Chunks of the h5 file. Defaults to 100.
+        downsample_factor (float, optional): Factor along each axis that it is downsampled with for saving. Defaults to 1.
+        add_last_state (bool, optional): Whether the last high-resolution frame is saved. Turns True if downsampling on. Defaults to False.
         snaps (int, optional): Snapshot intervals for saving. Defaults to 1.
         movie (bool, optional): If True, generate a movie out of simulation. Defaults to True.
         min_fps (int, optional): Parameter for movie generation. Defaults to 10.
@@ -141,6 +150,8 @@ def run(
     current_time = 0
     iteration_count = 0
     np.random.seed(seed)
+    if downsample_factor != 1:
+        add_last_state = True
 
     # Define Initializations
     noise = {
@@ -178,32 +189,22 @@ def run(
     )
 
     # File Handling
-    if continue_file:
-        # Continue from previous run
-        plasma, physics_params = continue_h5_file(continue_file, field_list)
-        current_time = plasma.age
-        # Check if broken
-        for field in plasma.keys():
-            if np.isnan(np.sum(plasma[field])):
-                print(f"FAILED @ {iteration_count:,} steps ({plasma.age:,})")
-                raise BaseException(f"Input File is broken: FAILED @ {iteration_count:,} steps ({plasma.age:,})")
-        print(
-            f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}"
-        )
     if output_path:
         y_save = y
         x_save = x
         if downsample_factor != 1:
             y_save = int(round(y / downsample_factor))
             x_save = int(round(x / downsample_factor))
-            print(f"Downsampling by a factor {downsample_factor} for saving to: {y_save}x{x_save}")
+            print(
+                f"Downsampling by a factor {downsample_factor} for saving to: {y_save}x{x_save}"
+            )
         # Output data from this run
         buffer = {
             field: np.zeros((buffer_length, y_save, x_save), dtype=np.float32)
             for field in field_list
         }
-        # Param buffer
-        for p in properties:
+        # Property buffer
+        for p in ["time"] + properties:
             buffer[p] = np.zeros((buffer_length, 1), dtype=np.float32)
         # Other output parameters
         output_params = {
@@ -218,25 +219,75 @@ def run(
                 print(
                     f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}"
                 )
+                save_params = get_save_params(
+                    physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
+                )
                 current_time = plasma.age
+                # Check if broken
+                for field in plasma.keys():
+                    if np.isnan(np.sum(plasma[field])):
+                        print(f"FAILED @ {iteration_count:,} steps ({plasma.age:,})")
+                        raise BaseException(
+                            f"Input File is broken: FAILED @ {iteration_count:,} steps ({plasma.age:,})"
+                        )
+                    # Not zeros
+                    if field in ("density", "omega"):
+                        if np.all(plasma[field] == 0):
+                            print(f"FAILED {field} is zero")
+                            raise BaseException(f"Input File is zero: {field}")
             else:
                 print(f"File already exists.")
                 return
-        # Create
+        # Create Data
         else:
-            save_params = get_save_params(physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save)
-            create_appendable_h5(
-                output_path, save_params, properties=["time"] + list(properties), dtype=np.float32, chunk_size=100
+            # Initial Values
+            new_val = Namespace(
+                {
+                    **{
+                        k: v
+                        for k, v in plasma.items()
+                        if k in ("phi", "omega", "density")
+                    }
+                }
             )
-            new_val = plasma
-            if downsample_factor != 1:
-                new_val = Namespace(**{k: downsample_fnc(v, downsample_factor) for k,v in plasma.items() if k in ("phi", "omega", "density")})
+            new_attrs = {}
+            for k, v in plasma.items():
+                if k in ("phi", "omega", "density"):
+                    if downsample_factor != 1:
+                        new_val[k] = downsample_fnc(v, downsample_factor)
+                    if add_last_state:
+                        new_attrs[f"state_{k}"] = v
+            for prop_name in properties:
+                new_val[prop_name] = property_fncs[prop_name](
+                    n=plasma["density"],
+                    p=plasma["phi"],
+                    o=plasma["omega"],
+                    dx=dx,
+                    c1=c1,
+                )
+            new_val["time"] = current_time
+            # Create file
+            save_params = get_save_params(
+                physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
+            )
+            create_appendable_h5(
+                output_path,
+                save_params,
+                properties=["time"] + list(properties),
+                dtype=np.float32,
+                chunk_size=chunk_size,
+                add_last_state=add_last_state,
+            )
+            # Save initial values
             output_params["buffer_index"] = save_to_buffered_h5(
-                new_val=new_val, buffer_length=buffer_length, **output_params
+                new_val=new_val,
+                new_attrs=new_attrs,
+                buffer_length=buffer_length,
+                **output_params,
             )
 
     # Display runtime parameters
-    #save_params["output_path"] = output_path  # No support for strings
+    # save_params["output_path"] = output_path  # No support for strings
     format_print_dict(save_params)
 
     # Setup Simulation
@@ -247,7 +298,7 @@ def run(
     print("Running simulation...")
     iteration_count = 0
     bar_format = "{rate_fmt} | {desc} {percentage:>6.2f}%|{bar}| {n:.2f}/{total:.2f} [{elapsed}<{remaining}]"
-    #bar_format = "{percentage:>6.2f}%|{bar}| {n:.4f}/{total_fmt} [{elapsed}<{remaining}] ({rate_fmt})"
+    # bar_format = "{percentage:>6.2f}%|{bar}| {n:.4f}/{total_fmt} [{elapsed}<{remaining}] ({rate_fmt})"
     used_step_size = step_size
 
     try:
@@ -257,7 +308,7 @@ def run(
             bar_format=bar_format,
         ) as pbar:
             # Run Simulation
-            while current_time < end_time - used_step_size:
+            while current_time < end_time:
                 # Progress one step, alternatively: hw.euler_step()
                 successful = False
                 while not successful:
@@ -272,27 +323,41 @@ def run(
 
                 # Batched Processing
                 if iteration_count % snaps == 0:
-                    new_val = Namespace({**{k: v for k,v in plasma.items() if k in ("phi", "omega", "density")}})
+                    new_val = Namespace(
+                        {
+                            **{
+                                k: v
+                                for k, v in plasma.items()
+                                if k in ("phi", "omega", "density")
+                            }
+                        }
+                    )
+                    new_attrs = {}
                     # Add properties if they were selected
                     # TODO: Faster to do before saving through trivial parallelization
+                    new_val["time"] = current_time
                     for prop_name in properties:
                         new_val[prop_name] = property_fncs[prop_name](
                             n=plasma["density"],
                             p=plasma["phi"],
                             o=plasma["omega"],
                             dx=dx,
-                            c1=c1
+                            c1=c1,
                         )
-                    new_val["time"] = current_time
 
                     # Save to records
                     if output_path:
-                        if downsample_factor != 1:
-                            for k,v in plasma.items():
-                                if k in ("phi", "omega", "density"):
+                        # Save downsampled & state
+                        for k, v in plasma.items():
+                            if k in ("phi", "omega", "density"):
+                                if downsample_factor != 1:
+                                    new_attrs[f"state_{k}"] = v
                                     new_val[k] = downsample_fnc(v, downsample_factor)
                         output_params["buffer_index"] = save_to_buffered_h5(
-                            new_val=new_val, buffer_length=buffer_length, **output_params
+                            new_val=new_val,
+                            new_attrs=new_attrs,
+                            buffer_length=buffer_length,
+                            **output_params,
                         )
 
                     # Check for breaking
@@ -302,22 +367,24 @@ def run(
 
                 # Calculate iterations per second, handling division by zero
                 try:
-                    iter_per_sec = iteration_count / pbar.format_dict['elapsed']
+                    iter_per_sec = iteration_count / pbar.format_dict["elapsed"]
                 except ZeroDivisionError:
-                    iter_per_sec = float('inf')  # or set to 0 or any default value
+                    iter_per_sec = float("inf")  # or set to 0 or any default value
 
                 # Update progress
                 pbar.update(used_step_size)
-                pbar.set_description(f"{iter_per_sec:.2f}it/s | Γn = {new_val['gamma_n_spectral']:.2g}")
+                new_description = f"{iter_per_sec:.2f}it/s"
+                if show_property:
+                    new_description += f" | Γn = {new_val[show_property]:.2g}"
+                pbar.set_description(new_description)
                 iteration_count += 1
 
     except Exception as e:
         print(e)
         raise e
-        #os.remove(output_path)
-        #print(f"removed {output_path}")
+        # os.remove(output_path)
+        # print(f"removed {output_path}")
         return
-
 
     # If output_path is defined, flush any remaining data in the buffer
     if output_path and output_params["buffer_index"] > 0:

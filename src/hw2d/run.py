@@ -44,7 +44,9 @@ def run(
     continue_file: bool or str = False,
     buffer_length: int = 100,
     snaps: int = 1,
+    chunk_size: int = 100,
     downsample_factor: float = 1,
+    add_last_state: bool = False,
     # Movie
     movie: bool = True,
     min_fps: int = 10,
@@ -95,6 +97,9 @@ def run(
         continue_file (bool or str, optional): If True, continue with existing file. If path, it will continue with file from path. Defaults to False.
         buffer_length (int, optional): Size of buffer for storage. Defaults to 100.
         snaps (int, optional): Snapshot intervals for saving. Defaults to 1.
+        chunks (int, optional): Chunks of the h5 file. Defaults to 100.
+        downsample_factor (float, optional): Factor along each axis that it is downsampled with for saving. Defaults to 1.
+        add_last_state (bool, optional): Whether the last high-resolution frame is saved. Turns True if downsampling on. Defaults to False.
         movie (bool, optional): If True, generate a movie out of simulation. Defaults to True.
         min_fps (int, optional): Parameter for movie generation. Defaults to 10.
         dpi (int, optional): Parameter for movie generation. Defaults to 75.
@@ -118,6 +123,8 @@ def run(
     current_time = 0
     iteration_count = 0
     np.random.seed(seed)
+    if downsample_factor != 1:
+        add_last_state = True
 
     # Define Initializations
     noise = {
@@ -154,30 +161,24 @@ def run(
     )
 
     # File Handling
-    if continue_file and isinstance(continue_file, str):
-        # Continue from previous run
-        plasma, physics_params = continue_h5_file(continue_file, field_list)
-        current_time = plasma.age
-        # Check if broken
-        for field in plasma.keys():
-            if np.isnan(np.sum(plasma[field])):
-                print(f"FAILED @ {iteration_count:,} steps ({plasma.age:,})")
-                raise BaseException(f"Input File is broken: FAILED @ {iteration_count:,} steps ({plasma.age:,})")
-        print(
-            f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}"
-        )
     if output_path:
         y_save = y
         x_save = x
         if downsample_factor != 1:
             y_save = int(round(y / downsample_factor))
             x_save = int(round(x / downsample_factor))
-            print(f"Downsampling by a factor {downsample_factor} for saving to: {y_save}x{x_save}")
+            print(
+                f"Downsampling by a factor {downsample_factor} for saving to: {y_save}x{x_save}"
+            )
         # Output data from this run
         buffer = {
             field: np.zeros((buffer_length, y_save, x_save), dtype=np.float32)
             for field in field_list
         }
+        # Property buffer
+        for p in ["time"]:
+            buffer[p] = np.zeros((buffer_length, 1), dtype=np.float32)
+        # Other output parameters
         output_params = {
             "buffer": buffer,
             "buffer_index": 0,
@@ -190,22 +191,64 @@ def run(
                 print(
                     f"Successfully loaded: {output_path} (age={plasma.age})\n{physics_params}"
                 )
+                save_params = get_save_params(
+                    physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
+                )
                 current_time = plasma.age
+                # Check consistency
+                for field in plasma.keys():
+                    # No NaNs
+                    if np.isnan(np.sum(plasma[field])):
+                        print(f"FAILED @ {iteration_count:,} steps ({plasma.age:,})")
+                        raise BaseException(
+                            f"Input File is broken: FAILED @ {iteration_count:,} steps ({plasma.age:,})"
+                        )
+                    # Not zeros
+                    if field in ("density", "omega"):
+                        if np.all(plasma[field] == 0):
+                            print(f"FAILED {field} is zero")
+                            raise BaseException(f"Input File is zero: {field}")
             else:
                 print(f"File already exists.")
                 return
-        # Create
+        # Create Data
         else:
-            save_params = get_save_params(physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save)
-            create_appendable_h5(
-                output_path, save_params, dtype=np.float32, chunk_size=100
+            # Initial Values
+            new_val = Namespace(
+                {
+                    **{
+                        k: v
+                        for k, v in plasma.items()
+                        if k in ("phi", "omega", "density")
+                    }
+                }
             )
-            new_val = plasma
-            if downsample_factor != 1:
-                # TODO: Create space for last state that gets overwritten every batch
-                new_val = Namespace(**{k: downsample_fnc(v, downsample_factor) for k,v in plasma.items() if k in ("phi", "omega", "density")})
+            new_attrs = {}
+            for k, v in plasma.items():
+                if k in ("phi", "omega", "density"):
+                    if downsample_factor != 1:
+                        new_val[k] = downsample_fnc(v, downsample_factor)
+                    if add_last_state:
+                        new_attrs[f"state_{k}"] = v
+            new_val["time"] = current_time
+            # Create file
+            save_params = get_save_params(
+                physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
+            )
+            create_appendable_h5(
+                output_path,
+                save_params,
+                properties=["time"],
+                dtype=np.float32,
+                chunk_size=chunk_size,
+                add_last_state=add_last_state,
+            )
+            # Save initial values
             output_params["buffer_index"] = save_to_buffered_h5(
-                new_val=new_val, buffer_length=buffer_length, **output_params
+                new_val=new_val,
+                new_attrs=new_attrs,
+                buffer_length=buffer_length,
+                **output_params,
             )
 
     # Display runtime parameters
@@ -223,11 +266,28 @@ def run(
 
         # Save to records
         if output_path and iteration_count % snaps == 0:
-            new_val = plasma
-            if downsample_factor != 1:
-                new_val = Namespace(**{k: downsample_fnc(v, downsample_factor) for k,v in plasma.items() if k in ("phi", "omega", "density")})
+            new_val = Namespace(
+                {
+                    **{
+                        k: v
+                        for k, v in plasma.items()
+                        if k in ("phi", "omega", "density")
+                    }
+                }
+            )
+            new_attrs = {}
+            new_val["time"] = current_time
+            # Save downsampled & state
+            for k, v in plasma.items():
+                if k in ("phi", "omega", "density"):
+                    if downsample_factor != 1:
+                        new_attrs[f"state_{k}"] = v
+                        new_val[k] = downsample_fnc(v, downsample_factor)
             output_params["buffer_index"] = save_to_buffered_h5(
-                new_val=new_val, buffer_length=buffer_length, **output_params
+                new_val=new_val,
+                new_attrs=new_attrs,
+                buffer_length=buffer_length,
+                **output_params,
             )
 
         # Check for breaking
