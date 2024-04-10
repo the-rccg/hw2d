@@ -119,7 +119,7 @@ def plot_timetraces(
     with h5py.File(file_path, "r") as hf:
         parameters = dict(hf.attrs)
         fig, ax = plt.subplots(1, 1, figsize=(7, 3))
-        t0_idx = int(t0 // parameters["dt"])
+        t0_idx = int(t0 // parameters["frame_dt"])
         max_len = 0
         for prop in properties:
             max_len = max(max_len, len(hf[prop]))
@@ -128,13 +128,13 @@ def plot_timetraces(
                     f"{prop}: Not sufficient data. Range selected starts at t0={t0} to plot, data ends at t={len(hf[prop])*parameters['dt']:.2f}"
                 )
                 return
-        t0_std_idx = int(t0_std // parameters["dt"])
+        t0_std_idx = int(t0_std // parameters["frame_dt"])
         if t0_std_idx > max_len:
             print("WARNING start of statistics index is bigger than file length!")
             print(f"Calculating stats now from t0: {t0_std} -> {t0}")
             t0_std = t0
             t0_std_idx = t0_idx
-        age = hf[list(hf.keys())[0]].shape[0] * parameters["dt"]
+        age = hf[list(hf.keys())[0]].shape[0] * parameters["frame_dt"]
         elements = []
         labels = []
         min_yval = 0
@@ -151,7 +151,7 @@ def plot_timetraces(
             element, label = plot_timeline_with_stds(
                 prop_data,
                 t0=t0,
-                dt=parameters["dt"],
+                dt=parameters["frame_dt"],
                 ax=ax,
                 name=property,
                 add_label=False,
@@ -196,7 +196,7 @@ def main(
     plot_timetraces(
         file_path=file_path,
         out_path=out_path,
-        properties=("energy", "kinetic_energy", "thermal_energy", "enstrophy", "enstrophy_phi"),
+        properties=("energy", "kinetic_energy", "thermal_energy", "enstrophy_phi"), #"enstrophy",
         t0=t0,
         t0_std=t0_std,
     )
