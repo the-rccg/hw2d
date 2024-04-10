@@ -2,7 +2,7 @@
 NumPy-based Gradient Computation
 ================================
 
-This module offers a collection of functions for computing gradients on 2D grids using the NumPy library. 
+This module offers a collection of functions for computing gradients on 2D grids using the NumPy library.
 It provides a standard implementation based on array computation suitable for solving the HW2D model, including:
 
 - Basic Gradient Computation (`gradient`): Computes the gradient of a 2D array using central finite differences.
@@ -75,7 +75,7 @@ def periodic_laplace_N(arr: np.ndarray, dx: float, N: int) -> np.ndarray:
     return arr
 
 
-def fourier_laplace(grid: np.ndarray, dx: float, times: int = 1) -> np.ndarray:
+def fourier_laplace(grid: np.ndarray, dx: float, N: int = 1) -> np.ndarray:
     """
     Compute the Laplace of a 2D array using Fourier transform.
 
