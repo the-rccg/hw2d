@@ -51,8 +51,8 @@ property_fncs = {
 
 def run(
     # Physics & Numerics
-    step_size: float = 0.025,
-    end_time: float = 1_000,
+    step_size: float = 0.01,
+    end_time: float = 1_400,
     grid_pts: int = 512,
     k0: float = 0.15,
     N: int = 3,
@@ -61,14 +61,14 @@ def run(
     kappa_coeff: float = 1.0,
     poisson_bracket_coeff: float = 1.0,
     # Running
-    show_property: str = "",
+    show_property: str = "gamma_n",
     # Initialization
     seed: int or None = None,
     init_type: str = "normal",
     init_scale: float = 1 / 100,
     # Saving
     output_path: str = "c1=5.0.h5",
-    continue_file: bool = False,
+    continue_file: bool = True,
     buffer_length: int = 100,
     snaps: int = 10,
     chunk_size: int = 100,
@@ -102,7 +102,7 @@ def run(
     ),
     # Other
     debug: bool = False,
-    force_recompute: bool = True,
+    force_recompute: bool = False,
 ):
     """
     Run the simulation with the given parameters.
@@ -152,6 +152,8 @@ def run(
     np.random.seed(seed)
     if downsample_factor != 1:
         add_last_state = True
+    if show_property not in properties:
+        properties += [show_property]
 
     # Define Initializations
     noise = {
@@ -195,7 +197,7 @@ def run(
         if downsample_factor != 1:
             y_save = int(round(y / downsample_factor))
             x_save = int(round(x / downsample_factor))
-            print(f"Downsample by {downsample_factor}x to: {y_save}x{x_save}")
+            print(f"Downsample by {downsample_factor}x: {y}x{x}->{y_save}x{x_save}")
         # Output data from this run
         buffer = {
             field: np.zeros((buffer_length, y_save, x_save), dtype=np.float32)

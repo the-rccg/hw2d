@@ -117,10 +117,9 @@ def run(
     x = grid_pts
     L = 2 * np.pi / k0  # Physical box size
     dx = L / x  # Grid resolution
-    steps = int(end_time / step_size)  # Number of Steps until end_time
-    snap_count = steps // snaps + 1  # number of snapshots
     field_list = ("density", "omega", "phi")
     current_time = 0
+    initial_time = np.float64(0)
     iteration_count = 0
     np.random.seed(seed)
     if downsample_factor != 1:
@@ -190,7 +189,10 @@ def run(
                 save_params = get_save_params(
                     physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
                 )
-                current_time = plasma.age
+                initial_time = np.float64(plasma.age)
+                print(
+                    f"Loaded: {output_path} (age={plasma.age}, time={initial_time})\n{physics_params}"
+                )
                 # Check consistency
                 for field in plasma.keys():
                     # No NaNs
@@ -218,7 +220,7 @@ def run(
                         new_val[k] = downsample_fnc(v, downsample_factor)
                     if add_last_state:
                         last_state[f"state_{k}"] = v
-            new_val["time"] = current_time
+            new_val["time"] = initial_time
             save_params = get_save_params(
                 physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
             )
@@ -247,10 +249,14 @@ def run(
     plasma["phi"] = hw.get_phi(plasma.omega, physics_params["dx"])
 
     # Run Simulation
-    print("Running simulation...")
+    current_time = initial_time
+    steps = int((end_time - initial_time) / step_size)  # Number of Steps until end_time
+    snap_count = steps // snaps + 1  # number of snapshots
+    print(f"Running simulation from:  {initial_time:,.0f} - {end_time:,.0f}")
     for iteration_count in tqdm(range(1, steps + 1)):
         # Progress one step, alternatively: hw.euler_step()
         plasma = hw.rk4_step(plasma, dt=step_size, dx=dx)
+        current_time = iteration_count*step_size
 
         # Save to records
         if output_path and iteration_count % snaps == 0:
