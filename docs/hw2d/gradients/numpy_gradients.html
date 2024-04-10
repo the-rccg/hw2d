@@ -93,7 +93,7 @@
 
                         <div class="docstring"><h1 id="numpy-based-gradient-computation">NumPy-based Gradient Computation</h1>
 
-<p>This module offers a collection of functions for computing gradients on 2D grids using the NumPy library. 
+<p>This module offers a collection of functions for computing gradients on 2D grids using the NumPy library.
 It provides a standard implementation based on array computation suitable for solving the HW2D model, including:</p>
 
 <ul>
@@ -119,7 +119,7 @@ It provides a standard implementation based on array computation suitable for so
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">NumPy-based Gradient Computation</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">================================</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">This module offers a collection of functions for computing gradients on 2D grids using the NumPy library. </span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">This module offers a collection of functions for computing gradients on 2D grids using the NumPy library.</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="sd">It provides a standard implementation based on array computation suitable for solving the HW2D model, including:</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="sd">- Basic Gradient Computation (`gradient`): Computes the gradient of a 2D array using central finite differences.</span>
@@ -192,7 +192,7 @@ It provides a standard implementation based on array computation suitable for so
 </span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>    <span class="k">return</span> <span class="n">arr</span>
 </span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>
 </span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="k">def</span> <span class="nf">fourier_laplace</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">times</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="k">def</span> <span class="nf">fourier_laplace</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 </span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">    Compute the Laplace of a 2D array using Fourier transform.</span>
 </span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>
@@ -412,13 +412,13 @@ It provides a standard implementation based on array computation suitable for so
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">fourier_laplace</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">grid</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>, </span><span class="param"><span class="n">dx</span><span class="p">:</span> <span class="nb">float</span>, </span><span class="param"><span class="n">times</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span></span><span class="return-annotation">) -> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>:</span></span>
+        <span class="name">fourier_laplace</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">grid</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>, </span><span class="param"><span class="n">dx</span><span class="p">:</span> <span class="nb">float</span>, </span><span class="param"><span class="n">N</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span></span><span class="return-annotation">) -> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>:</span></span>
 
                 <label class="view-source-button" for="fourier_laplace-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#fourier_laplace"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="fourier_laplace-79"><a href="#fourier_laplace-79"><span class="linenos">79</span></a><span class="k">def</span> <span class="nf">fourier_laplace</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">times</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="fourier_laplace-79"><a href="#fourier_laplace-79"><span class="linenos">79</span></a><span class="k">def</span> <span class="nf">fourier_laplace</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 </span><span id="fourier_laplace-80"><a href="#fourier_laplace-80"><span class="linenos">80</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="fourier_laplace-81"><a href="#fourier_laplace-81"><span class="linenos">81</span></a><span class="sd">    Compute the Laplace of a 2D array using Fourier transform.</span>
 </span><span id="fourier_laplace-82"><a href="#fourier_laplace-82"><span class="linenos">82</span></a>
