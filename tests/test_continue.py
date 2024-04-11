@@ -41,7 +41,7 @@ def test_continue_run(tmp_path=os.getcwd()):
     run(continue_file=False, force_recompute=True, end_time=end_time, **test_parameters)
     # Verify Data
     with h5py.File(f"{tmp_path}/test_continue.h5") as hf:
-        print(np.array([int(end_time / test_parameters["step_size"]) + 1, grid_pts // test_parameters["downsample_factor"], grid_pts // test_parameters["downsample_factor"]]) )
+        print(hf["density"].shape, np.array([int(end_time / test_parameters["step_size"]) + 1, grid_pts // test_parameters["downsample_factor"], grid_pts // test_parameters["downsample_factor"]]) )
         assert hf["density"].shape[0] == end_time / test_parameters["step_size"] + 1
         assert np.array_equal(hf["density"].shape[1:], np.array([grid_pts, grid_pts]) // test_parameters["downsample_factor"]), f"{hf['density'].shape[1:]} - { [grid_pts, grid_pts]}"
         assert hf["gamma_n"][-1] != 0
@@ -50,7 +50,7 @@ def test_continue_run(tmp_path=os.getcwd()):
     run(continue_file=True, force_recompute=False, end_time=end_time, **test_parameters)
     # Verify Data
     with h5py.File(f"{tmp_path}/test_continue.h5") as hf:
-        print(np.array([int(end_time / test_parameters["step_size"]) + 1, grid_pts // test_parameters["downsample_factor"], grid_pts // test_parameters["downsample_factor"]]) )
+        print(hf["density"], np.array([int(end_time / test_parameters["step_size"]) + 1, grid_pts // test_parameters["downsample_factor"], grid_pts // test_parameters["downsample_factor"]]) )
         assert hf["density"].shape[0] == int(end_time / test_parameters["step_size"]) + 1, f"{hf['density'].shape[0]} vs {int(end_time / test_parameters['step_size']) + 1}"
         assert np.array_equal(hf["density"].shape[1:], np.array([grid_pts, grid_pts]) // test_parameters["downsample_factor"]), f"{hf['density'].shape[1:]} - {[grid_pts, grid_pts]}"
         assert hf["gamma_n"][-1] != 0
@@ -93,7 +93,7 @@ def test_continue_run2(tmp_path=os.getcwd()):
     run2(continue_file=False, force_recompute=True, end_time=end_time, **test_parameters)
     # Verify Data
     with h5py.File(f"{tmp_path}/test_continue.h5") as hf:
-        print(np.array([int(end_time / test_parameters["step_size"]) + 1, grid_pts // test_parameters["downsample_factor"], grid_pts // test_parameters["downsample_factor"]]) )
+        print(hf["density"], np.array([int(end_time / test_parameters["step_size"]) + 1, grid_pts // test_parameters["downsample_factor"], grid_pts // test_parameters["downsample_factor"]]) )
         assert hf["density"].shape[0] == end_time / test_parameters["step_size"] + 1
         assert np.array_equal(hf["density"].shape[1:], np.array([grid_pts, grid_pts]) // test_parameters["downsample_factor"]), f"{hf['density'].shape[1:]} - { [grid_pts, grid_pts]}"
         assert hf["gamma_n"][-1] != 0
@@ -102,7 +102,7 @@ def test_continue_run2(tmp_path=os.getcwd()):
     run2(continue_file=True, force_recompute=False, end_time=end_time, **test_parameters)
     # Verify Data
     with h5py.File(f"{tmp_path}/test_continue.h5") as hf:
-        print(np.array([int(end_time / test_parameters["step_size"]) + 1, grid_pts // test_parameters["downsample_factor"], grid_pts // test_parameters["downsample_factor"]]) )
+        print(hf["density"], np.array([int(end_time / test_parameters["step_size"]) + 1, grid_pts // test_parameters["downsample_factor"], grid_pts // test_parameters["downsample_factor"]]) )
         assert hf["density"].shape[0] == end_time / test_parameters["step_size"] + 1
         assert np.array_equal(hf["density"].shape[1:], np.array([grid_pts, grid_pts]) // test_parameters["downsample_factor"]), f"{hf['density'].shape[1:]} - { [grid_pts, grid_pts]}"
         assert hf["gamma_n"][-1] != 0

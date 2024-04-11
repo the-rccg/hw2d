@@ -52,11 +52,11 @@ property_fncs = {
 def run(
     # Physics & Numerics
     step_size: float = 0.01,
-    end_time: float = 1_400,
+    end_time: float = 2_000,
     grid_pts: int = 512,
     k0: float = 0.15,
     N: int = 3,
-    nu: float = 1.0e-09,
+    nu: float = 1.0e-10,
     c1: float = 5,
     kappa_coeff: float = 1.0,
     poisson_bracket_coeff: float = 1.0,
@@ -67,10 +67,11 @@ def run(
     init_type: str = "normal",
     init_scale: float = 1 / 100,
     # Saving
-    output_path: str = "c1=5.0.h5",
-    continue_file: bool = True,
+    output_path: str = "c1=5.0_nu=1e-10.h5",
+    recording_start_time: float = 0,
+    continue_file: bool = False,
     buffer_length: int = 100,
-    snaps: int = 10,
+    snaps: int = 5,
     chunk_size: int = 100,
     downsample_factor: float = 16,
     add_last_state: bool = True,
@@ -91,6 +92,7 @@ def run(
         "enstrophy_phi",
     ],
     # Plotting
+    t0_std = 800,
     plot_properties: Iterable[str] = (
         "gamma_c",
         "gamma_n",
@@ -121,6 +123,7 @@ def run(
         init_type (str, optional): Initialization method. Choices: 'fourier', 'sine', 'random', 'normal'. Defaults to 'normal'.
         init_scale (float, optional): Scaling factor for initialization. Defaults to 0.01.
         output_path (str, optional): Where to save the simulation data. Defaults to ''.
+        recording_start_time (float, optional): Time (t) from which onwards the data is recorded. Defaults to 0.
         continue_file (bool, optional): If True, continue with existing file. Defaults to False.
         buffer_length (int, optional): Size of buffer for storage. Defaults to 100.
         chunks (int, optional): Chunks of the h5 file. Defaults to 100.
@@ -239,28 +242,8 @@ def run(
                 return
         # Create Data
         else:
-            # Initial Values
-            new_val = Namespace(
-                **{k: v for k, v in plasma.items() if k in ("phi", "omega", "density")}
-            )
-            last_state = {}
-            for k, v in plasma.items():
-                if k in ("phi", "omega", "density"):
-                    if downsample_factor != 1:
-                        new_val[k] = downsample_fnc(v, downsample_factor)
-                    if add_last_state:
-                        last_state[f"state_{k}"] = v
-            for prop_name in properties:
-                new_val[prop_name] = property_fncs[prop_name](
-                    n=plasma["density"],
-                    p=plasma["phi"],
-                    o=plasma["omega"],
-                    dx=dx,
-                    c1=c1,
-                )
-            new_val["time"] = initial_time
             save_params = get_save_params(
-                physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
+                physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save, recording_start_time=recording_start_time,
             )
             # Create file
             create_appendable_h5(
@@ -272,12 +255,32 @@ def run(
                 add_last_state=add_last_state,
             )
             # Save initial values
-            output_params["buffer_index"] = save_to_buffered_h5(
-                new_val=new_val,
-                last_state=last_state,
-                buffer_length=buffer_length,
-                **output_params,
-            )
+            if not recording_start_time:
+                new_val = Namespace(
+                    **{k: v for k, v in plasma.items() if k in ("phi", "omega", "density")}
+                )
+                last_state = {}
+                for k, v in plasma.items():
+                    if k in ("phi", "omega", "density"):
+                        if downsample_factor != 1:
+                            new_val[k] = downsample_fnc(v, downsample_factor)
+                        if add_last_state:
+                            last_state[f"state_{k}"] = v
+                for prop_name in properties:
+                    new_val[prop_name] = property_fncs[prop_name](
+                        n=plasma["density"],
+                        p=plasma["phi"],
+                        o=plasma["omega"],
+                        dx=dx,
+                        c1=c1,
+                    )
+                new_val["time"] = initial_time
+                output_params["buffer_index"] = save_to_buffered_h5(
+                    new_val=new_val,
+                    last_state=last_state,
+                    buffer_length=buffer_length,
+                    **output_params,
+                )
 
     # Display runtime parameters
     # save_params["output_path"] = output_path  # No support for strings
@@ -295,6 +298,7 @@ def run(
     used_step_size = step_size
     used_time_steps = []
     current_time = initial_time
+    new_val = {}
 
     try:
         with tqdm(
@@ -319,7 +323,7 @@ def run(
                 current_time = initial_time + np.sum(used_time_steps)
 
                 # Batched Processing
-                if iteration_count % snaps == 0:
+                if (current_time >= recording_start_time) and (iteration_count % snaps == 0):
                     new_val = Namespace(
                         **{
                             k: v
@@ -371,7 +375,7 @@ def run(
                 pbar.update(used_step_size)
                 new_description = f"{iter_per_sec:.2f}it/s"
                 if show_property:
-                    new_description += f" | Γn = {new_val[show_property]:.2g}"
+                    new_description += f" | Γn = {new_val.get(show_property, 0):.2g}"
                 pbar.set_description(new_description)
                 iteration_count += 1
 
@@ -383,7 +387,7 @@ def run(
         return
 
     # If output_path is defined, flush any remaining data in the buffer
-    if output_path and output_params["buffer_index"] > 0:
+    if output_path and (current_time > recording_start_time) and (output_params["buffer_index"] > 0):
         append_h5(**output_params)
 
     # Get Performance stats
@@ -410,7 +414,7 @@ def run(
             out_path=None,
             properties=plot_properties,
             t0=0,
-            t0_std=300,
+            t0_std=t0_std,
         )
 
 

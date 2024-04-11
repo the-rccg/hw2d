@@ -41,6 +41,7 @@ def run(
     init_scale: float = 1 / 100,
     # Saving
     output_path: str = "_test.h5",
+    recording_start_time: float = 0,
     continue_file: bool or str = False,
     buffer_length: int = 100,
     snaps: int = 1,
@@ -94,6 +95,7 @@ def run(
         init_type (str, optional): Initialization method. Choices: 'fourier', 'sine', 'random', 'normal'. Defaults to 'normal'.
         init_scale (float, optional): Scaling factor for initialization. Defaults to 0.01.
         output_path (str, optional): Where to save the simulation data. Defaults to ''.
+        recording_start_time (float, optional): Time (t) from which onwards the data is recorded. Defaults to 0.
         continue_file (bool or str, optional): If True, continue with existing file. If path, it will continue with file from path. Defaults to False.
         buffer_length (int, optional): Size of buffer for storage. Defaults to 100.
         snaps (int, optional): Snapshot intervals for saving. Defaults to 1.
@@ -187,7 +189,7 @@ def run(
                 plasma, physics_params = continue_h5_file(output_path, field_list)
                 print(f"Loaded: {output_path} (age={plasma.age})\n{physics_params}")
                 save_params = get_save_params(
-                    physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
+                    physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save, recording_start_time=recording_start_time
                 )
                 initial_time = np.float64(plasma.age)
                 print(
@@ -209,20 +211,8 @@ def run(
                 return
         # Create Data
         else:
-            # Initial Values
-            new_val = Namespace(
-                **{k: v for k, v in plasma.items() if k in ("phi", "omega", "density")}
-            )
-            last_state = {}
-            for k, v in plasma.items():
-                if k in ("phi", "omega", "density"):
-                    if downsample_factor != 1:
-                        new_val[k] = downsample_fnc(v, downsample_factor)
-                    if add_last_state:
-                        last_state[f"state_{k}"] = v
-            new_val["time"] = initial_time
             save_params = get_save_params(
-                physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
+                physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save, recording_start_time=recording_start_time
             )
             # Create file
             create_appendable_h5(
@@ -234,12 +224,24 @@ def run(
                 add_last_state=add_last_state,
             )
             # Save initial values
-            output_params["buffer_index"] = save_to_buffered_h5(
-                new_val=new_val,
-                last_state=last_state,
-                buffer_length=buffer_length,
-                **output_params,
-            )
+            if not recording_start_time:
+                new_val = Namespace(
+                    **{k: v for k, v in plasma.items() if k in ("phi", "omega", "density")}
+                )
+                last_state = {}
+                for k, v in plasma.items():
+                    if k in ("phi", "omega", "density"):
+                        if downsample_factor != 1:
+                            new_val[k] = downsample_fnc(v, downsample_factor)
+                        if add_last_state:
+                            last_state[f"state_{k}"] = v
+                new_val["time"] = initial_time
+                output_params["buffer_index"] = save_to_buffered_h5(
+                    new_val=new_val,
+                    last_state=last_state,
+                    buffer_length=buffer_length,
+                    **output_params,
+                )
 
     # Display runtime parameters
     format_print_dict(save_params)
@@ -259,7 +261,7 @@ def run(
         current_time = iteration_count*step_size
 
         # Save to records
-        if output_path and iteration_count % snaps == 0:
+        if output_path and current_time >= recording_start_time and iteration_count % snaps == 0:
             new_val = Namespace(
                 **{k: v for k, v in plasma.items() if k in ("phi", "omega", "density")}
             )

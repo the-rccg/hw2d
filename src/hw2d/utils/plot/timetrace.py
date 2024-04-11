@@ -119,7 +119,7 @@ def plot_timetraces(
     with h5py.File(file_path, "r") as hf:
         parameters = dict(hf.attrs)
         fig, ax = plt.subplots(1, 1, figsize=(7, 3))
-        t0_idx = int(t0 // parameters["frame_dt"])
+        t0_idx = int((t0 - parameters.get("initial_time", 0)) // parameters["frame_dt"])
         max_len = 0
         for prop in properties:
             max_len = max(max_len, len(hf[prop]))

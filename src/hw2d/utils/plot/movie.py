@@ -149,8 +149,8 @@ def create_movie(
     title = generate_title(params)
     if t1 is None:
         t1 = (len(plasma_steps[plot_order[0]]) - 1) * params["frame_dt"]
-    t0_idx = time_to_length(t0 - params.get("t0", 0), params["frame_dt"])
-    t1_idx = time_to_length(t1 - params.get("t0", 0), params["frame_dt"])
+    t0_idx = time_to_length(t0 - params.get("initial_time", 0), params["frame_dt"])
+    t1_idx = time_to_length(t1 - params.get("initial_time", 0), params["frame_dt"])
     # Determine fps and step size to use
     fps = int(speed / params["frame_dt"])
     print(f"{speed}t/s  @  {params['frame_dt']} t/frame  implies {fps} frames/s")

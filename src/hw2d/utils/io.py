@@ -6,7 +6,14 @@ from hw2d.utils.namespaces import Namespace
 
 
 def get_save_params(
-    params: Dict[str, Any], dt: float, snaps: int, x: int, y: int, x_save: int or None = None, y_save: int or None = None
+    params: Dict[str, Any],
+    dt: float,
+    snaps: int,
+    x: int,
+    y: int,
+    x_save: int or None = None,
+    y_save: int or None = None,
+    recording_start_time: float = 0,
 ) -> Dict[str, Any]:
     params = params.copy()
     params["dt"] = dt
@@ -16,6 +23,7 @@ def get_save_params(
     params["x_save"] = x_save if x_save is not None else x
     params["y_save"] = y_save if y_save is not None else y
     params["grid_pts"] = x
+    params["initial_time"] = recording_start_time
     return params
 
 
@@ -54,7 +62,9 @@ def create_appendable_h5(
         # Add last state for continuation
         if add_last_state:
             for field_name in ["density", "phi", "omega"]:
-                hf.create_dataset(f"state_{field_name}", (params["y"], params["x"]), dtype=np.float64)
+                hf.create_dataset(
+                    f"state_{field_name}", (params["y"], params["x"]), dtype=np.float64
+                )
         # Add simulation parameters
         for key, value in params.items():
             hf.attrs[key] = value
@@ -81,7 +91,7 @@ def save_to_buffered_h5(
     buffer_index: int,
     new_val: Dict[str, Any],
     output_path: str,
-    last_state: Dict[str, Any] = {}
+    last_state: Dict[str, Any] = {},
 ) -> int:
     """
     Save data to a buffer. If the buffer is full, flush the buffer to the HDF5 file.
@@ -181,7 +191,7 @@ def continue_h5_file(
             lengths.append(len(h5_file[field]))
         # Age
         age = h5_file["time"][-1][0]
-        #age = params["frame_dt"] * (length - 1)
+        # age = params["frame_dt"] * (length - 1)
     length = min(lengths)
     # Prepare data structure
     data = Namespace(**data, age=age)
