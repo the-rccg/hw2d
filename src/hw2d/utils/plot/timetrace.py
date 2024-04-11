@@ -10,6 +10,15 @@ from hw2d.utils.latex_format import latex_format
 
 
 def is_zero_included(vals: np.ndarray, frac: float = 0.025) -> None:
+    """Check whether zero should be included as being close to the values
+
+    Args:
+        vals (np.ndarray): Array of values
+        frac (float, optional): Fraction larger or smaller that should include zero. Defaults to 0.025.
+
+    Returns:
+        bool: Whether zero should be included in the axis or not
+    """
     min_yvals = np.min(vals)
     max_yvals = np.max(vals)
     range_vals = max_yvals - min_yvals
@@ -28,6 +37,7 @@ def add_axes(
     alpha: float = 1,
     color: str = "black",
 ) -> None:
+    """Mark the 0 values with lines on the x-axis and y-axis if they are close or included in the values"""
     if is_zero_included(x_vals):
         ax.axvline(
             0, linewidth=linewidth, linestyle=linestyle, alpha=alpha, color=color
@@ -119,7 +129,10 @@ def plot_timetraces(
     with h5py.File(file_path, "r") as hf:
         parameters = dict(hf.attrs)
         fig, ax = plt.subplots(1, 1, figsize=(7, 3))
-        t0_idx = int((t0 - parameters.get("initial_time", 0)) // parameters["frame_dt"])
+        # Time handling
+        init_time = parameters.get("initial_time", 0)
+        t0_idx = int((t0 - init_time) // parameters["frame_dt"])
+        # Go through properties
         max_len = 0
         for prop in properties:
             max_len = max(max_len, len(hf[prop]))
@@ -128,13 +141,15 @@ def plot_timetraces(
                     f"{prop}: Not sufficient data. Range selected starts at t0={t0} to plot, data ends at t={len(hf[prop])*parameters['dt']:.2f}"
                 )
                 return
-        t0_std_idx = int(t0_std // parameters["frame_dt"])
+        # Time handling for standard deviation calculations
+        t0_std_idx = int((t0_std - init_time) // parameters["frame_dt"])
         if t0_std_idx > max_len:
             print("WARNING start of statistics index is bigger than file length!")
-            print(f"Calculating stats now from t0: {t0_std} -> {t0}")
+            print(f"Calculating stats now from t0: {t0_std:,} -> {t0:,}")
             t0_std = t0
             t0_std_idx = t0_idx
-        age = hf[list(hf.keys())[0]].shape[0] * parameters["frame_dt"]
+        age = (hf[list(hf.keys())[0]].shape[0] + init_time) * parameters["frame_dt"]
+        # Plot elements
         elements = []
         labels = []
         min_yval = 0
@@ -171,13 +186,15 @@ def plot_timetraces(
         ax.set_ylabel("value")
         ax.set_xlabel("time (t)")
         ax.xaxis.set_ticks(range(0, int(age) + 1, 100))
+        # Wrap up figure
         fig.tight_layout()
+        # Save
         if out_path is None:
             out_path = (
                 str(file_path).split(".h5")[0] + f"_{'-'.join(properties)}" + ".jpg"
             )
         fig.savefig(out_path)
-        print(out_path)
+        print(f"saved to:  {out_path}")
 
 
 def main(
@@ -200,6 +217,7 @@ def main(
         t0=t0,
         t0_std=t0_std,
     )
+
 
 if __name__ == "__main__":
     fire.Fire(main)

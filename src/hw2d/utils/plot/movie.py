@@ -147,6 +147,7 @@ def create_movie(
     plasma_steps = h5py.File(input_filename, "r")
     params = dict(plasma_steps.attrs)
     title = generate_title(params)
+    # Time handling
     if t1 is None:
         t1 = (len(plasma_steps[plot_order[0]]) - 1) * params["frame_dt"]
     t0_idx = time_to_length(t0 - params.get("initial_time", 0), params["frame_dt"])
@@ -194,9 +195,10 @@ def create_movie(
     # Save Movie
     output_filename = f"{output_filename}_dpi={dpi}_fps={fps:.0f}_speed={speed:.0f}_t0={t0}_t1={t1}.mp4"
     ani.save(output_filename, writer=writer, dpi=dpi)
+    # Close and wrap-up
     plt.close()
     plasma_steps.close()
-    print(f"{output_filename}")
+    print(f"saved as:  {output_filename}")
 
 
 def generate_title(params: Dict[str, float]) -> str:
