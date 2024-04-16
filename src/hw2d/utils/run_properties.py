@@ -2,7 +2,7 @@ import numpy as np
 import h5py
 import fire
 from tqdm import tqdm
-from typing import List
+from typing import List, Iterable
 from functools import partial
 
 from hw2d.physical_properties.numpy_properties import (
@@ -17,7 +17,7 @@ from hw2d.physical_properties.numpy_properties import (
 )
 
 
-def add_data(hf, i, batch_size, name, data, debug, selection):
+def add_data(hf: h5py.File, i: int, batch_size: int, name: str, data: np.ndarray, debug: bool, selection: Iterable[str]) -> None:
     if name in selection:
         data = data()
         hf[name][i : i + batch_size] = data
@@ -28,7 +28,7 @@ def add_data(hf, i, batch_size, name, data, debug, selection):
 def calculate_properties(
     file_path: str = "",
     batch_size: int = 100,
-    property_list: List = [
+    property_list: Iterable[str] = [
         "gamma_n",
         "gamma_n_spectral",
         "gamma_c",
@@ -51,21 +51,26 @@ def calculate_properties(
         steps = len(h5_file["density"])
         # Create Properties in Dataset
         selection = []
+        existing_datasets = []
+        created_datasets = []
         for property_name in property_list:
             if property_name in h5_file.keys():
-                print(f"Dataset exists:  {property_name}")
+                existing_datasets.append(property_name)
                 if force_recompute:
                     del h5_file[property_name]
             if property_name not in h5_file.keys():
                 selection.append(property_name)
                 h5_file.create_dataset(property_name, (steps,))
-                print(f"Created Dataset:  {property_name}")
+                created_datasets.append(property_name)
+        print(f"Existing datasets:  {existing_datasets}")
+        print(f"Created datasets:   {created_datasets}")
         # Set up iterator
         iterator = range(0, steps, batch_size)
         if not is_debug:
             iterator = tqdm(iterator)
         # Run Through in Batches
         for i in iterator:
+            # Define addition function
             add = partial(
                 add_data,
                 hf=h5_file,
@@ -74,6 +79,7 @@ def calculate_properties(
                 debug=is_debug,
                 selection=selection,
             )
+            # Get intput data
             n = h5_file["density"][i : i + batch_size]
             p = h5_file["phi"][i : i + batch_size]
             o = h5_file["omega"][i : i + batch_size]
@@ -83,23 +89,18 @@ def calculate_properties(
                     end="\n  ",
                 )
             # Add properties if they were selected
-            add(name="gamma_n", data=partial(get_gamma_n, n=n, p=p, dx=dx))
-            add(
-                name="gamma_n_spectral",
-                data=partial(get_gamma_n_spectrally, n=n, p=p, dx=dx),
-            )
-            add(name="gamma_c", data=partial(get_gamma_c, n=n, p=p, c1=c1, dx=dx))
-            add(name="energy", data=partial(get_energy, n=n, phi=p, dx=dx))
-            add(name="thermal_energy", data=partial(get_energy_N_spectrally, n=n))
-            add(
-                name="kinetic_energy", data=partial(get_energy_V_spectrally, p=p, dx=dx)
-            )
-            add(name="enstrophy", data=partial(get_enstrophy, n=n, omega=o, dx=dx))
-            add(
-                name="enstrophy_phi", data=partial(get_enstrophy_phi, n=n, phi=p, dx=dx)
-            )
-            if is_debug:
-                print()
+            property_mapping = {
+                "gamma_n": partial(get_gamma_n, n=n, p=p, dx=dx),
+                "gamma_n_spectral": partial(get_gamma_n_spectrally, n=n, p=p, dx=dx),
+                "gamma_c": partial(get_gamma_c, n=n, p=p, c1=c1, dx=dx),
+                "energy": partial(get_energy, n=n, phi=p, dx=dx),
+                "thermal_energy": partial(get_energy_N_spectrally, n=n),
+                "kinetic_energy": partial(get_energy_V_spectrally, p=p, dx=dx),
+                "enstrophy": partial(get_enstrophy, n=n, omega=o, dx=dx),
+                "enstrophy_phi": partial(get_enstrophy_phi, n=n, phi=p, dx=dx),
+            }
+            for name, data in property_mapping.items():
+                add(name=name, data=data)
 
     return
 
