@@ -125,14 +125,18 @@ def plot_timetraces(
     # properties: List = ("energy", "kinetic_energy", "thermal_energy", "enstrophy", "enstrophy_phi"),
     t0: int = 0,
     t0_std: float = 300,
+    xtick_interval: int = 100,
+    y_cutoff: int = 1e5,
 ):
     with h5py.File(file_path, "r") as hf:
         parameters = dict(hf.attrs)
         fig, ax = plt.subplots(1, 1, figsize=(7, 3))
         # Time handling
         init_time = parameters.get("initial_time", 0)
-        t0_idx = int((t0 - init_time) // parameters["frame_dt"])
-        # Go through properties
+        t0_idx = int(t0 // parameters["frame_dt"])
+        age = (hf[list(hf.keys())[0]].shape[0] * parameters["frame_dt"]) + init_time
+        t0 = max(t0, init_time)
+        # Determine max length of properties
         max_len = 0
         for prop in properties:
             max_len = max(max_len, len(hf[prop]))
@@ -148,21 +152,21 @@ def plot_timetraces(
             print(f"Calculating stats now from t0: {t0_std:,} -> {t0:,}")
             t0_std = t0
             t0_std_idx = t0_idx
-        age = (hf[list(hf.keys())[0]].shape[0] + init_time) * parameters["frame_dt"]
         # Plot elements
         elements = []
         labels = []
         min_yval = 0
         max_yval = 0
         for property in properties:
+            # Calculate statistical properties
             prop_std = np.std(hf[property][t0_std_idx:])
             prop_mean = np.mean(hf[property][t0_std_idx:])
+            # Properties for plotting
             prop_data = hf[property][t0_idx:]
-            min_yval = min(min_yval, np.min(hf[property]))
-            max_yval = max(max_yval, np.min(hf[property]))
             if not len(prop_data):
                 print(f"WARNING no data in: {property}")
                 continue
+            # Plot elements
             element, label = plot_timeline_with_stds(
                 prop_data,
                 t0=t0,
@@ -171,6 +175,9 @@ def plot_timetraces(
                 name=property,
                 add_label=False,
             )
+            # Axis handling
+            min_yval = min(min_yval, np.min(prop_data))
+            max_yval = max(max_yval, np.min(prop_data))
             label += f" = {prop_mean:.2f}$\\pm${prop_std:.2f}"
             labels.append(label)
             elements.append(element[0])
@@ -181,11 +188,15 @@ def plot_timetraces(
             ylims = ax.get_ylim()
             ylims = (0, ylims[1])
             ax.set_ylim(ylims)
+        if max_yval > y_cutoff:
+            print(f"WARNING diverged. Setting limit to: {y_cutoff}")
+            ax.set_ylim((0, y_cutoff))
         # Adjust Labels
         ax.legend(elements, labels)
         ax.set_ylabel("value")
         ax.set_xlabel("time (t)")
-        ax.xaxis.set_ticks(range(0, int(age) + 1, 100))
+        if age // xtick_interval < 15:
+            ax.xaxis.set_ticks(range(t0, int(age) + 1, xtick_interval))
         # Wrap up figure
         fig.tight_layout()
         # Save
