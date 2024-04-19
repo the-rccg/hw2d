@@ -9,7 +9,6 @@ from hw2d.run2 import run as run2
 
 def test_continue_run(tmp_path=os.getcwd()):
     grid_pts = 64
-    end_time = 1
     test_parameters = dict(
         # Physics & Numerics
         step_size=0.025,
@@ -30,6 +29,7 @@ def test_continue_run(tmp_path=os.getcwd()):
         snaps=1,
         chunk_size=1,
         downsample_factor=2,
+        recording_start_time=0,
         # Movie
         movie=False,
         # Plotting
@@ -38,6 +38,7 @@ def test_continue_run(tmp_path=os.getcwd()):
         debug=False,
     )
     # Original run
+    end_time = 1
     run(continue_file=False, force_recompute=True, end_time=end_time, **test_parameters)
     # Verify Data
     with h5py.File(f"{tmp_path}/test_continue.h5") as hf:
@@ -58,7 +59,6 @@ def test_continue_run(tmp_path=os.getcwd()):
 
 def test_continue_run2(tmp_path=os.getcwd()):
     grid_pts = 256
-    end_time = 1
     test_parameters = dict(
         # Physics & Numerics
         step_size=0.025,
@@ -81,6 +81,7 @@ def test_continue_run2(tmp_path=os.getcwd()):
         snaps=1,
         chunk_size=1,
         downsample_factor=4,
+        recording_start_time=0,
         # Movie
         movie=False,
         # Properties
@@ -90,6 +91,7 @@ def test_continue_run2(tmp_path=os.getcwd()):
         # Other
         debug=False,
     )
+    end_time = 1
     run2(continue_file=False, force_recompute=True, end_time=end_time, **test_parameters)
     # Verify Data
     with h5py.File(f"{tmp_path}/test_continue.h5") as hf:

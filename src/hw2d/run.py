@@ -258,7 +258,7 @@ def run(
     for iteration_count in tqdm(range(1, steps + 1)):
         # Progress one step, alternatively: hw.euler_step()
         plasma = hw.rk4_step(plasma, dt=step_size, dx=dx)
-        current_time = iteration_count*step_size
+        current_time = iteration_count * step_size
 
         # Save to records
         if output_path and current_time >= recording_start_time and iteration_count % snaps == 0:

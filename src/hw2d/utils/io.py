@@ -14,6 +14,7 @@ def get_save_params(
     x_save: int or None = None,
     y_save: int or None = None,
     recording_start_time: float = 0,
+    adaptive_step_size: bool = False,
 ) -> Dict[str, Any]:
     params = params.copy()
     params["dt"] = dt
@@ -24,6 +25,7 @@ def get_save_params(
     params["y_save"] = y_save if y_save is not None else y
     params["grid_pts"] = x
     params["initial_time"] = recording_start_time
+    params["adaptive_step_size"] = adaptive_step_size
     return params
 
 

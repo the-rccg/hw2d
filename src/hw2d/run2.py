@@ -52,6 +52,7 @@ property_fncs = {
 def run(
     # Physics & Numerics
     step_size: float = 0.01,
+    adaptive_step_size: bool = False,
     end_time: float = 2_000,
     grid_pts: int = 512,
     k0: float = 0.15,
@@ -67,7 +68,7 @@ def run(
     init_type: str = "normal",
     init_scale: float = 1 / 100,
     # Saving
-    output_path: str = "c1=5.0_nu=1e-10.h5",
+    output_path: str = "c1=5.0_nu=1e-10_dt=0.01.h5",
     recording_start_time: float = 0,
     continue_file: bool = False,
     buffer_length: int = 100,
@@ -220,7 +221,7 @@ def run(
             if continue_file:
                 plasma, physics_params = continue_h5_file(output_path, field_list)
                 save_params = get_save_params(
-                    physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save
+                    physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save, recording_start_time=recording_start_time, adaptive_step_size=adaptive_step_size,
                 )
                 initial_time = np.float64(plasma.age)
                 print(
@@ -243,8 +244,7 @@ def run(
         # Create Data
         else:
             save_params = get_save_params(
-                physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save, recording_start_time=recording_start_time,
-            )
+                physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save, recording_start_time=recording_start_time, adaptive_step_size=adaptive_step_size,            )
             # Create file
             create_appendable_h5(
                 output_path,
@@ -313,16 +313,22 @@ def run(
                 while not successful:
                     try:
                         plasma = hw.rk4_step(plasma, dt=step_size, dx=dx)
+                        used_step_size = step_size
                         successful = True
                     except Exception as e:
                         print(e)
                         time.sleep(10)
-                used_step_size = step_size
-                # Improved accuracy of tiem tracking
-                used_time_steps.append(np.float64(used_step_size))
-                current_time = initial_time + np.sum(used_time_steps)
+                iteration_count += 1
+
+                # Improved accuracy of time tracking
+                if adaptive_step_size:
+                    used_time_steps.append(np.float64(used_step_size))
+                    current_time = initial_time + np.sum(used_time_steps)
+                else:
+                    current_time = initial_time + iteration_count * step_size
 
                 # Batched Processing
+                # TODO: Figure out whether it should be iteration_count % (snaps - 1) == 0
                 if (current_time >= recording_start_time) and (iteration_count % snaps == 0):
                     new_val = Namespace(
                         **{
@@ -377,7 +383,6 @@ def run(
                 if show_property:
                     new_description += f" | Γn = {new_val.get(show_property, 0):.2g}"
                 pbar.set_description(new_description)
-                iteration_count += 1
 
     except Exception as e:
         print(e)
