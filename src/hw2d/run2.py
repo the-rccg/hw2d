@@ -20,7 +20,7 @@ from hw2d.utils.io import (
 from hw2d.utils.namespaces import Namespace
 from hw2d.utils.plot.movie import create_movie
 from hw2d.utils.run_properties import calculate_properties
-from hw2d.utils.plot.timetrace import plot_timetraces
+from hw2d.utils.plot.timetrace import plot_timetraces, plot_timetrace_comparison
 from hw2d.utils.downsample import fourier_downsample
 from hw2d.utils.helpers import format_print_dict
 from hw2d.physical_properties.numpy_properties import (
@@ -142,6 +142,8 @@ def run(
     Returns:
         None: The function saves simulation data or generates a movie as specified.
     """
+    step_size = float(step_size)
+    nu = float(nu)
 
     # Unpacking
     y = grid_pts
@@ -208,8 +210,9 @@ def run(
             for field in field_list
         }
         # Property buffer
-        for p in ["time"] + properties:
-            buffer[p] = np.zeros((buffer_length, 1), dtype=np.float32)
+        buffer[f"time"] = np.zeros((buffer_length, 1), dtype=np.float32)
+        for prop_name in properties:
+            buffer[f"fullres_{prop_name}"] = np.zeros((buffer_length, 1), dtype=np.float32)
         # Other output parameters
         output_params = {
             "buffer": buffer,
@@ -249,7 +252,7 @@ def run(
             create_appendable_h5(
                 output_path,
                 save_params,
-                properties=["time"] + list(properties),
+                properties=["time"] + [f"fullres_{prop_name}" for prop_name in properties],
                 dtype=np.float32,
                 chunk_size=chunk_size,
                 add_last_state=add_last_state,
@@ -267,7 +270,7 @@ def run(
                         if add_last_state:
                             last_state[f"state_{k}"] = v
                 for prop_name in properties:
-                    new_val[prop_name] = property_fncs[prop_name](
+                    new_val[f"fullres_{prop_name}"] = property_fncs[prop_name](
                         n=plasma["density"],
                         p=plasma["phi"],
                         o=plasma["omega"],
@@ -341,7 +344,7 @@ def run(
                     # TODO: Faster to do before saving through trivial parallelization
                     new_val["time"] = current_time
                     for prop_name in properties:
-                        new_val[prop_name] = property_fncs[prop_name](
+                        new_val[f"fullres_{prop_name}"] = property_fncs[prop_name](
                             n=plasma["density"],
                             p=plasma["phi"],
                             o=plasma["omega"],
@@ -412,9 +415,19 @@ def run(
             speed=speed,
         )
 
+    if properties and output_path:
+        print(f"Calculating properties...")
+        calculate_properties(
+            file_path=output_path,
+            batch_size=buffer_length,
+            property_list=properties,
+            force_recompute=True,
+            is_debug=False,
+        )
+
     if plot_properties and output_path:
         print(f"Plotting properties...")
-        plot_timetraces(
+        plot_timetrace_comparison(
             file_path=output_path,
             out_path=None,
             properties=plot_properties,

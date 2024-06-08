@@ -47,7 +47,7 @@ def calculate_properties(
         L = 2 * np.pi / parameters["k0"]
         dx = L / parameters["x_save"]
         c1 = parameters["c1"]
-        dt = parameters["dt"]
+        dt = parameters["frame_dt"]
         steps = len(h5_file["density"])
         # Create Properties in Dataset
         selection = []

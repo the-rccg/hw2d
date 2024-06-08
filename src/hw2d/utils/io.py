@@ -111,7 +111,12 @@ def save_to_buffered_h5(
         Tuple[int, int]: Updated buffer index and flush index.
     """
     for idx, field in enumerate(buffer.keys()):
-        buffer[field][buffer_index] = new_val[field]
+        if field in new_val:
+            buffer[field][buffer_index] = new_val[field]
+        else:
+            print(f"{field} not found in new_val")
+            print(f"  buffer keys:  {sorted(buffer.keys())}")
+            print(f"  new_val keys: {sorted(new_val.keys())}")
     buffer_index += 1
     # If buffer is full, flush to HDF5 and reset buffer index
     if buffer_index == buffer_length:
