@@ -16,6 +16,7 @@ These functions are designed for both prototyping and production-level simulatio
 import phiml.math as pm
 
 
+@pm.jit_compile
 def fourier_poisson_single(tensor: pm.Tensor, dx: float, times: int = 1) -> pm.Tensor:
     """Inverse operation to `fourier_laplace`."""
     frequencies = pm.fft(tensor, dims=("y", "x"))

@@ -37,6 +37,7 @@ def laplace(padded: pm.Tensor, dx: float):
     return pm.convolve(padded, kernel=laplace_kernel, mode=PERIODIC) / dx**2
 
 
+@pm.jit_compile
 def periodic_laplace(arr: pm.Tensor, dx: float):
     """
     Compute the Laplace of a 2D array using finite differences with periodic boundary conditions.
@@ -55,6 +56,7 @@ def periodic_laplace(arr: pm.Tensor, dx: float):
     return pm.convolve(arr, kernel=laplace_kernel, extrapolation=PERIODIC) / dx**2
 
 
+@pm.jit_compile
 def periodic_laplace_N(arr: pm.Tensor, dx: float, N: int = 1) -> pm.Tensor:
     """
     Compute the Laplace of a 2D array using finite differences N times successively with periodic boundary conditions.
@@ -72,6 +74,7 @@ def periodic_laplace_N(arr: pm.Tensor, dx: float, N: int = 1) -> pm.Tensor:
     return arr
 
 
+@pm.jit_compile
 def fourier_laplace(grid: pm.Tensor, dx: float, N: int = 1) -> pm.Tensor:
     """
     Compute the Laplace of a 2D array using Fourier transform.
@@ -113,6 +116,7 @@ def gradient(padded: pm.Tensor, dx: float, axis: int = 0) -> pm.Tensor:
         return (padded[..., 1:-1, 2:] - padded[..., 1:-1, 0:-2]) / (2 * dx)
 
 
+#@pm.jit_compile
 def periodic_gradient(input_field: pm.Tensor, dx: float, axis: str) -> pm.Tensor:
     """
     Compute the gradient of a 2D array using finite differences with periodic boundary conditions.
