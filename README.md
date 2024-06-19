@@ -14,7 +14,7 @@ The purpose is to provide a playground for education and scientific purposes: be
 
 Stable, verified parameters and values are published along with this repository.
 
-### Installation 
+### Installation
 
 Install a pure NumPy version via
 ```
@@ -32,13 +32,13 @@ Running `python -m hw2d` will let you run a hw2d simulation. It exposes the CLI 
 
 If accelerators like Numba are installed, these will be used automatically. To manually decide which function should be run with which accelerator, simply change the imports in srd/hw2d/model.py to select the appropriate function. Default uses Numba for periodic gradients and the Arakawa scheme, and to be extended in the future.
 
-### Example Usage 
+### Example Usage
 
 Example of running a fully converged turbulent simulation:
 ```python
 python -m hw2d --step_size=0.025 --end_time=1000 --grid_pts=512 --c1=1.0 --k0=0.15 --N=3 --nu=5.0e-08 --output_path="test.h5" --buffer_length=100 --snaps=1 --downsample_factor=2 --movie=1 --min_fps=10 --speed=5 --debug=0
 ```
-The code will run a grid of `512x512` in steps of `0.025` from 0 to `1000` for an adiabatic coefficient of `1.0` and hyperdiffusion of order `3` with a coefficient of `5.0e-08`. The resulting data will be saved to "test.h5" after every `1` frame and written in batches of `100` using a `2`x downsampled representation (256,256). This file will then be turned into a movie with at least `10` frames per second, running at `5`t per second. The entire process will use no debugging. 
+The code will run a grid of `512x512` in steps of `0.025` from 0 to `1000` for an adiabatic coefficient of `1.0` and hyperdiffusion of order `3` with a coefficient of `5.0e-08`. The resulting data will be saved to "test.h5" after every `1` frame and written in batches of `100` using a `2`x downsampled representation (256,256). This file will then be turned into a movie with at least `10` frames per second, running at `5`t per second. The entire process will use no debugging.
 
 Full documentation is available at: https://the-rccg.github.io/hw2d/
 
@@ -56,7 +56,7 @@ The framework presented here can be easily extended to use alternative implement
 
 ### Contributions encouraged
 
-Pull requests are strongly encouraged. 
+Pull requests are strongly encouraged.
 
 The simplest way to contribute is running simulations and committing the results to the historical runs archive. This helps in exploring the hyper-parameter space and improving statistical reference values for all.
 
@@ -76,11 +76,11 @@ $$
     \partial_t n &= c_1 \left( \phi - n \right)
                      - \left[ \phi, n \right]
                      - \kappa_n \partial_y \phi
-                     - \nu \nabla^{2N} n 
+                     - \nu \nabla^{2N} n
     \\\
     \partial_t \Omega &= c_1 \left( \phi - n \right)
                                       - \left[ \phi, \Omega \right]
-                                      - \nu \nabla^{2N} \Omega 
+                                      - \nu \nabla^{2N} \Omega
     \\\
     \Omega &= \nabla^2 \phi
 \end{align}
@@ -97,9 +97,9 @@ https://github.com/the-rccg/hw2d/assets/28964733/30d40e53-72a9-49b5-9bc5-87dc3f1
 
 The model produces self-organizing turbulent structures in a three distinct stages: initial self-organization, linear drift waves, and a stable turbulent phase.
 
-For the interesting intermediary phase for the adiabatic coefficient, `c1=1`, the initial perturbation will start organizing to produce linear drift waves through the $\partial_t \phi$ component. 
+For the interesting intermediary phase for the adiabatic coefficient, `c1=1`, the initial perturbation will start organizing to produce linear drift waves through the $\partial_t \phi$ component.
 The system transitions into this first linear phase at roughly t=15, saturates at around t=45, and breaks down to transition into the turbulent phase at about t=80.
-The turbulent phase is visually saturated at around t=125, but physical parameters overshoot and only fall into the long term stable phase at around t=200. 
+The turbulent phase is visually saturated at around t=125, but physical parameters overshoot and only fall into the long term stable phase at around t=200.
 
 
 ## Physical Properties
@@ -116,7 +116,7 @@ $$
     \Gamma^n &= -     \iint{ \mathrm{d}^2x \space \left( n \space \partial_y \phi \right) }  \\\
     \Gamma^c &= c_1   \iint{ \mathrm{d}^2x \space \left(n - \phi \right)^2}  \\\
     E        &= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)}  \\\
-    U        &= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\Omega\right)^2}    
+    U        &= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\Omega\right)^2}
 \end{align}
 $$
 
@@ -130,7 +130,7 @@ $$
   \Gamma^n \small (k_y) \normalsize  &= - i k_y  \space n \small (k_y) \normalsize \space \phi^* \small (k_y) \normalsize  \\\
   \delta \small (k_y) \normalsize    &= - \mathrm{Im}\left( \mathrm{log} \left( n^* \small (k_y) \normalsize \space \phi \small (k_y) \normalsize \right) \right)   \\\
   E^N \small (k_y) \normalsize       &= \small \frac{1}{2}\normalsize \big| n \small (k_y) \normalsize \big|^2   \\\
-  E^V \small (k_y) \normalsize       &= \small \frac{1}{2}\normalsize \big| k_y \space \phi \small (k_y) \normalsize \big|^2     
+  E^V \small (k_y) \normalsize       &= \small \frac{1}{2}\normalsize \big| k_y \space \phi \small (k_y) \normalsize \big|^2
 \end{align}
 $$
 
@@ -147,8 +147,8 @@ $$
     \partial_t U   &= \Gamma^N - \mathfrak{D}^U   \\\
     \mathfrak{D}^E &= \quad \iint{ \mathrm{d}^2x \space (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)}  \\\
     \mathfrak{D}^U &= -     \iint{ \mathrm{d}^2x \space (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)}  \\\
-    with \quad \mathfrak{D}^n \small (x,y) \normalsize &= \nu \nabla^{2N} n \quad and \quad 
-    \mathfrak{D}^\phi \small (x,y) \normalsize = \nu \nabla^{2N} \phi  
+    with \quad \mathfrak{D}^n \small (x,y) \normalsize &= \nu \nabla^{2N} n \quad and \quad
+    \mathfrak{D}^\phi \small (x,y) \normalsize = \nu \nabla^{2N} \phi
 \end{align}
 $$
 
@@ -159,11 +159,11 @@ It is the common practice across all reference texts to calculate $\int\cdot$ as
 
 ## Common Issues in Simulating HW2D
 
-### Crashing/NaN encountered 
+### Crashing/NaN encountered
 
 #### within < 10 timesteps
 
-The simulation has exploded in one direction. Most commonly this means that the hyper-diffusion components are too large. 
+The simulation has exploded in one direction. Most commonly this means that the hyper-diffusion components are too large.
 - reduce the hyper diffusion order: `N`
 - reduce the diffusion coefficient: `nu`
 - reduce the initial perturbation: `scale`
@@ -179,7 +179,7 @@ The timestep is too big in the turbulent phase. CFL criteria are no longer satis
 The energy accumulates at grid scale. Hyper-diffusion component is not large enough to dissipate the energy.
 - increase: `nu`
 - increase: `N`
-  
+
 
 ### Physical values deviate from references
 
@@ -197,14 +197,36 @@ The region between the adiabatic and hydrodynamic limit is defined at `c_1=1`. F
 
 Minimum step sizes for the system can be evaluated by setting hyper-diffusion to zero `N=0` and `nu=0` and running to about `age=200` to reach into the turbulent steady-state regime.
 
-| integrator | `c1` | Box Size | `grid_pts` | min `dt` |
-| ---------- | ---- | -------- | ---------- | -------- |
-| rk4        | 1.0  | 0.15     | 1024x1024  | 0.025    |
-| rk4        | 1.0  | 0.15     | 512x512    | 0.025    |
-| rk4        | 1.0  | 0.15     | 256x256    | 0.05     |
-| rk4        | 1.0  | 0.15     | 128x128    | 0.05     |
-| rk4        | 1.0  | 0.15     | 64x64      | 0.05     |
-| rk4        | 1.0  | 0.15     | 32x32      | 0.05     |
+| integrator | `c1` | Box Size | `grid_pts` | min `dt` | converged? |
+| ---------- | ---- | -------- | ---------- | -------- | ---------- |
+| rk4        | 1.0  | 0.15     | 1024x1024  | 0.025    | True       |
+| rk4        | 1.0  | 0.15     | 512x512    | 0.025    | True       |
+| rk4        | 1.0  | 0.15     | 256x256    | 0.05     | False      |
+| rk4        | 1.0  | 0.15     | 128x128    | 0.05     | False      |
+| rk4        | 1.0  | 0.15     | 64x64      | 0.05     | False      |
+| rk4        | 1.0  | 0.15     | 32x32      | 0.05     | False      |
+
+
+However, steady-state turbulent stages are reached later for various `c1` values. Given the different values for the adiabatic coefficient, different step_sizes `dt`are required. Below is a table of stable and converged simulation parameters to use.
+
+For a box size of `0.15` and using an `rk4` scheme as an integrator, here are the values:
+
+| `c1` | `grid_pts` | min `dt` | `nu`  | `age` | $\Gamma_n\pm\delta\Gamma_n$ |
+| ---- | ---------- | -------- | ----- | ----- | ------------- |
+| 0.1  | 512x512    | 0.01     | 5e-09 | 200+  | 1.5 $\pm$0.2  |
+| 0.25 | 512x512    | 0.01     | 5e-09 | 200+  | 1.17$\pm$0.13 |
+| 0.5  | 512x512    | 0.02     | 5e-09 | 200+  | 0.89$\pm$0.09 |
+| 0.75 | 512x512    | 0.025    | 5e-09 | 200+  | 0.72$\pm$0.06 |
+| 0.9  | 512x512    | 0.025    | 5e-09 | 200+  | 0.65$\pm$0.05 |
+| 1.0  | 512x512    | 0.025    | 5e-09 | 250+  | 0.61$\pm$0.05 |
+| 1.1  | 512x512    | 0.025    | 5e-09 | 250+  | 0.58$\pm$0.04 |
+| 1.25 | 512x512    | 0.025    | 5e-09 | 250+  | 0.54$\pm$0.04 |
+| 1.5  | 512x512    | 0.025    | 5e-09 | 250+  | 0.46$\pm$0.04 |
+| 2.0  | 512x512    | 0.025    | 5e-09 | 300+  | 0.38$\pm$0.03 |
+| 2.5  | 512x512    | 0.02     | 5e-09 | 400+  | 0.31$\pm$0.03 |
+| 3.0  | 512x512    | 0.02     | 5e-09 | 500+  | 0.26$\pm$0.02 |
+| 4.0  | 512x512    | 0.015    | 5e-09 | 650+  | 0.18$\pm$0.02 |
+| 5.0  | 512x512    | 0.01     | 5e-09 | 800+  | 0.13$\pm$0.02 |
 
 
 ## Reference Timetraces
@@ -217,9 +239,9 @@ Sample traces are given for `512x512`, `dt=0.05`, `c1=1`, `N=3`, and `nu=5e-08`.
 
 ## Reference Values
 
-Reference values are averaged over 25 runs starting from well within the turbulent steady-state `t=300` with the standard deviation across the simulations denoted by $\pm$. 
-Each run to `t=1,000` at `512x512` and `dt=0.025` requires roughly 125GB (3 million floats/frame for 3 fields over 40,000 frames per simulation), meaning the summary contains information for 10TB of data. This does not include the hypterparameter stabilization tests. 
-As a result, it is practically unfeasible to supply this data. 
+Reference values are averaged over 25 runs starting from well within the turbulent steady-state `t=300` with the standard deviation across the simulations denoted by $\pm$.
+Each run to `t=1,000` at `512x512` and `dt=0.025` requires roughly 125GB (3 million floats/frame for 3 fields over 40,000 frames per simulation), meaning the summary contains information for 10TB of data. This does not include the hypterparameter stabilization tests.
+As a result, it is practically unfeasible to supply this data.
 
 | **Metric**           | **HW2D Data**    | **Stegmeir** | **Camargo** | **HW**     | **Zeiler** |
 | -------------------- | --------------- | ------------ | ----------- | ---------- | ---------- |
