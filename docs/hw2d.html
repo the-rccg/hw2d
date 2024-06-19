@@ -132,7 +132,7 @@ The purpose is to provide a playground for education and scientific purposes: be
 </code></pre>
 </div>
 
-<p>The code will run a grid of <code>512x512</code> in steps of <code>0.025</code> from 0 to <code>1000</code> for an adiabatic coefficient of <code>1.0</code> and hyperdiffusion of order <code>3</code> with a coefficient of <code>5.0e-08</code>. The resulting data will be saved to "test.h5" after every <code>1</code> frame and written in batches of <code>100</code> using a <code>2</code>x downsampled representation (256,256). This file will then be turned into a movie with at least <code>10</code> frames per second, running at <code>5</code>t per second. The entire process will use no debugging. </p>
+<p>The code will run a grid of <code>512x512</code> in steps of <code>0.025</code> from 0 to <code>1000</code> for an adiabatic coefficient of <code>1.0</code> and hyperdiffusion of order <code>3</code> with a coefficient of <code>5.0e-08</code>. The resulting data will be saved to "test.h5" after every <code>1</code> frame and written in batches of <code>100</code> using a <code>2</code>x downsampled representation (256,256). This file will then be turned into a movie with at least <code>10</code> frames per second, running at <code>5</code>t per second. The entire process will use no debugging.</p>
 
 <p>Full documentation is available at: <a href="https://the-rccg.github.io/hw2d/">https://the-rccg.github.io/hw2d/</a></p>
 
@@ -152,7 +152,7 @@ This reference implementation uses:</p>
 
 <h3 id="contributions-encouraged">Contributions encouraged</h3>
 
-<p>Pull requests are strongly encouraged. </p>
+<p>Pull requests are strongly encouraged.</p>
 
 <p>The simplest way to contribute is running simulations and committing the results to the historical runs archive. This helps in exploring the hyper-parameter space and improving statistical reference values for all.</p>
 
@@ -171,11 +171,11 @@ This reference implementation uses:</p>
     \partial_t n &amp;= c_1 \left( \phi - n \right)
                      - \left[ \phi, n \right]
                      - \kappa_n \partial_y \phi
-                     - \nu \nabla^{2N} n 
+                     - \nu \nabla^{2N} n
     \\
     \partial_t \Omega &amp;= c_1 \left( \phi - n \right)
                                       - \left[ \phi, \Omega \right]
-                                      - \nu \nabla^{2N} \Omega 
+                                      - \nu \nabla^{2N} \Omega
     \\
     \Omega &amp;= \nabla^2 \phi
 \end{align}
@@ -187,9 +187,9 @@ $$</p>
 
 <p>The model produces self-organizing turbulent structures in a three distinct stages: initial self-organization, linear drift waves, and a stable turbulent phase.</p>
 
-<p>For the interesting intermediary phase for the adiabatic coefficient, <code>c1=1</code>, the initial perturbation will start organizing to produce linear drift waves through the $\partial_t \phi$ component. 
+<p>For the interesting intermediary phase for the adiabatic coefficient, <code>c1=1</code>, the initial perturbation will start organizing to produce linear drift waves through the $\partial_t \phi$ component.
 The system transitions into this first linear phase at roughly t=15, saturates at around t=45, and breaks down to transition into the turbulent phase at about t=80.
-The turbulent phase is visually saturated at around t=125, but physical parameters overshoot and only fall into the long term stable phase at around t=200. </p>
+The turbulent phase is visually saturated at around t=125, but physical parameters overshoot and only fall into the long term stable phase at around t=200.</p>
 
 <h2 id="physical-properties">Physical Properties</h2>
 
@@ -205,7 +205,7 @@ This allows simple comparison, as well es evaluation of new methods to one refer
     \Gamma^n &amp;= -     \iint{ \mathrm{d}^2x \space \left( n \space \partial_y \phi \right) }  \\
     \Gamma^c &amp;= c_1   \iint{ \mathrm{d}^2x \space \left(n - \phi \right)^2}  \\
     E        &amp;= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n^2 - \left|\nabla_\bot \phi \right|^2 \right)}  \\
-    U        &amp;= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\Omega\right)^2} <br />
+    U        &amp;= \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\nabla_\bot^2  \phi\right)^2} = \small \frac{1}{2} \normalsize \iint{\mathrm{d}^2 x \space \left(n-\Omega\right)^2}
 \end{align}
 $$</p>
 
@@ -218,7 +218,7 @@ $$</p>
   \Gamma^n \small (k_y) \normalsize  &amp;= - i k_y  \space n \small (k_y) \normalsize \space \phi^* \small (k_y) \normalsize  \\
   \delta \small (k_y) \normalsize    &amp;= - \mathrm{Im}\left( \mathrm{log} \left( n^* \small (k_y) \normalsize \space \phi \small (k_y) \normalsize \right) \right)   \\
   E^N \small (k_y) \normalsize       &amp;= \small \frac{1}{2}\normalsize \big| n \small (k_y) \normalsize \big|^2   \\
-  E^V \small (k_y) \normalsize       &amp;= \small \frac{1}{2}\normalsize \big| k_y \space \phi \small (k_y) \normalsize \big|^2 <br />
+  E^V \small (k_y) \normalsize       &amp;= \small \frac{1}{2}\normalsize \big| k_y \space \phi \small (k_y) \normalsize \big|^2
 \end{align}
 $$</p>
 
@@ -234,8 +234,8 @@ The definitions are given by:</p>
     \partial_t U   &amp;= \Gamma^N - \mathfrak{D}^U   \\
     \mathfrak{D}^E &amp;= \quad \iint{ \mathrm{d}^2x \space (n \mathfrak{D^n} - \phi \mathfrak{D}^\phi)}  \\
     \mathfrak{D}^U &amp;= -     \iint{ \mathrm{d}^2x \space (n - \Omega)(\mathfrak{D}^n - \mathfrak{D}^\phi)}  \\
-    with \quad \mathfrak{D}^n \small (x,y) \normalsize &amp;= \nu \nabla^{2N} n \quad and \quad 
-    \mathfrak{D}^\phi \small (x,y) \normalsize = \nu \nabla^{2N} \phi <br />
+    with \quad \mathfrak{D}^n \small (x,y) \normalsize &amp;= \nu \nabla^{2N} n \quad and \quad
+    \mathfrak{D}^\phi \small (x,y) \normalsize = \nu \nabla^{2N} \phi
 \end{align}
 $$</p>
 
@@ -249,7 +249,7 @@ $$</p>
 
 <h4 id="within-10-timesteps">within &lt; 10 timesteps</h4>
 
-<p>The simulation has exploded in one direction. Most commonly this means that the hyper-diffusion components are too large. </p>
+<p>The simulation has exploded in one direction. Most commonly this means that the hyper-diffusion components are too large.</p>
 
 <ul>
 <li>reduce the hyper diffusion order: <code>N</code></li>
@@ -304,6 +304,7 @@ $$</p>
   <th>Box Size</th>
   <th><code>grid_pts</code></th>
   <th>min <code>dt</code></th>
+  <th>converged?</th>
 </tr>
 </thead>
 <tbody>
@@ -313,6 +314,7 @@ $$</p>
   <td>0.15</td>
   <td>1024x1024</td>
   <td>0.025</td>
+  <td>True</td>
 </tr>
 <tr>
   <td>rk4</td>
@@ -320,6 +322,7 @@ $$</p>
   <td>0.15</td>
   <td>512x512</td>
   <td>0.025</td>
+  <td>True</td>
 </tr>
 <tr>
   <td>rk4</td>
@@ -327,6 +330,7 @@ $$</p>
   <td>0.15</td>
   <td>256x256</td>
   <td>0.05</td>
+  <td>False</td>
 </tr>
 <tr>
   <td>rk4</td>
@@ -334,6 +338,7 @@ $$</p>
   <td>0.15</td>
   <td>128x128</td>
   <td>0.05</td>
+  <td>False</td>
 </tr>
 <tr>
   <td>rk4</td>
@@ -341,6 +346,7 @@ $$</p>
   <td>0.15</td>
   <td>64x64</td>
   <td>0.05</td>
+  <td>False</td>
 </tr>
 <tr>
   <td>rk4</td>
@@ -348,6 +354,138 @@ $$</p>
   <td>0.15</td>
   <td>32x32</td>
   <td>0.05</td>
+  <td>False</td>
+</tr>
+</tbody>
+</table>
+
+<p>However, steady-state turbulent stages are reached later for various <code>c1</code> values. Given the different values for the adiabatic coefficient, different step_sizes <code>dt</code>are required. Below is a table of stable and converged simulation parameters to use.</p>
+
+<p>For a box size of <code>0.15</code> and using an <code>rk4</code> scheme as an integrator, here are the values:</p>
+
+<table>
+<thead>
+<tr>
+  <th><code>c1</code></th>
+  <th><code>grid_pts</code></th>
+  <th>min <code>dt</code></th>
+  <th><code>nu</code></th>
+  <th><code>age</code></th>
+  <th>$\Gamma_n\pm\delta\Gamma_n$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>0.1</td>
+  <td>512x512</td>
+  <td>0.01</td>
+  <td>5e-09</td>
+  <td>200+</td>
+  <td>1.5 $\pm$0.2</td>
+</tr>
+<tr>
+  <td>0.25</td>
+  <td>512x512</td>
+  <td>0.01</td>
+  <td>5e-09</td>
+  <td>200+</td>
+  <td>1.17$\pm$0.13</td>
+</tr>
+<tr>
+  <td>0.5</td>
+  <td>512x512</td>
+  <td>0.02</td>
+  <td>5e-09</td>
+  <td>200+</td>
+  <td>0.89$\pm$0.09</td>
+</tr>
+<tr>
+  <td>0.75</td>
+  <td>512x512</td>
+  <td>0.025</td>
+  <td>5e-09</td>
+  <td>200+</td>
+  <td>0.72$\pm$0.06</td>
+</tr>
+<tr>
+  <td>0.9</td>
+  <td>512x512</td>
+  <td>0.025</td>
+  <td>5e-09</td>
+  <td>200+</td>
+  <td>0.65$\pm$0.05</td>
+</tr>
+<tr>
+  <td>1.0</td>
+  <td>512x512</td>
+  <td>0.025</td>
+  <td>5e-09</td>
+  <td>250+</td>
+  <td>0.61$\pm$0.05</td>
+</tr>
+<tr>
+  <td>1.1</td>
+  <td>512x512</td>
+  <td>0.025</td>
+  <td>5e-09</td>
+  <td>250+</td>
+  <td>0.58$\pm$0.04</td>
+</tr>
+<tr>
+  <td>1.25</td>
+  <td>512x512</td>
+  <td>0.025</td>
+  <td>5e-09</td>
+  <td>250+</td>
+  <td>0.54$\pm$0.04</td>
+</tr>
+<tr>
+  <td>1.5</td>
+  <td>512x512</td>
+  <td>0.025</td>
+  <td>5e-09</td>
+  <td>250+</td>
+  <td>0.46$\pm$0.04</td>
+</tr>
+<tr>
+  <td>2.0</td>
+  <td>512x512</td>
+  <td>0.025</td>
+  <td>5e-09</td>
+  <td>300+</td>
+  <td>0.38$\pm$0.03</td>
+</tr>
+<tr>
+  <td>2.5</td>
+  <td>512x512</td>
+  <td>0.02</td>
+  <td>5e-09</td>
+  <td>400+</td>
+  <td>0.31$\pm$0.03</td>
+</tr>
+<tr>
+  <td>3.0</td>
+  <td>512x512</td>
+  <td>0.02</td>
+  <td>5e-09</td>
+  <td>500+</td>
+  <td>0.26$\pm$0.02</td>
+</tr>
+<tr>
+  <td>4.0</td>
+  <td>512x512</td>
+  <td>0.015</td>
+  <td>5e-09</td>
+  <td>650+</td>
+  <td>0.18$\pm$0.02</td>
+</tr>
+<tr>
+  <td>5.0</td>
+  <td>512x512</td>
+  <td>0.01</td>
+  <td>5e-09</td>
+  <td>800+</td>
+  <td>0.13$\pm$0.02</td>
 </tr>
 </tbody>
 </table>
@@ -361,9 +499,9 @@ $$</p>
 
 <h2 id="reference-values">Reference Values</h2>
 
-<p>Reference values are averaged over 25 runs starting from well within the turbulent steady-state <code>t=300</code> with the standard deviation across the simulations denoted by $\pm$. 
-Each run to <code>t=1,000</code> at <code>512x512</code> and <code>dt=0.025</code> requires roughly 125GB (3 million floats/frame for 3 fields over 40,000 frames per simulation), meaning the summary contains information for 10TB of data. This does not include the hypterparameter stabilization tests. 
-As a result, it is practically unfeasible to supply this data. </p>
+<p>Reference values are averaged over 25 runs starting from well within the turbulent steady-state <code>t=300</code> with the standard deviation across the simulations denoted by $\pm$.
+Each run to <code>t=1,000</code> at <code>512x512</code> and <code>dt=0.025</code> requires roughly 125GB (3 million floats/frame for 3 fields over 40,000 frames per simulation), meaning the summary contains information for 10TB of data. This does not include the hypterparameter stabilization tests.
+As a result, it is practically unfeasible to supply this data.</p>
 
 <table>
 <thead>
