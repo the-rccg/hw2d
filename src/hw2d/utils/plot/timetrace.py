@@ -328,21 +328,40 @@ def main(
     out_path: str or None = None,
     t0: int = 0,
     t0_std: float = 300,
-):
-    plot_timetraces(
-        file_path=file_path,
-        out_path=out_path,
-        properties=("gamma_c", "gamma_n", "gamma_n_spectral"),
-        t0=t0,
-        t0_std=t0_std,
-    )
-    plot_timetraces(
-        file_path=file_path,
-        out_path=out_path,
-        properties=("energy", "kinetic_energy", "thermal_energy", "enstrophy_phi"), #"enstrophy",
-        t0=t0,
-        t0_std=t0_std,
-    )
+    comparison=True,
+):  
+    if not comparison:
+        plot_timetraces(
+            file_path=file_path,
+            out_path=out_path,
+            properties=("gamma_c", "gamma_n", "gamma_n_spectral"),
+            t0=t0,
+            t0_std=t0_std,
+        )
+        plot_timetraces(
+            file_path=file_path,
+            out_path=out_path,
+            properties=("energy", "kinetic_energy", "thermal_energy", "enstrophy_phi"), #"enstrophy",
+            t0=t0,
+            t0_std=t0_std,
+        )
+    else:
+        plot_timetrace_comparison(
+            file_path=file_path,
+            out_path=out_path,
+            properties=(
+                "gamma_c",
+                "gamma_n",
+                "gamma_n_spectral",
+                "energy",
+                "kinetic_energy",
+                "thermal_energy",
+                "enstrophy",
+                "enstrophy_phi"
+            ),
+            t0=t0,
+            t0_std=t0_std,
+        )
 
 
 if __name__ == "__main__":
