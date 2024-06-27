@@ -65,4 +65,3 @@ def fourier_downsample(x: np.ndarray, lowerscale: float, axes: Tuple[int] = (-1,
     for axis_idx in axes:
         x = scipy.signal.resample(x, num=new_lengths[axis_idx], axis=axis_idx)
     return x
-5
