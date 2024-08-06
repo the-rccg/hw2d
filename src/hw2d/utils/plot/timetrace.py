@@ -195,7 +195,7 @@ def plot_timetraces(
         ax.legend(elements, labels)
         ax.set_ylabel("value")
         ax.set_xlabel("time (t)")
-        if age // xtick_interval < 15:
+        if age // xtick_interval < 15 and age // xtick_interval > 2:
             ax.xaxis.set_ticks(range(t0, int(age) + 1, xtick_interval))
         # Wrap up figure
         fig.tight_layout()
