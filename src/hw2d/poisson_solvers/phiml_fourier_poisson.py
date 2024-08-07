@@ -19,12 +19,12 @@ import phiml.math as pm
 @pm.jit_compile
 def fourier_poisson_single(tensor: pm.Tensor, dx: float, times: int = 1) -> pm.Tensor:
     """Inverse operation to `fourier_laplace`."""
-    frequencies = pm.fft(tensor, dims=("y", "x"))
-    k_squared = pm.sum(pm.fftfreq(tensor.shape)**2, dim="vector")
-    fft_laplace = -((2 * pm.PI) ** 2) * k_squared
-    divisor = fft_laplace**times
+    frequencies = pm.fft(tensor, dims=("y", "x"))  # complex64
+    k_squared = pm.sum(pm.fftfreq(tensor.shape)**2, dim="vector")  # float32
+    fft_laplace = -((2 * pm.PI) ** 2) * k_squared  # float32
+    divisor = fft_laplace**times  # float32
     #safe_division = pm.where(divisor != 0, frequencies / divisor, 0)
-    safe_division = pm.safe_div(frequencies, divisor)
-    result = pm.real(pm.ifft(safe_division))
+    safe_division = pm.safe_div(frequencies, divisor)  # complex64
+    result = pm.real(pm.ifft(safe_division))  # float32
     return (result * dx**2)
 

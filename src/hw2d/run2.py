@@ -32,6 +32,10 @@ from hw2d.physical_properties.numpy_properties import (
     get_energy_V_spectrally,
     get_enstrophy,
     get_enstrophy_phi,
+    get_DE,
+    get_DU,
+    get_dE_dt,
+    get_dU_dt,
 )
 
 
@@ -46,6 +50,10 @@ property_fncs = {
     "kinetic_energy": lambda p, dx, **kwargs: get_energy_V_spectrally(p=p, dx=dx),
     "enstrophy": lambda n, o, dx, **kwargs: get_enstrophy(n=n, omega=o, dx=dx),
     "enstrophy_phi": lambda n, p, dx, **kwargs: get_enstrophy_phi(n=n, phi=p, dx=dx),
+    "DE": lambda n, p, Dn, Dp, **kwargs: get_DE(n=n, p=p, Dn=Dn, Dp=Dp),
+    "DU": lambda n, o, Dn, Dp, **kwargs: get_DU(n=n, o=o, Dn=Dn, Dp=Dp),
+    "dE_dt": lambda gamma_n, gamma_c, DE, **kwargs: get_dE_dt(gamma_n=gamma_n, gamma_c=gamma_c, DE=DE),
+    "dU_dt": lambda gamma_n, DU, **kwargs: get_dU_dt(gamma_n=gamma_n, DU=DU),
 }
 
 
@@ -94,15 +102,16 @@ def run(
         "enstrophy_phi",
     ],
     # Plotting
-    t0_std = 800,
+    t0_std=500,
     plot_properties: Iterable[str] = (
         "gamma_c",
         "gamma_n",
         "gamma_n_spectral",
-        "enstrophy",
         "energy",
         "kinetic_energy",
         "thermal_energy",
+        "enstrophy",
+        "enstrophy_phi"
     ),
     # Other
     debug: bool = False,
@@ -215,7 +224,9 @@ def run(
         # Property buffer
         buffer[f"time"] = np.zeros((buffer_length, 1), dtype=np.float32)
         for prop_name in properties:
-            buffer[f"fullres_{prop_name}"] = np.zeros((buffer_length, 1), dtype=np.float32)
+            buffer[f"fullres_{prop_name}"] = np.zeros(
+                (buffer_length, 1), dtype=np.float32
+            )
         # Other output parameters
         output_params = {
             "buffer": buffer,
@@ -227,7 +238,15 @@ def run(
             if continue_file:
                 plasma, physics_params = continue_h5_file(output_path, field_list)
                 save_params = get_save_params(
-                    physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save, recording_start_time=recording_start_time, adaptive_step_size=adaptive_step_size,
+                    physics_params,
+                    step_size,
+                    snaps,
+                    x,
+                    y,
+                    x_save=x_save,
+                    y_save=y_save,
+                    recording_start_time=recording_start_time,
+                    adaptive_step_size=adaptive_step_size,
                 )
                 initial_time = np.float64(plasma.age)
                 print(
@@ -250,12 +269,22 @@ def run(
         # Create Data
         else:
             save_params = get_save_params(
-                physics_params, step_size, snaps, x, y, x_save=x_save, y_save=y_save, recording_start_time=recording_start_time, adaptive_step_size=adaptive_step_size,            )
+                physics_params,
+                step_size,
+                snaps,
+                x,
+                y,
+                x_save=x_save,
+                y_save=y_save,
+                recording_start_time=recording_start_time,
+                adaptive_step_size=adaptive_step_size,
+            )
             # Create file
             create_appendable_h5(
                 output_path,
                 save_params,
-                properties=["time"] + [f"fullres_{prop_name}" for prop_name in properties],
+                properties=["time"]
+                + [f"fullres_{prop_name}" for prop_name in properties],
                 dtype=np.float32,
                 chunk_size=chunk_size,
                 add_last_state=add_last_state,
@@ -263,7 +292,11 @@ def run(
             # Save initial values
             if not recording_start_time:
                 new_val = Namespace(
-                    **{k: v for k, v in plasma.items() if k in ("phi", "omega", "density")}
+                    **{
+                        k: v
+                        for k, v in plasma.items()
+                        if k in ("phi", "omega", "density")
+                    }
                 )
                 last_state = {}
                 for k, v in plasma.items():
@@ -333,12 +366,14 @@ def run(
                 else:
                     current_time = initial_time + iteration_count * step_size
 
-                # Batched Processing
+                # Batched Saving
                 # TODO: Figure out whether it should be iteration_count % (snaps - 1) == 0
-                if (current_time >= recording_start_time) and (iteration_count % snaps == 0):
+                if (current_time >= recording_start_time) and (
+                    iteration_count % snaps == 0
+                ):
                     new_val = Namespace(
                         **{
-                            k: v
+                            k: v.copy()
                             for k, v in plasma.items()
                             if k in ("phi", "omega", "density")
                         }
@@ -361,10 +396,13 @@ def run(
                         # Save downsampled & state
                         for k, v in plasma.items():
                             if k in ("phi", "omega", "density"):
+                                # Downsample for saving
                                 if downsample_factor != 1:
-                                    new_val[k] = downsample_fnc(v, downsample_factor)
+                                    new_val[k] = downsample_fnc(v.copy(), downsample_factor)
+                                # Add last state as high-res for continuing simulation
                                 if add_last_state:
                                     last_state[f"state_{k}"] = v
+                        # Save to buffer/file
                         output_params["buffer_index"] = save_to_buffered_h5(
                             new_val=new_val,
                             last_state=last_state,
@@ -398,7 +436,11 @@ def run(
         return
 
     # If output_path is defined, flush any remaining data in the buffer
-    if output_path and (current_time > recording_start_time) and (output_params["buffer_index"] > 0):
+    if (
+        output_path
+        and (current_time > recording_start_time)
+        and (output_params["buffer_index"] > 0)
+    ):
         append_h5(**output_params)
 
     # Get Performance stats
