@@ -430,25 +430,44 @@
 </span><span id="L-328"><a href="#L-328"><span class="linenos">328</span></a>    <span class="n">out_path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="L-329"><a href="#L-329"><span class="linenos">329</span></a>    <span class="n">t0</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 </span><span id="L-330"><a href="#L-330"><span class="linenos">330</span></a>    <span class="n">t0_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
-</span><span id="L-331"><a href="#L-331"><span class="linenos">331</span></a><span class="p">):</span>
-</span><span id="L-332"><a href="#L-332"><span class="linenos">332</span></a>    <span class="n">plot_timetraces</span><span class="p">(</span>
-</span><span id="L-333"><a href="#L-333"><span class="linenos">333</span></a>        <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
-</span><span id="L-334"><a href="#L-334"><span class="linenos">334</span></a>        <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span>
-</span><span id="L-335"><a href="#L-335"><span class="linenos">335</span></a>        <span class="n">properties</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;gamma_c&quot;</span><span class="p">,</span> <span class="s2">&quot;gamma_n&quot;</span><span class="p">,</span> <span class="s2">&quot;gamma_n_spectral&quot;</span><span class="p">),</span>
-</span><span id="L-336"><a href="#L-336"><span class="linenos">336</span></a>        <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span>
-</span><span id="L-337"><a href="#L-337"><span class="linenos">337</span></a>        <span class="n">t0_std</span><span class="o">=</span><span class="n">t0_std</span><span class="p">,</span>
-</span><span id="L-338"><a href="#L-338"><span class="linenos">338</span></a>    <span class="p">)</span>
-</span><span id="L-339"><a href="#L-339"><span class="linenos">339</span></a>    <span class="n">plot_timetraces</span><span class="p">(</span>
-</span><span id="L-340"><a href="#L-340"><span class="linenos">340</span></a>        <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
-</span><span id="L-341"><a href="#L-341"><span class="linenos">341</span></a>        <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span>
-</span><span id="L-342"><a href="#L-342"><span class="linenos">342</span></a>        <span class="n">properties</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;kinetic_energy&quot;</span><span class="p">,</span> <span class="s2">&quot;thermal_energy&quot;</span><span class="p">,</span> <span class="s2">&quot;enstrophy_phi&quot;</span><span class="p">),</span> <span class="c1">#&quot;enstrophy&quot;,</span>
-</span><span id="L-343"><a href="#L-343"><span class="linenos">343</span></a>        <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span>
-</span><span id="L-344"><a href="#L-344"><span class="linenos">344</span></a>        <span class="n">t0_std</span><span class="o">=</span><span class="n">t0_std</span><span class="p">,</span>
-</span><span id="L-345"><a href="#L-345"><span class="linenos">345</span></a>    <span class="p">)</span>
-</span><span id="L-346"><a href="#L-346"><span class="linenos">346</span></a>
-</span><span id="L-347"><a href="#L-347"><span class="linenos">347</span></a>
-</span><span id="L-348"><a href="#L-348"><span class="linenos">348</span></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span id="L-349"><a href="#L-349"><span class="linenos">349</span></a>    <span class="n">fire</span><span class="o">.</span><span class="n">Fire</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</span><span id="L-331"><a href="#L-331"><span class="linenos">331</span></a>    <span class="n">comparison</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="L-332"><a href="#L-332"><span class="linenos">332</span></a><span class="p">):</span>  
+</span><span id="L-333"><a href="#L-333"><span class="linenos">333</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">comparison</span><span class="p">:</span>
+</span><span id="L-334"><a href="#L-334"><span class="linenos">334</span></a>        <span class="n">plot_timetraces</span><span class="p">(</span>
+</span><span id="L-335"><a href="#L-335"><span class="linenos">335</span></a>            <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
+</span><span id="L-336"><a href="#L-336"><span class="linenos">336</span></a>            <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span>
+</span><span id="L-337"><a href="#L-337"><span class="linenos">337</span></a>            <span class="n">properties</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;gamma_c&quot;</span><span class="p">,</span> <span class="s2">&quot;gamma_n&quot;</span><span class="p">,</span> <span class="s2">&quot;gamma_n_spectral&quot;</span><span class="p">),</span>
+</span><span id="L-338"><a href="#L-338"><span class="linenos">338</span></a>            <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span>
+</span><span id="L-339"><a href="#L-339"><span class="linenos">339</span></a>            <span class="n">t0_std</span><span class="o">=</span><span class="n">t0_std</span><span class="p">,</span>
+</span><span id="L-340"><a href="#L-340"><span class="linenos">340</span></a>        <span class="p">)</span>
+</span><span id="L-341"><a href="#L-341"><span class="linenos">341</span></a>        <span class="n">plot_timetraces</span><span class="p">(</span>
+</span><span id="L-342"><a href="#L-342"><span class="linenos">342</span></a>            <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
+</span><span id="L-343"><a href="#L-343"><span class="linenos">343</span></a>            <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span>
+</span><span id="L-344"><a href="#L-344"><span class="linenos">344</span></a>            <span class="n">properties</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;kinetic_energy&quot;</span><span class="p">,</span> <span class="s2">&quot;thermal_energy&quot;</span><span class="p">,</span> <span class="s2">&quot;enstrophy_phi&quot;</span><span class="p">),</span> <span class="c1">#&quot;enstrophy&quot;,</span>
+</span><span id="L-345"><a href="#L-345"><span class="linenos">345</span></a>            <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span>
+</span><span id="L-346"><a href="#L-346"><span class="linenos">346</span></a>            <span class="n">t0_std</span><span class="o">=</span><span class="n">t0_std</span><span class="p">,</span>
+</span><span id="L-347"><a href="#L-347"><span class="linenos">347</span></a>        <span class="p">)</span>
+</span><span id="L-348"><a href="#L-348"><span class="linenos">348</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="L-349"><a href="#L-349"><span class="linenos">349</span></a>        <span class="n">plot_timetrace_comparison</span><span class="p">(</span>
+</span><span id="L-350"><a href="#L-350"><span class="linenos">350</span></a>            <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
+</span><span id="L-351"><a href="#L-351"><span class="linenos">351</span></a>            <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span>
+</span><span id="L-352"><a href="#L-352"><span class="linenos">352</span></a>            <span class="n">properties</span><span class="o">=</span><span class="p">(</span>
+</span><span id="L-353"><a href="#L-353"><span class="linenos">353</span></a>                <span class="s2">&quot;gamma_c&quot;</span><span class="p">,</span>
+</span><span id="L-354"><a href="#L-354"><span class="linenos">354</span></a>                <span class="s2">&quot;gamma_n&quot;</span><span class="p">,</span>
+</span><span id="L-355"><a href="#L-355"><span class="linenos">355</span></a>                <span class="s2">&quot;gamma_n_spectral&quot;</span><span class="p">,</span>
+</span><span id="L-356"><a href="#L-356"><span class="linenos">356</span></a>                <span class="s2">&quot;energy&quot;</span><span class="p">,</span>
+</span><span id="L-357"><a href="#L-357"><span class="linenos">357</span></a>                <span class="s2">&quot;kinetic_energy&quot;</span><span class="p">,</span>
+</span><span id="L-358"><a href="#L-358"><span class="linenos">358</span></a>                <span class="s2">&quot;thermal_energy&quot;</span><span class="p">,</span>
+</span><span id="L-359"><a href="#L-359"><span class="linenos">359</span></a>                <span class="s2">&quot;enstrophy&quot;</span><span class="p">,</span>
+</span><span id="L-360"><a href="#L-360"><span class="linenos">360</span></a>                <span class="s2">&quot;enstrophy_phi&quot;</span>
+</span><span id="L-361"><a href="#L-361"><span class="linenos">361</span></a>            <span class="p">),</span>
+</span><span id="L-362"><a href="#L-362"><span class="linenos">362</span></a>            <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span>
+</span><span id="L-363"><a href="#L-363"><span class="linenos">363</span></a>            <span class="n">t0_std</span><span class="o">=</span><span class="n">t0_std</span><span class="p">,</span>
+</span><span id="L-364"><a href="#L-364"><span class="linenos">364</span></a>        <span class="p">)</span>
+</span><span id="L-365"><a href="#L-365"><span class="linenos">365</span></a>
+</span><span id="L-366"><a href="#L-366"><span class="linenos">366</span></a>
+</span><span id="L-367"><a href="#L-367"><span class="linenos">367</span></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span id="L-368"><a href="#L-368"><span class="linenos">368</span></a>    <span class="n">fire</span><span class="o">.</span><span class="n">Fire</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -926,7 +945,7 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">main</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">out_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">t0</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">t0_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">300</span></span><span class="return-annotation">):</span></span>
+        <span class="name">main</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">out_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">t0</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">t0_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">300</span>,</span><span class="param">	<span class="n">comparison</span><span class="o">=</span><span class="kc">True</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="main-view-source"><span>View Source</span></label>
 
@@ -937,21 +956,40 @@
 </span><span id="main-329"><a href="#main-329"><span class="linenos">329</span></a>    <span class="n">out_path</span><span class="p">:</span> <span class="nb">str</span> <span class="ow">or</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="main-330"><a href="#main-330"><span class="linenos">330</span></a>    <span class="n">t0</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 </span><span id="main-331"><a href="#main-331"><span class="linenos">331</span></a>    <span class="n">t0_std</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
-</span><span id="main-332"><a href="#main-332"><span class="linenos">332</span></a><span class="p">):</span>
-</span><span id="main-333"><a href="#main-333"><span class="linenos">333</span></a>    <span class="n">plot_timetraces</span><span class="p">(</span>
-</span><span id="main-334"><a href="#main-334"><span class="linenos">334</span></a>        <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
-</span><span id="main-335"><a href="#main-335"><span class="linenos">335</span></a>        <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span>
-</span><span id="main-336"><a href="#main-336"><span class="linenos">336</span></a>        <span class="n">properties</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;gamma_c&quot;</span><span class="p">,</span> <span class="s2">&quot;gamma_n&quot;</span><span class="p">,</span> <span class="s2">&quot;gamma_n_spectral&quot;</span><span class="p">),</span>
-</span><span id="main-337"><a href="#main-337"><span class="linenos">337</span></a>        <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span>
-</span><span id="main-338"><a href="#main-338"><span class="linenos">338</span></a>        <span class="n">t0_std</span><span class="o">=</span><span class="n">t0_std</span><span class="p">,</span>
-</span><span id="main-339"><a href="#main-339"><span class="linenos">339</span></a>    <span class="p">)</span>
-</span><span id="main-340"><a href="#main-340"><span class="linenos">340</span></a>    <span class="n">plot_timetraces</span><span class="p">(</span>
-</span><span id="main-341"><a href="#main-341"><span class="linenos">341</span></a>        <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
-</span><span id="main-342"><a href="#main-342"><span class="linenos">342</span></a>        <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span>
-</span><span id="main-343"><a href="#main-343"><span class="linenos">343</span></a>        <span class="n">properties</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;kinetic_energy&quot;</span><span class="p">,</span> <span class="s2">&quot;thermal_energy&quot;</span><span class="p">,</span> <span class="s2">&quot;enstrophy_phi&quot;</span><span class="p">),</span> <span class="c1">#&quot;enstrophy&quot;,</span>
-</span><span id="main-344"><a href="#main-344"><span class="linenos">344</span></a>        <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span>
-</span><span id="main-345"><a href="#main-345"><span class="linenos">345</span></a>        <span class="n">t0_std</span><span class="o">=</span><span class="n">t0_std</span><span class="p">,</span>
-</span><span id="main-346"><a href="#main-346"><span class="linenos">346</span></a>    <span class="p">)</span>
+</span><span id="main-332"><a href="#main-332"><span class="linenos">332</span></a>    <span class="n">comparison</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="main-333"><a href="#main-333"><span class="linenos">333</span></a><span class="p">):</span>  
+</span><span id="main-334"><a href="#main-334"><span class="linenos">334</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">comparison</span><span class="p">:</span>
+</span><span id="main-335"><a href="#main-335"><span class="linenos">335</span></a>        <span class="n">plot_timetraces</span><span class="p">(</span>
+</span><span id="main-336"><a href="#main-336"><span class="linenos">336</span></a>            <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
+</span><span id="main-337"><a href="#main-337"><span class="linenos">337</span></a>            <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span>
+</span><span id="main-338"><a href="#main-338"><span class="linenos">338</span></a>            <span class="n">properties</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;gamma_c&quot;</span><span class="p">,</span> <span class="s2">&quot;gamma_n&quot;</span><span class="p">,</span> <span class="s2">&quot;gamma_n_spectral&quot;</span><span class="p">),</span>
+</span><span id="main-339"><a href="#main-339"><span class="linenos">339</span></a>            <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span>
+</span><span id="main-340"><a href="#main-340"><span class="linenos">340</span></a>            <span class="n">t0_std</span><span class="o">=</span><span class="n">t0_std</span><span class="p">,</span>
+</span><span id="main-341"><a href="#main-341"><span class="linenos">341</span></a>        <span class="p">)</span>
+</span><span id="main-342"><a href="#main-342"><span class="linenos">342</span></a>        <span class="n">plot_timetraces</span><span class="p">(</span>
+</span><span id="main-343"><a href="#main-343"><span class="linenos">343</span></a>            <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
+</span><span id="main-344"><a href="#main-344"><span class="linenos">344</span></a>            <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span>
+</span><span id="main-345"><a href="#main-345"><span class="linenos">345</span></a>            <span class="n">properties</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="s2">&quot;kinetic_energy&quot;</span><span class="p">,</span> <span class="s2">&quot;thermal_energy&quot;</span><span class="p">,</span> <span class="s2">&quot;enstrophy_phi&quot;</span><span class="p">),</span> <span class="c1">#&quot;enstrophy&quot;,</span>
+</span><span id="main-346"><a href="#main-346"><span class="linenos">346</span></a>            <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span>
+</span><span id="main-347"><a href="#main-347"><span class="linenos">347</span></a>            <span class="n">t0_std</span><span class="o">=</span><span class="n">t0_std</span><span class="p">,</span>
+</span><span id="main-348"><a href="#main-348"><span class="linenos">348</span></a>        <span class="p">)</span>
+</span><span id="main-349"><a href="#main-349"><span class="linenos">349</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="main-350"><a href="#main-350"><span class="linenos">350</span></a>        <span class="n">plot_timetrace_comparison</span><span class="p">(</span>
+</span><span id="main-351"><a href="#main-351"><span class="linenos">351</span></a>            <span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
+</span><span id="main-352"><a href="#main-352"><span class="linenos">352</span></a>            <span class="n">out_path</span><span class="o">=</span><span class="n">out_path</span><span class="p">,</span>
+</span><span id="main-353"><a href="#main-353"><span class="linenos">353</span></a>            <span class="n">properties</span><span class="o">=</span><span class="p">(</span>
+</span><span id="main-354"><a href="#main-354"><span class="linenos">354</span></a>                <span class="s2">&quot;gamma_c&quot;</span><span class="p">,</span>
+</span><span id="main-355"><a href="#main-355"><span class="linenos">355</span></a>                <span class="s2">&quot;gamma_n&quot;</span><span class="p">,</span>
+</span><span id="main-356"><a href="#main-356"><span class="linenos">356</span></a>                <span class="s2">&quot;gamma_n_spectral&quot;</span><span class="p">,</span>
+</span><span id="main-357"><a href="#main-357"><span class="linenos">357</span></a>                <span class="s2">&quot;energy&quot;</span><span class="p">,</span>
+</span><span id="main-358"><a href="#main-358"><span class="linenos">358</span></a>                <span class="s2">&quot;kinetic_energy&quot;</span><span class="p">,</span>
+</span><span id="main-359"><a href="#main-359"><span class="linenos">359</span></a>                <span class="s2">&quot;thermal_energy&quot;</span><span class="p">,</span>
+</span><span id="main-360"><a href="#main-360"><span class="linenos">360</span></a>                <span class="s2">&quot;enstrophy&quot;</span><span class="p">,</span>
+</span><span id="main-361"><a href="#main-361"><span class="linenos">361</span></a>                <span class="s2">&quot;enstrophy_phi&quot;</span>
+</span><span id="main-362"><a href="#main-362"><span class="linenos">362</span></a>            <span class="p">),</span>
+</span><span id="main-363"><a href="#main-363"><span class="linenos">363</span></a>            <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span>
+</span><span id="main-364"><a href="#main-364"><span class="linenos">364</span></a>            <span class="n">t0_std</span><span class="o">=</span><span class="n">t0_std</span><span class="p">,</span>
+</span><span id="main-365"><a href="#main-365"><span class="linenos">365</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
