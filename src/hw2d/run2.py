@@ -51,16 +51,17 @@ property_fncs = {
 
 def run(
     # Physics & Numerics
-    step_size: float = 0.01,
+    step_size: float = 0.025,
     adaptive_step_size: bool = False,
-    end_time: float = 2_000,
+    end_time: float = 1_000,
     grid_pts: int = 512,
     k0: float = 0.15,
     N: int = 3,
-    nu: float = 1.0e-10,
-    c1: float = 5,
+    nu: float = 5.0e-09,
+    c1: float = 1,
     kappa_coeff: float = 1.0,
     poisson_bracket_coeff: float = 1.0,
+    zonal: bool = False,
     # Running
     show_property: str = "gamma_n",
     # Initialization
@@ -68,11 +69,11 @@ def run(
     init_type: str = "normal",
     init_scale: float = 1 / 100,
     # Saving
-    output_path: str = "c1=5.0_nu=1e-10_dt=0.01.h5",
+    output_path: str = "c1=1.0_nu=5e-09_dt=0.025_v=1.h5",
     recording_start_time: float = 0,
     continue_file: bool = False,
     buffer_length: int = 100,
-    snaps: int = 5,
+    snaps: int = 1,
     chunk_size: int = 100,
     downsample_factor: float = 16,
     add_last_state: bool = True,
@@ -120,6 +121,7 @@ def run(
         c1 (float, optional): Transition scale between hydrodynamic and adiabatic. Suggested values: 0.1, 1, 5. Defaults to 1.0.
         kappa_coeff (float, optional): Coefficient of d/dy phi. Defaults to 1.0.
         poisson_bracket_coeff (float, optional): Coefficient of Poisson bracket [A,B] implemented with Arakawa Scheme. Defaults to 1.0.
+        zonal (bool, ooptional): If True, uses make_zonal_func to simulate mHW2D. Defaults to False.
         seed (int or None, optional): Seed for random number generation. Defaults to None.
         init_type (str, optional): Initialization method. Choices: 'fourier', 'sine', 'random', 'normal'. Defaults to 'normal'.
         init_scale (float, optional): Scaling factor for initialization. Defaults to 0.01.
@@ -187,6 +189,7 @@ def run(
         k0=k0,
         poisson_bracket_coeff=poisson_bracket_coeff,
         kappa_coeff=kappa_coeff,
+        zonal=zonal
     )
     # Initialize Plasma
     plasma = Namespace(

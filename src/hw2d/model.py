@@ -36,6 +36,7 @@ from hw2d.gradients.numpy_gradients import periodic_laplace_N, periodic_gradient
 from hw2d.poisson_bracket.numpy_arakawa import periodic_arakawa_vec
 from hw2d.poisson_solvers.numpy_fourier_poisson import fourier_poisson_double
 from hw2d.physical_properties.numpy_properties import get_DE, get_DU, get_dE_dt, get_dU_dt, get_gamma_n, get_gamma_c
+from hw2d.zonal_transform.numpy_zonal_transform import zonal_transform
 
 periodic_arakawa = periodic_arakawa_vec
 
@@ -69,6 +70,7 @@ def hw2d_gradient(
     diffuse_func: Callable,
     poisson_bracket_func: Callable,
     get_gammas_func: Callable,
+    make_zonal_func: Callable,
     poisson_bracket_coeff: float,
     kappa_coeff: float,
     c1: float,
@@ -78,6 +80,7 @@ def hw2d_gradient(
     phi: np.ndarray or None = None,
     debug: bool = False,
     TEST_CONSERVATION: bool = False,
+    zonal: bool = False,
     **kwargs
 ) -> Namespace:
     if phi is None:
@@ -93,7 +96,12 @@ def hw2d_gradient(
     log("gradient_2d", time.time() - t0)
 
     # Calculate Gradients
-    diff = phi - density
+    if zonal:
+        zonal_phi = make_zonal_func(phi)
+        zonal_density = make_zonal_func(density)
+        diff = zonal_phi - zonal_density
+    else:
+        diff = phi - density
 
     # Step 2.1: New Omega.
     o = c1 * diff
@@ -170,6 +178,7 @@ class HW:
         k0: float,
         poisson_bracket_coeff: float = 1,
         kappa_coeff: float = 1,
+        zonal: bool = False,
         debug: bool = False,
         TEST_CONSERVATION: bool = True,
     ):
@@ -201,6 +210,7 @@ class HW:
         self.kappa_coeff: float = kappa_coeff
         self.dx: float = dx
         self.L: float = 2 * np.pi / k0
+        self.zonal: bool = zonal
         # Physical Properties
         self.TEST_CONSERVATION: bool = TEST_CONSERVATION
         # Debug Values
@@ -241,9 +251,9 @@ class HW:
         t0 = time.time()
         y = Namespace(**{k: v for k, v in plasma.items() if k != "phi"})
         if "phi" in plasma:
-            d = dt * self.gradient_2d(**y, phi=plasma["phi"], dt=0, dx=dx)
+            d = dt * self.gradient_2d(**y, phi=plasma["phi"], dt=0, dx=dx, zonal=self.zonal)
         else:
-            d = dt * self.gradient_2d(**y, dt=0, dx=dx)
+            d = dt * self.gradient_2d(**y, dt=0, dx=dx, zonal=self.zonal)
         y += d
         y["phi"] = self.get_phi(omega=y.omega, dx=dx)
         y["age"] = plasma.age + dt
@@ -257,16 +267,16 @@ class HW:
         yn = Namespace(**{k: v for k, v in plasma.items() if k != "phi"})
         # pn = self.get_phi(omega=yn.omega, dx=dx)  # TODO: only execute for t=0
         pn = plasma.phi
-        k1 = dt * self.gradient_2d(**yn, phi=pn, dt=0, dx=dx)
+        k1 = dt * self.gradient_2d(**yn, phi=pn, dt=0, dx=dx, zonal=self.zonal)
         y1 = yn + k1 * 0.5
         p1 = self.get_phi(omega=y1.omega, dx=dx)
-        k2 = dt * self.gradient_2d(**y1, phi=p1, dt=dt / 2, dx=dx)
+        k2 = dt * self.gradient_2d(**y1, phi=p1, dt=dt / 2, dx=dx, zonal=self.zonal)
         y2 = yn + k2 * 0.5
         p2 = self.get_phi(omega=y2.omega, dx=dx)
-        k3 = dt * self.gradient_2d(**y2, phi=p2, dt=dt / 2, dx=dx)
+        k3 = dt * self.gradient_2d(**y2, phi=p2, dt=dt / 2, dx=dx, zonal=self.zonal)
         y3 = yn + k3
         p3 = self.get_phi(omega=y3.omega, dx=dx)
-        k4 = dt * self.gradient_2d(**y3, phi=p3, dt=dt, dx=dx)
+        k4 = dt * self.gradient_2d(**y3, phi=p3, dt=dt, dx=dx, zonal=self.zonal)
         # p4 = self.get_phi(k4.omega)
         # TODO: currently adds two timesteps
         yk1 = yn + (k1 + 2 * k2 + 2 * k3 + k4) * (1 / 6)
@@ -313,6 +323,7 @@ class HW:
         dt: float,
         dx: float,
         phi: np.ndarray or None = None,
+        zonal: bool = False,
         debug: bool = False,
         **kwargs
     ) -> Namespace:
@@ -326,6 +337,7 @@ class HW:
             diffuse_func=self.diffuse,
             poisson_bracket_func=self.poisson_bracket,
             get_gammas_func=self.get_gammas,
+            make_zonal_func=zonal_transform,
             log=self.log,
             poisson_bracket_coeff=self.poisson_bracket_coeff,
             kappa_coeff=self.kappa_coeff,
@@ -334,6 +346,7 @@ class HW:
             N=self.N,
             phi=phi,
             debug=debug,
+            zonal=zonal,
             TEST_CONSERVATION=self.TEST_CONSERVATION,
             **kwargs
         )
