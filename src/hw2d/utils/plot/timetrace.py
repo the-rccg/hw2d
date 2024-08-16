@@ -48,7 +48,15 @@ def add_axes(
         )
 
 
-def plot_timeline(values: np.ndarray, t0: float, dt: float, ax: plt.Axes, **kwargs):
+def get_uniform_x(values, dt, t0):
+    length = len(values)
+    time = length * dt
+    x = np.arange(t0, t0 + time, dt)
+    x = x[: length]
+    return x
+
+
+def plot_timeline(y: np.ndarray, x: np.ndarray, t0: float, ax: plt.Axes, **kwargs):
     """plot values over time with proper axis adjustments
 
     :param values: y-values
@@ -62,12 +70,6 @@ def plot_timeline(values: np.ndarray, t0: float, dt: float, ax: plt.Axes, **kwar
     :return: axis.plot return
     :rtype: axis.plot return
     """
-    # Values
-    y = values
-    length = len(values)
-    time = length * dt
-    x = np.arange(t0, t0 + time, dt)
-    x = x[: len(y)]
     # Axes
     add_axes(x, y, ax)
     # Plot
@@ -85,6 +87,7 @@ def plot_timeline(values: np.ndarray, t0: float, dt: float, ax: plt.Axes, **kwar
 
 def plot_timeline_with_stds(
     y: np.ndarray,
+    x: np.ndarray,
     ax: plt.Axes,
     t0: float,
     dt: float,
@@ -96,9 +99,6 @@ def plot_timeline_with_stds(
 ) -> Tuple[Tuple, str]:
     # Values
     length = len(y)
-    time = length * dt
-    x = np.arange(t0, t0 + time, dt)
-    x = x[: len(y)]
     # Setup Plotting
     elements = []
     label = f"{latex_format(name)} "
@@ -114,7 +114,7 @@ def plot_timeline_with_stds(
     # Axes
     add_axes(x, y, ax)
     # Limits
-    ax.set_xlim(t0, t0 + time)
+    ax.set_xlim(t0, t0 + x[-1])
     return tuple(elements), label
 
 
@@ -129,46 +129,68 @@ def plot_timetraces(
     y_cutoff: int = 1e5,
 ):
     with h5py.File(file_path, "r") as hf:
+        # Loading data
         parameters = dict(hf.attrs)
-        fig, ax = plt.subplots(1, 1, figsize=(7, 3))
+        adaptive_step_size = parameters.get("adaptive_step_size", False)
         # Time handling
         init_time = parameters.get("initial_time", 0)
-        t0_idx = int(t0 // parameters["frame_dt"])
-        age = (hf[list(hf.keys())[0]].shape[0] * parameters["frame_dt"]) + init_time
-        t0 = max(t0, init_time)
+        if adaptive_step_size:
+            times_x = hf["time"][:, 0]
+            # Use argmin on the absolute difference between the array elements and the target value
+            t0_idx = np.argmin(np.abs(times_x - t0))
+            age = times_x[-1]
+        else:  # Fixed step size
+            t0_idx = int(t0 // parameters["frame_dt"])
+            age = (hf[list(hf.keys())[0]].shape[0] * parameters["frame_dt"]) + init_time
         # Determine max length of properties
         max_len = 0
         for prop in properties:
             max_len = max(max_len, len(hf[prop]))
+            # Check for sufficient data for the requested interval
             if t0_idx >= len(hf[prop]):
                 print(
                     f"{prop}: Not sufficient data. Range selected starts at t0={t0} to plot, data ends at t={len(hf[prop])*parameters['dt']:.2f}"
                 )
                 return
+        if max_len < t0_idx:
+            print(f"Note: Max length of properties {max_len:,} <  {t0_idx:,} Requested start time")
+            return
         # Time handling for standard deviation calculations
-        t0_std_idx = int((t0_std - init_time) // parameters["frame_dt"])
+        if adaptive_step_size:
+            t0_std_idx = np.argmin(np.abs(times_x - (t0_std - init_time)))
+        else:
+            t0_std_idx = int((t0_std - init_time) // parameters["frame_dt"])
         if t0_std_idx > max_len:
             print("WARNING start of statistics index is bigger than file length!")
             print(f"Calculating stats now from t0: {t0_std:,} -> {t0:,}")
             t0_std = t0
             t0_std_idx = t0_idx
         # Plot elements
+        fig, ax = plt.subplots(1, 1, figsize=(7, 3))
         elements = []
         labels = []
         min_yval = 0
         max_yval = 0
-        for property in properties:
+        for prop in properties:
             # Calculate statistical properties
-            prop_std = np.std(hf[property][t0_std_idx:])
-            prop_mean = np.mean(hf[property][t0_std_idx:])
+            prop_std = np.std(hf[prop][t0_std_idx:])
+            prop_mean = np.mean(hf[prop][t0_std_idx:])
             # Properties for plotting
-            prop_data = hf[property][t0_idx:]
+            prop_data = hf[prop][t0_idx:]
             if not len(prop_data):
-                print(f"WARNING no data in: {property}")
+                print(f"WARNING no data in: {prop}")
                 continue
+            # Generate x-values
+            if adaptive_step_size:
+                x = times_x[t0_idx:]
+            else:
+                time = len(prop_data) * parameters["frame_dt"]
+                x = np.arange(t0, t0 + time, parameters["frame_dt"])
+            x = x[:len(prop_data)]  # Ensure x,y align
             # Plot elements
             element, label = plot_timeline_with_stds(
-                prop_data,
+                y=prop_data,
+                x=x,
                 t0=t0,
                 dt=parameters["frame_dt"],
                 ax=ax,
@@ -213,13 +235,25 @@ def process_property(hf, property_name, parameters, ax, t0, t0_idx, t0_std_idx, 
     prop_std = np.std(hf[property_name][t0_std_idx:])
     prop_mean = np.mean(hf[property_name][t0_std_idx:])
     # Properties for plotting
+    parameters = dict(hf.attrs)
+    adaptive_step_size = parameters.get("adaptive_step_size", False)
     prop_data = hf[property_name][t0_idx:]
     if not len(prop_data):
         print(f"WARNING no data in: {property_name}")
         return None, None
+    # X-Axis values
+    if adaptive_step_size:
+        times_x = hf["time"][:, 0]
+        x = times_x[t0_idx:]
+        end_time = times_x[-1]
+    else:
+        end_time = len(prop_data) * parameters["frame_dt"]
+        x = np.arange(t0, t0 + end_time, parameters["frame_dt"])
+    x = x[:len(prop_data)]  # Ensure x,y align
     # Plot elements
     element, label = plot_timeline_with_stds(
-        prop_data,
+        y=prop_data,
+        x=x,
         t0=t0,
         dt=parameters["frame_dt"],
         ax=ax,
@@ -268,24 +302,37 @@ def plot_timetrace_comparison(
     y_cutoff: int = 1e5,
 ):
     with h5py.File(file_path, "r") as hf:
+        print(f"Keys: {hf.keys()}")
         parameters = dict(hf.attrs)
         fig, axarr = plt.subplots(2, 1, figsize=(7, 7), sharex=True, sharey=True)
+        adaptive_step_size = parameters.get("adaptive_step_size", False)
         # Time handling
         init_time = parameters.get("initial_time", 0)
-        t0_idx = int(t0 // parameters["frame_dt"])
-        age = (hf[list(hf.keys())[0]].shape[0] * parameters["frame_dt"]) + init_time
         t0 = max(t0, init_time)
+        if adaptive_step_size:
+            times_x = hf["time"][:, 0]
+            # Use argmin on the absolute difference between the array elements and the target value
+            t0_idx = np.argmin(np.abs(times_x - t0))
+            end_time = times_x[-1]
+            print(f"Using adaptive step size adjustment:  t0_idx={t0_idx:,.0f} ({times_x[t0_idx]:,.0f}) | x ranging from: ({times_x[0]}-{times_x[-1]})")
+        else:
+            t0_idx = int(t0 // parameters["frame_dt"])
+            end_time = len(hf["density"]) * parameters["frame_dt"]
         # Determine max length of properties
         max_len = 0
         for prop in properties:
             max_len = max(max_len, len(hf[prop]))
             if t0_idx >= len(hf[prop]):
                 print(
-                    f"{prop}: Not sufficient data. Range selected starts at t0={t0} to plot, data ends at t={len(hf[prop])*parameters['dt']:.2f}"
+                    f"{prop}: Not sufficient data. Range selected starts at t0={t0} to plot, data ends at t={len(hf[prop])*parameters['frame_dt']:.2f}"
                 )
                 return
         # Time handling for standard deviation calculations
-        t0_std_idx = int((t0_std - init_time) // parameters["frame_dt"])
+        if adaptive_step_size:
+            t0_std_idx = np.argmin(np.abs(times_x - (t0_std - init_time)))
+            print(f"Using adaptive step size adjustment:  t0_std={t0_std:,.0f} | init_time={init_time:,.4f} | t0_std_idx={t0_std_idx:,.0f}")
+        else:
+            t0_std_idx = int((t0_std - init_time) // parameters["frame_dt"])
         if t0_std_idx > max_len:
             print("WARNING start of statistics index is bigger than file length!")
             print(f"Calculating stats now from t0: {t0_std:,} -> {t0:,}")
@@ -310,8 +357,8 @@ def plot_timetrace_comparison(
                 if fullres_element is not None and fullres_label is not None:
                     fullres_labels.append(fullres_label)
                     fullres_elements.append(fullres_element[0])
-        format_axis(axarr[0], min_yval, max_yval, y_cutoff, elements, labels, t0, age, xtick_interval, ylabel="Reduced resultion", xlabel="")
-        format_axis(axarr[1], min_yval, max_yval, y_cutoff, fullres_elements, fullres_labels, t0, age, xtick_interval, ylabel="Full resolution", xlabel="time (t)")
+        format_axis(axarr[0], min_yval, max_yval, y_cutoff, elements, labels, t0, end_time, xtick_interval, ylabel="Reduced resultion", xlabel="")
+        format_axis(axarr[1], min_yval, max_yval, y_cutoff, fullres_elements, fullres_labels, t0, end_time, xtick_interval, ylabel="Full resolution", xlabel="time (t)")
         # Wrap up figure
         fig.tight_layout()
         # Save
@@ -329,23 +376,8 @@ def main(
     t0: int = 0,
     t0_std: float = 300,
     comparison=True,
-):  
-    if not comparison:
-        plot_timetraces(
-            file_path=file_path,
-            out_path=out_path,
-            properties=("gamma_c", "gamma_n", "gamma_n_spectral"),
-            t0=t0,
-            t0_std=t0_std,
-        )
-        plot_timetraces(
-            file_path=file_path,
-            out_path=out_path,
-            properties=("energy", "kinetic_energy", "thermal_energy", "enstrophy_phi"), #"enstrophy",
-            t0=t0,
-            t0_std=t0_std,
-        )
-    else:
+):
+    if comparison:
         plot_timetrace_comparison(
             file_path=file_path,
             out_path=out_path,
@@ -359,6 +391,21 @@ def main(
                 "enstrophy",
                 "enstrophy_phi"
             ),
+            t0=t0,
+            t0_std=t0_std,
+        )
+    else:
+        plot_timetraces(
+            file_path=file_path,
+            out_path=out_path,
+            properties=("gamma_c", "gamma_n", "gamma_n_spectral"),
+            t0=t0,
+            t0_std=t0_std,
+        )
+        plot_timetraces(
+            file_path=file_path,
+            out_path=out_path,
+            properties=("energy", "kinetic_energy", "thermal_energy", "enstrophy_phi"), #"enstrophy",
             t0=t0,
             t0_std=t0_std,
         )

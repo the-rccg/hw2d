@@ -1,12 +1,14 @@
-from typing import Iterable, Dict, Tuple, Any, Callable
-import h5py
+import math
+from typing import Any, Callable, Dict, Iterable, Tuple
+
 import fire
-import numpy as np
+import h5py
 import matplotlib.pyplot as plt
-from tqdm import tqdm
-from matplotlib.colors import ListedColormap
+import numpy as np
 from matplotlib import animation
+from matplotlib.colors import ListedColormap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from tqdm import tqdm
 
 
 def get_extended_viridis(vals: int = 600) -> ListedColormap:
@@ -131,7 +133,21 @@ def time_to_length(time: int, dt: float) -> int:
     return int(round(time / dt))
 
 
-def create_movie(
+def generate_title(params: Dict[str, float]) -> str:
+    return ",  ".join(
+        [
+            f"c1={params['c1']}",
+            # f"L={params['L']:.2f}",
+            f"k0={params['k0']:.2f}",
+            f"pts={params['grid_pts']:.0f}",
+            f"dt={params['dt']}",
+            f"N={params['N']:.0f}",
+            f"nu={params['nu']:.2g}",
+        ]
+    )
+
+
+def create_movie_equally_spaced(
     input_filename: str,
     output_filename: str,
     t0: int = 0,
@@ -142,14 +158,15 @@ def create_movie(
     min_fps: float = 10,
     dpi: int = 75,
     speed: float = 1,
+    writer: str = "ffmpeg",
 ) -> None:
     # Setup details
-    plasma_steps = h5py.File(input_filename, "r")
-    params = dict(plasma_steps.attrs)
+    hf = h5py.File(input_filename, "r")
+    params = dict(hf.attrs)
     title = generate_title(params)
     # Time handling
     if t1 is None:
-        t1 = (len(plasma_steps[plot_order[0]]) - 1) * params["frame_dt"]
+        t1 = (len(hf[plot_order[0]]) - 1) * params["frame_dt"]
     t0_idx = time_to_length(t0 - params.get("initial_time", 0), params["frame_dt"])
     t1_idx = time_to_length(t1 - params.get("initial_time", 0), params["frame_dt"])
     # Determine fps and step size to use
@@ -167,17 +184,17 @@ def create_movie(
     # Setup Figure & Animation
     fig, axarr = setup_figure(title)
     ims, cxs, cbs, txs = setup_visualization(
-        axarr, plasma_steps, params, plot_order, cmap
+        axarr, hf, params, plot_order, cmap
     )
     fig.subplots_adjust(top=0.94, bottom=0, right=0.95, left=0.01, hspace=0, wspace=0.2)
     # Animation
-    writer = animation.writers["ffmpeg"](fps=fps, metadata=dict(artist="Robin Greif"))
+    writer = animation.writers[writer](fps=fps, metadata=dict(artist="Robin Greif"))
 
     def animate(t_idx: int):
         """Update data for animation."""
         for i, ax in enumerate(axarr):
             field_name = plot_order[i]
-            arr = plasma_steps[field_name][t_idx]
+            arr = hf[field_name][t_idx]
             if zero_omega and field_name == "omega":
                 arr -= np.mean(arr)
             vmax = np.max(arr)
@@ -197,22 +214,133 @@ def create_movie(
     ani.save(output_filename, writer=writer, dpi=dpi)
     # Close and wrap-up
     plt.close()
-    plasma_steps.close()
+    hf.close()
     print(f"saved as:  {output_filename}")
 
 
-def generate_title(params: Dict[str, float]) -> str:
-    return ",  ".join(
-        [
-            f"c1={params['c1']}",
-            # f"L={params['L']:.2f}",
-            f"k0={params['k0']:.2f}",
-            f"pts={params['grid_pts']:.0f}",
-            f"dt={params['dt']}",
-            f"N={params['N']:.0f}",
-            f"nu={params['nu']:.2g}",
-        ]
+def create_movie_unequal_spaced(
+    input_filename: str,
+    output_filename: str,
+    t0: float = 0,
+    t1: float = None,
+    zero_omega: bool = False,
+    plot_order: Iterable[str] = ["density", "omega", "phi"],
+    cmap: ListedColormap = get_extended_viridis(),
+    min_fps: float = 10,
+    dpi: int = 75,
+    speed: float = 10,
+    writer: str = "ffmpeg",
+    debug: bool = False,
+) -> None:
+    """
+    Generate movie for unequally spaced timeseries. Adjusts sampling for each second. 
+    NOTE: Currently has slowdowns at the second transitions, so higher fps is highly encouraged.
+    To resolve this, another sampling algorithm is needed or a variable frame rate movie format to slightly adjust it.
+    """
+    # Setup details
+    hf = h5py.File(input_filename, "r")
+    params = dict(hf.attrs)
+    title = generate_title(params)
+    print(f"Adaptive Timestep detected! Using FPS = {min_fps}")
+
+    # Time handling
+    times = np.array(hf["time"][:,0])
+
+    if t1 is None:
+        t1 = times[-1]
+
+    t0_idx = np.searchsorted(times, t0)
+    t1_idx = np.searchsorted(times, t1)
+
+    # Determine fps and coarse sampling
+    t_per_sec = speed
+    sim_duration_t = times[t1_idx] - times[t0_idx]
+    movie_duration_s = int(sim_duration_t / t_per_sec)
+    frame_count = t1_idx - t0_idx
+    implied_fps = movie_duration_s / frame_count
+    frames_per_t = math.ceil(t_per_sec / min_fps)
+    #print(f"{sim_duration_t=} | {movie_duration_s=} | {frame_count=} | {implied_fps=} | {frames_per_t=}")
+
+    # Frame selection
+    selected_frames = []
+    prev_t = t0
+    prev_t_idx = t0_idx
+    # Adjust sampling every second
+    for s_i in range(1, movie_duration_s+1):
+        t_i = s_i * t_per_sec
+        t_i_idx = np.searchsorted(times, t_i)
+        frame_count_for_s = t_i_idx - prev_t_idx
+        # sample frequency
+        step_size = int(round(frame_count_for_s / min_fps))
+        selected_frames += list(np.arange(prev_t_idx, t_i_idx, step_size))
+        if debug:
+            print(f"Period: {(s_i-1) * t_per_sec}-{t_i} ({times[prev_t_idx]}-{times[t_i_idx]}) | prev_t_idx={prev_t_idx} | t_i_idx={t_i_idx} | frame_count_for_s={frame_count_for_s} | step_size={step_size} | {len(selected_frames)}")
+        prev_t = t_i
+        prev_t_idx = t_i_idx
+
+    print(np.diff(np.array(selected_frames)))
+    #print([my_list[i+1] - my_list[i] for i in range(len(my_list) - 1)])
+
+    # Define Progress
+    pbar = tqdm(total=len(selected_frames), smoothing=0.3)
+
+    # Setup Figure & Animation
+    fig, axarr = setup_figure(title)
+    ims, cxs, cbs, txs = setup_visualization(
+        axarr, hf, params, plot_order, cmap
     )
+    fig.subplots_adjust(top=0.94, bottom=0, right=0.95, left=0.01, hspace=0, wspace=0.2)
+
+    # Animation
+    def animate(frame_idx: int):
+        """Update data for animation."""
+        t_idx = selected_frames[frame_idx]
+        for i, ax in enumerate(axarr):
+            field_name = plot_order[i]
+            arr = hf[field_name][t_idx]
+            if zero_omega and field_name == "omega":
+                arr -= np.mean(arr)
+            vmax = np.max(arr)
+            vmin = np.min(arr)
+            pmin, pmax = ims[i].get_clim()
+            pm = np.max([np.abs(pmin), pmax])
+            nm = np.max([np.abs(vmin), vmax])
+            nm = new_cbar_max_smooth(nm, pm)
+            ims[i].set_data(arr)
+            ims[i].set_clim(-nm, nm)
+            txs[i].set_text(f"{field_name} (t={times[t_idx]:.2f})")
+        pbar.update(1)
+
+    ani = animation.FuncAnimation(fig, animate, frames=len(selected_frames))
+    
+    # Save Movie
+    output_filename = f"{output_filename}_dpi={dpi}_fps={min_fps:.0f}_speed={speed:.0f}_t0={t0}_t1={t1}.mp4"
+    writer = animation.writers[writer](fps=min_fps, metadata=dict(artist="Robin Greif"))
+    ani.save(output_filename, writer=writer, dpi=dpi)
+    
+    # Close and wrap-up
+    plt.close()
+    hf.close()
+    print(f"saved as:  {output_filename}")
+
+
+def create_movie(
+    **kwargs
+):
+    # List all available writers
+    available_writers = animation.writers.list()
+    writer = "ffmpeg"
+    if writer in available_writers:
+        print(f"Writer ({writer}) not in available writers.")
+        print(f"Available writers:  {available_writers}")
+
+    hf = h5py.File(kwargs["input_filename"], "r")
+    params = dict(hf.attrs)
+    if params["adaptive_step_size"]:
+        create_movie_unequal_spaced(**kwargs, writer=writer)
+    else:
+        create_movie_equally_spaced(**kwargs, writer=writer)
+
 
 
 def main(
