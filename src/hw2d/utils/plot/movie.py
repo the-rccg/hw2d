@@ -218,7 +218,7 @@ def create_movie_equally_spaced(
     print(f"saved as:  {output_filename}")
 
 
-def create_movie_unequal_spaced(
+def create_movie_unequal_spaced_fine(
     input_filename: str,
     output_filename: str,
     t0: float = 0,
@@ -254,32 +254,15 @@ def create_movie_unequal_spaced(
 
     # Determine fps and coarse sampling
     t_per_sec = speed
-    sim_duration_t = times[t1_idx] - times[t0_idx]
-    movie_duration_s = int(sim_duration_t / t_per_sec)
-    frame_count = t1_idx - t0_idx
-    implied_fps = movie_duration_s / frame_count
-    frames_per_t = math.ceil(t_per_sec / min_fps)
-    #print(f"{sim_duration_t=} | {movie_duration_s=} | {frame_count=} | {implied_fps=} | {frames_per_t=}")
+    t_per_frame = t_per_sec / min_fps
 
     # Frame selection
     selected_frames = []
-    prev_t = t0
-    prev_t_idx = t0_idx
-    # Adjust sampling every second
-    for s_i in range(1, movie_duration_s+1):
-        t_i = s_i * t_per_sec
-        t_i_idx = np.searchsorted(times, t_i)
-        frame_count_for_s = t_i_idx - prev_t_idx
-        # sample frequency
-        step_size = int(round(frame_count_for_s / min_fps))
-        selected_frames += list(np.arange(prev_t_idx, t_i_idx, step_size))
-        if debug:
-            print(f"Period: {(s_i-1) * t_per_sec}-{t_i} ({times[prev_t_idx]}-{times[t_i_idx]}) | prev_t_idx={prev_t_idx} | t_i_idx={t_i_idx} | frame_count_for_s={frame_count_for_s} | step_size={step_size} | {len(selected_frames)}")
-        prev_t = t_i
-        prev_t_idx = t_i_idx
-
-    print(np.diff(np.array(selected_frames)))
-    #print([my_list[i+1] - my_list[i] for i in range(len(my_list) - 1)])
+    current_time = 0
+    for i in range(0, int(t1 / t_per_frame) + 1):
+        current_time = i * t_per_frame
+        current_idx = np.searchsorted(times, current_time)
+        selected_frames.append(current_idx)
 
     # Define Progress
     pbar = tqdm(total=len(selected_frames), smoothing=0.3)
@@ -337,7 +320,8 @@ def create_movie(
     hf = h5py.File(kwargs["input_filename"], "r")
     params = dict(hf.attrs)
     if params["adaptive_step_size"]:
-        create_movie_unequal_spaced(**kwargs, writer=writer)
+        #create_movie_unequal_spaced(**kwargs, writer=writer)
+        create_movie_unequal_spaced_fine(**kwargs, writer=writer)
     else:
         create_movie_equally_spaced(**kwargs, writer=writer)
 
